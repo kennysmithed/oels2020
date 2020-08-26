@@ -26,3 +26,72 @@ Course content will appear here as we work through the course.
 
 Each week there will be a set reading and a programming assignment. The reading involves a blog post introducing a published paper, you read both the blog and the paper. The programming assignment involves working through a section of the [Online Experiments with jsPsych](https://softdev.ppls.ed.ac.uk/online_experiments/index.html) tutorial and then looking at (and possibly editing) some code using those concepts to implement a language-related experiment). We have two opportunities each week to meet as a class - a seminar where we can discuss the paper, and a drop-in lab where you can come along and get help with any programming difficulties or questions you have.
 
+### Week 1 (commencing 21st September): No class
+
+But make an early start on the reading and programming for week 2.
+
+### Week 2 (28th September): Running experiments online: why and how
+
+*Scientific content:* lab vs online data collection
+*Technical content:* jspsych basics, intro to crowdsourcing platforms
+- Reading
+- Programming task
+
+### Week 3 (5th October): Grammaticality judgements
+*Scientific content:* lab vs online grammaticality judgments; syntactic processing and acceptability
+*Technical content:* yes/no responses, likert scale responses, text responses
+- Reading
+- Programming task
+
+### Week 4 (12th October): Self-paced reading
+*Scientific content:* processing costs of syntactic dependencies
+*Technical content:* collecting reaction time data
+- Reading
+- Programming task
+
+### Week 5 (19th October): No class
+
+### Week 6 (26th October): Word learning / frequency learning
+*Scientific content:* probability matching and regularisation
+*Technical content:* multiple trial types, images, button responses
+- Reading
+- Programming task
+
+### Week 7 (2nd November): Audio stims experiment
+
+*Scientific content:* speech perception, social influences on phonetic adaptation
+*Technical content:* audio stimuli
+- Reading
+- Programming task
+								
+### Week 8 (9th November): Confederate priming
+
+*Scientific content:* syntactic priming and alignment<br>
+*Technical content:*  recording participant audio
+- Reading
+- Programming task
+
+### Week 9 (16th November): Participant-to-participant interaction
+*NB Assessment 1 due this week*
+*Scientific content:* least effort and Zipf's Law of Abbreviation
+*Technical content:* web sockets, python servers
+- Reading
+- Programming task
+
+### Week 10 (23rd November): Iterated Learning
+*Scientific content:* cultural evolution and language structure
+*Technical content:* PHP scripts for iteration
+- Reading
+- Programming task
+
+### Week 11 (30th November): Interacting with MTurk
+*Scientific content:* TBC
+*Technical content:* How to launch and pay HITs, manage qualifications, etc
+- Reading
+- Programming task
+
+## Re-use
+
+All aspects of this work are licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
+
+
