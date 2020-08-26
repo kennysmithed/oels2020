@@ -33,60 +33,85 @@ But make an early start on the reading and programming for week 2.
 ### Week 2 (28th September): Running experiments online: why and how
 
 *Scientific content:* lab vs online data collection
+
 *Technical content:* jspsych basics, intro to crowdsourcing platforms
+
 - Reading
 - Programming task
 
 ### Week 3 (5th October): Grammaticality judgements
+
 *Scientific content:* lab vs online grammaticality judgments; syntactic processing and acceptability
+
 *Technical content:* yes/no responses, likert scale responses, text responses
+
 - Reading
 - Programming task
 
 ### Week 4 (12th October): Self-paced reading
+
 *Scientific content:* processing costs of syntactic dependencies
+
 *Technical content:* collecting reaction time data
+
 - Reading
 - Programming task
 
 ### Week 5 (19th October): No class
 
 ### Week 6 (26th October): Word learning / frequency learning
+
 *Scientific content:* probability matching and regularisation
+
 *Technical content:* multiple trial types, images, button responses
+
 - Reading
 - Programming task
 
 ### Week 7 (2nd November): Audio stims experiment
 
 *Scientific content:* speech perception, social influences on phonetic adaptation
+
 *Technical content:* audio stimuli
+
 - Reading
 - Programming task
 								
 ### Week 8 (9th November): Confederate priming
 
 *Scientific content:* syntactic priming and alignment<br>
+
 *Technical content:*  recording participant audio
+
 - Reading
 - Programming task
 
 ### Week 9 (16th November): Participant-to-participant interaction
+
 *NB Assessment 1 due this week*
+
 *Scientific content:* least effort and Zipf's Law of Abbreviation
+
 *Technical content:* web sockets, python servers
+
 - Reading
 - Programming task
 
 ### Week 10 (23rd November): Iterated Learning
+
 *Scientific content:* cultural evolution and language structure
+
 *Technical content:* PHP scripts for iteration
+
 - Reading
 - Programming task
 
 ### Week 11 (30th November): Interacting with MTurk
+
 *Scientific content:* TBC
+
 *Technical content:* How to launch and pay HITs, manage qualifications, etc
+
 - Reading
 - Programming task
 
