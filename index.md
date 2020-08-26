@@ -1,37 +1,28 @@
-## Welcome to GitHub Pages
+This is the webpage for the Honours/MSc Guided Research course Online Experiments for Language Scientists, running in academic year 2020/2021. I will add links to materials (readings, code) to this page; you will need to use Learn for electronic submission of your assessed work, to keep an eye on announcements, and participate in discussion boards.
 
-You can use the [editor on GitHub](https://github.com/kennysmithed/oels2020/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Course summary
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Many areas in the language sciences rely on collecting data from human participants, from grammaticality judgments to behavioural responses (key presses, mouse clicks, spoken responses). While data collection traditionally takes place face-to-face, recent years have seen an explosion in the use of online data collection: participants take part remotely, providing responses through a survey tool or custom experimental software running in their web browser, with surveys or experiments often being advertised on crowdsourcing websites like Amazon Mechanical Turk (MTurk) or Prolific. Online methods potentially allow rapid and low-effort collection of large samples, and are particularly useful in situations where face-to-face data collection is not possible (e.g. during a pandemic); however, building and running these experiments poses challenges that differ from lab-based methods.
 
-### Markdown
+This course will provide a rapid tour of online experimental methods in the language sciences, covering a range of paradigms, from survey-like responses (e.g. as required for grammaticality judgments) through more standard psycholinguistic methods (button presses, mouse clicks) up to more ambitious and challenging techniques (e.g. voice recording, real-time interaction through text and/or streaming audio, iterated learning). Each week we will read a paper detailing a study using online methods, and look at code (written in javascript using jspsych) to implement a similar experiment - the examples will skew towards the topics I am interested in (language learning, communication, language evolution), but we'll cover more standard paradigms too (grammaticality judgments, self-paced reading) and the techniques are fairly general anyway. We’ll also look at the main platforms for reaching paid participants, e.g. MTurk and Prolific, and discuss some of the challenges around data quality and the ethics of running on those platforms.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+No prior experience in coding is assumed, but you have to be prepared to dive in and try things out; the assessment will involve elements of both literature review and coding.
 
-```markdown
-Syntax highlighted code block
+## Course organiser
 
-# Header 1
-## Header 2
-### Header 3
+[Kenny Smith](http://www.lel.ed.ac.uk/~kenny/) (that's me) is the course organiser and 'lecturer' (I won;t be lecturing). Best way to get in touch with me is in one of the live sessions, see below, or by email to [kenny.smith@ed.ac.uk](mailto:kenny.smith@ed.ac.uk).
 
-- Bulleted
-- List
+## Class times 
 
-1. Numbered
-2. List
+TBC - hopefully we can find a time which will work for us all to chat live, but asynchronous options for interaction will be available.
 
-**Bold** and _Italic_ and `Code` text
+## Assessment
 
-[Link](url) and ![Image](src)
-```
+Two pieces, due on 12th November and 17th December, all other details TBC.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Course Materials
 
-### Jekyll Themes
+Course content will appear here as we work through the course.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/kennysmithed/oels2020/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Each week there will be a set reading and a programming assignment. The reading involves a blog post introducing a published paper, you read both the blog and the paper. The programming assignment involves working through a section of the [Online Experiments with jsPsych](https://softdev.ppls.ed.ac.uk/online_experiments/index.html) tutorial and then looking at (and possibly editing) some code using those concepts to implement a language-related experiment). We have two opportunities each week to meet as a class - a seminar where we can discuss the paper, and a drop-in lab where you can come along and get help with any programming difficulties or questions you have.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
