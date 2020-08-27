@@ -1,6 +1,6 @@
 ---
 title: Week 2 reading
-description:
+description: Running experiments online: why and how
 ---
 
 ## The plan for week 2

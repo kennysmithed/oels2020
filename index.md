@@ -45,7 +45,7 @@ But make an early start on the reading and programming for week 2.
 
 *Technical content:* yes/no responses, likert scale responses, text responses
 
-- Reading
+- [Reading](oels_reading_wk3.md)
 - Programming task
 
 ### Week 4 (12th October): Self-paced reading
