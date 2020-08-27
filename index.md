@@ -8,9 +8,9 @@ This course will provide a rapid tour of online experimental methods in the lang
 
 No prior experience in coding is assumed, but you have to be prepared to dive in and try things out; the assessment will involve elements of both literature review and coding.
 
-## Course organiser
+## Staffing
 
-[Kenny Smith](http://www.lel.ed.ac.uk/~kenny/) (that's me) is the course organiser and 'lecturer' (I won;t be lecturing). Best way to get in touch with me is in one of the live sessions, see below, or by email to [kenny.smith@ed.ac.uk](mailto:kenny.smith@ed.ac.uk).
+[Kenny Smith](http://www.lel.ed.ac.uk/~kenny/) (that's me) is the 'lecturer' (I won't be lecturing) for this Guided Research option. Best way to get in touch with me is in one of the live sessions, see below, or by email to [kenny.smith@ed.ac.uk](mailto:kenny.smith@ed.ac.uk).
 
 ## Class times
 
@@ -59,6 +59,8 @@ But make an early start on the reading and programming for week 2.
 
 ### Week 5 (19th October): No class
 
+You could use the opportunity for catchup or lookahead reading.
+
 ### Week 6 (26th October): Word learning / frequency learning
 
 *Scientific content:* probability matching and regularisation
@@ -68,7 +70,7 @@ But make an early start on the reading and programming for week 2.
 - Reading
 - Programming task
 
-### Week 7 (2nd November): Audio stims experiment
+### Week 7 (2nd November): Audio stimuli
 
 *Scientific content:* speech perception, social influences on phonetic adaptation
 
@@ -108,7 +110,7 @@ But make an early start on the reading and programming for week 2.
 
 ### Week 11 (30th November): Interacting with MTurk
 
-*Scientific content:* TBC
+*Scientific content:* probably none!
 
 *Technical content:* How to launch and pay HITs, manage qualifications, etc
 
