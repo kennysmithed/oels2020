@@ -1,4 +1,4 @@
-This is the webpage for the Honours/MSc Guided Research course Online Experiments for Language Scientists, running in academic year 2020/2021. I will add links to materials (readings, code) to this page; you will need to use Learn for electronic submission of your assessed work, to keep an eye on announcements, and participate in discussion boards.
+this is the webpage for the Honours/MSc Guided Research course Online Experiments for Language Scientists, running in academic year 2020/2021. I will add links to materials (readings, code) to this page; you will need to use Learn for electronic submission of your assessed work, to keep an eye on announcements, and participate in discussion boards.
 
 ## Course summary
 
