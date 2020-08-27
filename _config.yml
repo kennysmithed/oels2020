@@ -1,7 +1,6 @@
 theme: jekyll-theme-midnight
 title: Online Experiments for Language Scientists
 description: Academic year 2020-2021
-is_project_page: false
 plugins:
   - jekyll-relative-links
 relative_links:
