@@ -1,4 +1,4 @@
-this is the webpage for the Honours/MSc Guided Research course Online Experiments for Language Scientists, running in academic year 2020/2021. I will add links to materials (readings, code) to this page; you will need to use Learn for electronic submission of your assessed work, to keep an eye on announcements, and participate in discussion boards.
+This is the webpage for the Honours/MSc Guided Research course Online Experiments for Language Scientists, running in academic year 2020/2021. I will add links to materials (readings, code) to this page; you will need to use Learn for electronic submission of your assessed work, to keep an eye on announcements, and participate in discussion boards.
 
 ## Course summary
 
@@ -12,7 +12,7 @@ No prior experience in coding is assumed, but you have to be prepared to dive in
 
 [Kenny Smith](http://www.lel.ed.ac.uk/~kenny/) (that's me) is the course organiser and 'lecturer' (I won;t be lecturing). Best way to get in touch with me is in one of the live sessions, see below, or by email to [kenny.smith@ed.ac.uk](mailto:kenny.smith@ed.ac.uk).
 
-## Class times 
+## Class times
 
 TBC - hopefully we can find a time which will work for us all to chat live, but asynchronous options for interaction will be available.
 
@@ -76,7 +76,7 @@ But make an early start on the reading and programming for week 2.
 
 - Reading
 - Programming task
-								
+
 ### Week 8 (9th November): Confederate priming
 
 *Scientific content:* syntactic priming and alignment<br>
@@ -118,5 +118,3 @@ But make an early start on the reading and programming for week 2.
 ## Re-use
 
 All aspects of this work are licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
-
-
