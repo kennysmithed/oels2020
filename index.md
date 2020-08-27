@@ -36,7 +36,7 @@ But make an early start on the reading and programming for week 2.
 
 *Technical content:* jspsych basics, intro to crowdsourcing platforms
 
-- Reading
+- [Reading](oels_reading_wk2.md)
 - Programming task
 
 ### Week 3 (5th October): Grammaticality judgements
