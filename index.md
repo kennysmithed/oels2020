@@ -54,7 +54,7 @@ But make an early start on the reading and programming for week 2.
 
 *Technical content:* collecting reaction time data
 
-- Reading
+- [Reading](oels_reading_wk4.md)
 - Programming task
 
 ### Week 5 (19th October): No class
@@ -67,7 +67,7 @@ You could use the opportunity for catchup or lookahead reading.
 
 *Technical content:* multiple trial types, images, button responses
 
-- Reading
+- [Reading](oels_reading_wk6.md)
 - Programming task
 
 ### Week 7 (2nd November): Audio stimuli
@@ -76,7 +76,7 @@ You could use the opportunity for catchup or lookahead reading.
 
 *Technical content:* audio stimuli
 
-- Reading
+- [Reading](oels_reading_wk7.md)
 - Programming task
 
 ### Week 8 (9th November): Confederate priming
@@ -85,7 +85,7 @@ You could use the opportunity for catchup or lookahead reading.
 
 *Technical content:*  recording participant audio
 
-- Reading
+- [Reading](oels_reading_wk8.md)
 - Programming task
 
 ### Week 9 (16th November): Participant-to-participant interaction
@@ -96,7 +96,7 @@ You could use the opportunity for catchup or lookahead reading.
 
 *Technical content:* web sockets, python servers
 
-- Reading
+- [Reading](oels_reading_wk9.md)
 - Programming task
 
 ### Week 10 (23rd November): Iterated Learning
@@ -105,7 +105,7 @@ You could use the opportunity for catchup or lookahead reading.
 
 *Technical content:* PHP scripts for iteration
 
-- Reading
+- [Reading](oels_reading_wk10.md)
 - Programming task
 
 ### Week 11 (30th November): Interacting with MTurk
@@ -114,7 +114,7 @@ You could use the opportunity for catchup or lookahead reading.
 
 *Technical content:* How to launch and pay HITs, manage qualifications, etc
 
-- Reading
+- No reading this week
 - Programming task
 
 ## Re-use
