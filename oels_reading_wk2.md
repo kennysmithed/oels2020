@@ -1,6 +1,6 @@
 ---
 title: Week 2 reading
-description: ~
+description: 
 ---
 
 ## The plan for week 2
