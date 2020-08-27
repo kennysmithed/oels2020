@@ -1,11 +1,11 @@
 ---
 title: Week 2 reading
-
+description: ~
 ---
 
 ## The plan for week 2
 
-week 2 is our first week of actual content. The reading in week 2 is designed to give you a brief intro to why people collect data online, advantages and shortcomings, to give you a feel for what online experiements can look like (focussing on my experiments), and to lay out some of the options in terms of how to build experiments and what platforms people use to connect with participants. There is a set reading for this week, but also the blog post (this document) is longer than usual, because there are quite a few threads to pull together.
+Week 2 is our first week of actual content. The reading in week 2 is designed to give you a brief intro to why people collect data online, advantages and shortcomings, to give you a feel for what online experiements can look like (focussing on my experiments), and to lay out some of the options in terms of how to build experiments and what platforms people use to connect with participants. There is a set reading for this week, but also the blog post (this document) is longer than usual, because there are quite a few threads to pull together.
 
 For the practical component of week 2 (linked from the course page) we'll help you get set up with jspsych, and learn enough of the basics so we can already jump in to building simple experiments in week 3.
 
