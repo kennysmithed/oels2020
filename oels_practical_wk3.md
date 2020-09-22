@@ -115,7 +115,7 @@ You might have noticed that in `grammaticality_judgments.js` we quite laboriousl
 
 You might be wondering what the advantage of using fancier code is, and thinking "I could just copy and paste the judgment trials and edit them directly, isn't that simpler?". It maybe is simpler, but it's also more error prone, since it relies on you not making any mistakes in copying, pasting and editing. In general, if you find yourself doing a lot of copying, pasting and editing when writing code it's a sign that you are doing manually something that the computer could do for you automatically, more quickly and with less chance of errors. We'll come back to that next week when we look at self-paced reading, where the "simple" manual approach would produce some really unwieldy code.
 
-<a href="https://raw.githubusercontent.com/kennysmithed/SimLang/master/requirements.txt">Click to Download</a>
+<a href="https://raw.githubusercontent.com/kennysmithed/SimLang/master/requirements.txt" download>Click to really Download</a>
 
 ## Re-use
 
