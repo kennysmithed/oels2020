@@ -24,7 +24,7 @@ Two pieces, due on 12th November and 17th December, all other details TBC.
 
 Course content will appear here as we work through the course.
 
-Each week there will be a set reading and a programming assignment. The reading involves a blog post introducing a published paper, you read both the blog and the paper. The programming assignment involves working through a section of the [Online Experiments with jsPsych](https://softdev.ppls.ed.ac.uk/online_experiments/index.html) tutorial and then looking at (and possibly editing) some code using those concepts to implement a language-related experiment). We have two opportunities each week to meet as a class - a seminar where we can discuss the paper, and a drop-in lab where you can come along and get help with any programming difficulties or questions you have.
+Each week there will be a set reading and a programming assignment. The reading involves a blog post introducing a published paper, you read both the blog and the paper. The programming assignment involves working through a section of the [Online Experiments with jsPsych](https://softdev.ppls.ed.ac.uk/online_experiments/index.html) tutorial and then looking at (and possibly editing) some code using those concepts to implement a language-related experiment. We have two opportunities each week to meet as a class - a seminar where we can discuss the paper, and a drop-in lab where you can come along and get help with any programming difficulties or questions you have.
 
 ### Week 1 (commencing 21st September): No class
 
