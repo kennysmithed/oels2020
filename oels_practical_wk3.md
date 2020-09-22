@@ -37,7 +37,7 @@ The bulk of the code is in `grammaticality_judgments.js`. You will see that that
 
 The code starts by laying out the grammaticality judgment trials (just because they come first in the file doesn't mean they will be the first thing the participant sees - the timeline controls what participants see when). Each trial involves showing the participant a sentence and getting a single keypress response from them, which we can achieve using the html-keyboard-response plugin. Details of the options for that plugin are in the [jsPsych documentation](https://www.jspsych.org/plugins/jspsych-html-keyboard-response/). We are using the `stimulus` parameter to hold the sentence the participant is judging, `prompt` reminds the participant what they are supposed to be doing, and `choices` shows the list of keyboard responses they are allowed to provide - in this case we only accept y or n keypresses, so everything else is ignored. So one judgment trial looks like this:
 
-```
+```js
 var judgment_trial_1 = {
     type: 'html-keyboard-response',
     stimulus: "Where did Blake buy the hat?",
@@ -50,7 +50,7 @@ The code defines 4 such trials, inspired by the type of sentences used in Sprous
 
 That's basically the interesting part of the code! But we also need some preamble for the participants. Most experiments start with a consent screen, where participants read study information and then consent to participate. I do this using the button-response plugin - you see the consent information and then click a button to indicate that you consent. The code for that looks as follows:
 
-```
+```js
 var consent_screen = {
   type: 'html-button-response',
   stimulus: "<h3>Welcome to the experiment</h3>\
@@ -67,7 +67,7 @@ You will notice that the `stimulus` parameter here is quite complicated - it inc
 
 I also define some information screens - these are `html-keyboard-response` trials, just like the judgment trials, but since I haven't specified a restricted range of valid responses in the `choices` parameter, any key press will move the participant to the next trial. So for example the first instruction screen looks like this:
 
-```
+```js
 var instruction_screen_1 = {
   type: 'html-keyboard-response',
   stimulus: "<h3>Instructions</h3> \
@@ -85,7 +85,7 @@ var instruction_screen_1 = {
 ```
 
 Once all the various trials are defined, we can stick them together in a timeline for the experiment. The timeline is very simple and is just a list of all the trial variables we have created up to this point:
-```
+```js
 var full_timeline = [consent_screen,instruction_screen_1,instruction_screen_2,
                     judgment_trial_1,judgment_trial_2,judgment_trial_3,judgment_trial_4,
                     final_screen]
@@ -93,7 +93,7 @@ var full_timeline = [consent_screen,instruction_screen_1,instruction_screen_2,
 
 Then to run the experiment we call `jsPsych.init` with this `full_timeline` variable we have created, and tell it to show the raw data on-screen at the end of the experiment (using the `on_finish` parameter of `jsPsych.init`):
 
-```
+```js
 jsPsych.init({
     timeline: full_timeline,
     on_finish: function(){jsPsych.data.displayData('csv')}
