@@ -9,7 +9,7 @@ For the practical component of week 2 the plan is to learn enough of the basics 
 
 Some things to note as you work through the practical.
 
-- We will be playing with code on the teaching server, `jspsychlearning.ppls.ed.ac.uk`. As soon as I have the class registration list I will ask the techies to create an account for you on there. Until they set that up, you won't be able to access it (but I will ask them to move fast). Also, you need to be on the University network to log in to the server (to upload files etc) - see instructions in the [Week 2 reading page](oels_reading_wk2.md) on how to access the VPN.
+- We will be playing with code on the teaching server, `jspsychlearning.ppls.ed.ac.uk`. As soon as I have the class registration list I will ask the techies to create an account for you on there. Until they set that up, you won't be able to access it, but you can still read through the tutorial. Also, you need to be on the University network to log in to the server (to upload files etc) - see instructions in the [Week 2 reading page](oels_reading_wk2.md) on how to access the VPN.
 - In section 02, the tutorial recommends using CyberDuck for uploading files to the server - I agree, it's very nice. Just to emphasise, *you don't need to pay for it*, although it will ask you if you'd like to ocasionally. I have bought a license because I use it a lot, if that helps assuage your guilt.
 - In section 03 the tutorial runs through some potential editors you can use to view/edit code. I am using Atom on a Mac, it's OK - if you want to use that you might have to download it from [the Atom website](https://atom.io).
 
