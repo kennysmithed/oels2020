@@ -7,18 +7,18 @@ description: Simple button-press responses
 
 This week we are going to look at a little bit more of the [Online Experiments with jsPsych tutorial](https://softdev.ppls.ed.ac.uk/online_experiments/index.html), and then look at code for a simple grammaticality judgment experiment. Remember, the idea is that you do as much of this as you can on your own (might be none of it, might be all of it) and then come to the practical drop-in sessions or use the discussion board to get help with stuff you need help with.
 
-## Practical tasks for this week
+## Tutorial content
 
-### Tutorial content
+Work through the rest of [section 04 of the Online Experiments with jsPsych tutorial](https://softdev.ppls.ed.ac.uk/online_experiments/jspsych.html). It's up to you whether you want to do the exercises at the end of section 04 or not. The key things you need to take away from the tutorial are:
+- How to displaying results on-screen at the end of the experiment.
+- The basic info on key codes for keyboard-response trials.
+- The general gist of timeline variables - we won't be doing anything with factorial designs, but we will do a very simple kind of timeline variable in the more advanced version of today's code, and we might need timeline variables later in the course too.
 
-Work through the rest of section 04 of the [Online Experiments with jsPsych tutorial](https://softdev.ppls.ed.ac.uk/online_experiments/index.html). It's up to you whether you want to do the exercises at the end of section 04 or not. The key things you need to take away from the tutorial are:
-- Displaying results on-screen at the end of the experiment.
-- Key codes for keyboard-response trials.
-- The gist of timeline variables - we won't be doing anything with factorial designs, but we will do a very simple kind of timeline variable in the more advanced version of today's code.
+## A grammaticality judgment experiment
 
-### A grammaticality judgment experiment
+After you have looked at section 04 of the tutorial you should know just enough to make sense of a very simple grammaticality judgment experiment. I'd like you to download and run the code I provide, look at how the code works, and then attempt the exercises below, which involve editing the code in simple ways.
 
-After you have looked at section 04 of the tutorial you should know just enough to make sense of a very simple grammaticality judgment experiment. You can download the code for this experiment here: LINK. Note that you need to download `grammaticality_judgments.html` and `grammaticality_judgments.js`. You can put them wherever, but I would suggest creating a directory called grammaticality_judgments and them saving them in there, to keep everything nice and neat. This code should run on your local computer (just open the `grammaticality_judgments.html` file in your browser) or you can upload it to the teaching server and play with it there.
+You can download the code for this experiment by FOLLOWING INSTRUCTIONS TO BE ADDED. Note that the files you need are called `grammaticality_judgments.html` and `grammaticality_judgments.js`. You can put them wherever, but I would suggest creating a directory called `grammaticality_judgments` and them saving them in there, to keep everything nice and neat. This code should run on your local computer (just open the `grammaticality_judgments.html` file in your browser) or you can upload it to the teaching server and play with it there.
 
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTMl and JS files in your code editor (e.g. Atom).
 
@@ -102,7 +102,7 @@ Obviously in a real experiment you would save the data rather than just showing 
 - How would you use buttons to provide a wider range of responses (e.g. "completely fine", "a little strange", ...)?
 - [More challenging] Sprouse (2011) actually uses a rather different layout and type of response: he has participants enter a numerical value for each sentence, has multiple judgments presented on a single page, and provides a reference sentence (e.g. an example sentence which should receive a score of 100) at the top of each page. Can you replace our simple yes/no judgment trials with something more like what Sprouse did, using the jsPsych [survey-text plugin](https://www.jspsych.org/plugins/jspsych-survey-text/)?
 
-### Optional: a version of the code using timeline variables
+## Time permitting: a version of the code using timeline variables
 
 You might have noticed that in `grammaticality_judgments.js` we quite laboriously lay out 4 judgment trials, all of which are identical in structure apart from the stimulus. There are a couple of more efficient ways to do this, one of which is by using jsPsych timeline variables. If you'd like to see how that's done, download and inspect the file `grammaticality_judgments_with_timelinevariables.js`, then see if you can get that to run by telling `grammaticality_judgments.html` to load the timeline javascript file rather than the basic one.
 
