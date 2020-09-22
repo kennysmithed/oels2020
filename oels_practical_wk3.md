@@ -33,7 +33,7 @@ You will see that `grammaticality_judgments.html` doesn't have much in it - all 
 
 The bulk of the code is in `grammaticality_judgments.js`. You will see that that code includes *comments* - these are bits of text that are enclosed in special markers so that the machine running the code ignores them. They are intended for you to read, to explain what the code is doing. But I'll also add some explanation here.
 
-`grammaticality_judgments.js` is probably one of the simplest types of experiments you could build. It has 4 grammaticality judgment trials, where participants provide a keypress response (y or n for "yes, this sentence could be spoken by a native speaker of English" or "no, it could not"). There is also a little bit of wrapper around those 4 trials - a consent screen and some information screens before the experiment proper starts, and then a final screen where you can display debrief information, completion codes etc to participants.
+`grammaticality_judgments.js` is probably one of the simplest types of experiments you could build. It has 4 grammaticality judgment trials, where participants provide a keypress response (y or n for "yes, this sentence could be spoken by a native speaker of English" or "no, it could not" - note that is slightly different from what Sprouse (2011) does, he asks people for a numerical response rather than a simple yes-no). There is also a little bit of wrapper around those 4 trials - a consent screen and some information screens before the experiment proper starts, and then a final screen where you can display debrief information, completion codes etc to participants.
 
 The code starts by laying out the grammaticality judgment trials (just because they come first in the file doesn't mean they will be the first thing the participant sees - the timeline controls what participants see when). Each trial involves showing the participant a sentence and getting a single keypress response from them, which we can achieve using the html-keyboard-response plugin. Details of the options for that plugin are in the [jsPsych documentation](https://www.jspsych.org/plugins/jspsych-html-keyboard-response/). We are using the `stimulus` parameter to hold the sentence the participant is judging, `prompt` reminds the participant what they are supposed to be doing, and `choices` shows the list of keyboard responses they are allowed to provide - in this case we only accept y or n keypresses, so everything else is ignored. So one judgment trial looks like this:
 
@@ -101,6 +101,19 @@ jsPsych.init({
 ```
 Obviously in a real experiment you would save the data rather than just showing it back to the participant, but we haven't quite got there yet!
 
+### Exercises with the grammaticality judgment experiment code
+- How would you add extra judgment trials to this code, to ask people about the grammaticality of some additional sentences? Try adding a few new sentences.
+- Have a look at the data that is displayed at the end of the experiment. Can you see where the stimulus and the response for each trial is recorded? Is there anything in the data you weren't expecting or don't understand?
+- Can you change the judgment trials so participants can provide a single-digit numerical response, e.g. any number between 1 and 9, rather than simply y or n? That numerical response could indicate a more continuous scale of grammaticality, a bit more like Sprouse's magnitude estimation task.
+- Can you change the judgment trials so the participants provide their responses by clicking yes/no buttons, rather than using the keyboard? (Hint: look at how I did the button on the consent screen)
+- How would you use buttons to provide a wider range of responses (e.g. "completely fine", "a little strange", ...)?
+- [More challenging] Sprouse (2011) actually uses a rather different layout and type of response: he has participants enter a numerical value for each sentence, has multiple judgments presented on a single page, and provides a reference sentence (e.g. an example sentence which should receive a score of 100) at the top of each page. Can you replace our simple yes/no judgment trials with something more like what Sprouse did, using the jsPsych [survey-text plugin](https://www.jspsych.org/plugins/jspsych-survey-text/)?
+
+### Optional: a version of the code using timeline variables
+
+You might have noticed that in `grammaticality_judgments.js` we quite laboriously lay out 4 judgment trials, all of which are identical in structure apart from the stimulus. There are a couple of more efficient ways to do this, one of which is by using jsPsych timeline variables. If you'd like to see how that's done, download and inspect the file `grammaticality_judgments_with_timelinevariables.js`, then see if you can get that to run by telling `grammaticality_judgments.html` to load the timeline javascript file rather than the basic one.
+
+You might be wondering what the advantage of using fancier code is, and thinking "I could just copy and paste the judgment trials and edit them directly, isn't that simpler?". It maybe is simpler, but it's also more error prone, since it relies on you not making any mistakes in copying, pasting and editing. In general, if you find yourself doing a lot of copying, pasting and editing when writing code it's a sign that you are doing manually something that the computer could do for you automatically, more quickly and with less chance of errors. We'll come back to that next week when we look at self-paced reading, where the "simple" manual approach would produce some really unwieldy code.
 
 ## Re-use
 
