@@ -40,7 +40,7 @@ But make an early start on the reading and programming for week 2.
 ### Week 3 (5th October): Grammaticality judgements
 
 - *Scientific content:* lab vs online grammaticality judgments; syntactic processing and acceptability
-- *Technical content:* simple button-press responses
+- *Technical content:* simple key- and button-press responses
 - [Reading](oels_reading_wk3.md)
 - [Programming task](oels_practical_wk3.md)
 

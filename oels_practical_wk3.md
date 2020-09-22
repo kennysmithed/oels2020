@@ -1,6 +1,6 @@
 ---
 title: Week 3 practical
-description: Simple button-press responses
+description: Simple key- and button-press responses
 ---
 
 ## The plan for week 3 practical
@@ -125,7 +125,7 @@ Attempt these problems.
 
 You might have noticed that in `grammaticality_judgments.js` we quite laboriously lay out 4 judgment trials, all of which are identical in structure apart from the `stimulus` parameter. There are a couple of more efficient ways to do this, one of which is by using jsPsych timeline variables. If you'd like to see how that's done, download and inspect the file <a href="code/grammaticality_judgments/grammaticality_judgments_with_timeline_variables.js" download> grammaticality_judgments_with_timeline_variables.js</a>, stick it in your `grammaticality_judgments` folder, then see if you can get that to run by telling `grammaticality_judgments.html` to load the timeline javascript file rather than the basic one.
 
-You might be wondering what the advantage of using fancier code is, and/or thinking "I could just copy and paste the judgment trials and edit them directly, isn't that simpler?". It maybe is conceptually simpler to copy and paste simple code, but it's also more error prone, since it relies on you not making any mistakes in copying, pasting and editing the same little block of code over and over. In general, if you find yourself doing a lot of copying, pasting and editing when writing code it's a sign that you are doing manually something that the computer could do for you automatically, more quickly and with less chance of errors. We'll come back to that next week when we look at self-paced reading, where the "simple" manual approach would produce some really unwieldy code. 
+You might be wondering what the advantage of using fancier code is, and/or thinking "I could just copy and paste the judgment trials and edit them directly, isn't that simpler?". It maybe is conceptually simpler to copy and paste simple code, but it's also more error prone, since it relies on you not making any mistakes in copying, pasting and editing the same little block of code over and over. In general, if you find yourself doing a lot of copying, pasting and editing when writing code it's a sign that you are doing manually something that the computer could do for you automatically, more quickly and with less chance of errors. We'll come back to that next week when we look at self-paced reading, where the "simple" manual approach would produce some really unwieldy code.
 
 
 ## Re-use
