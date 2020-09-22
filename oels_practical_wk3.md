@@ -22,7 +22,13 @@ You need two files for this experiment, which you can download through the follo
 - <a href="code/grammaticality_judgments/grammaticality_judgments.html" download> Download grammaticality_judgments.html</a>
 - <a href="code/grammaticality_judgments/grammaticality_judgments.js" download> Download grammaticality_judgments.js</a>
 
- You can put those files wherever you want, but I would suggest creating a directory called `grammaticality_judgments` and them saving them in there, to keep everything nice and neat. This code should run on your local computer (just open the `grammaticality_judgments.html` file in your browser) or you can upload it to the teaching server and play with it there.
+The code makes some assumptions about where you will save it - you can change that if you want but then you'll have to edit the code so it is looking in the right place, so it might be simpler to copy my directory structure. Create a directory (or folder if you prefer that name) called e.g. `OnlineExperimentsPracticals`. Copy the jsPsych code you downloaded (for me that folder is called `jspsych-6`) into your `OnlineExperimentsPracticals` folder. Then create a new folder inside the `OnlineExperimentsPracticals` folder called `grammaticality_judgments`, copy the two files you just downloaded in there. So if you do that all correctly you will have a folder called `OnlineExperimentsPracticals` that has two sub-folders, the jspsych source code and then the grammaticality judgments code. On my mac it looks like this.
+
+![suggested directory structure](images/directory_structure.png)
+
+The idea is that every week will will add a new subfolder to the `OnlineExperimentsPracticals` folder containing new code for a new experiment, all accessing one shared copy of the jspsych source code.
+
+Assuming you have the directory structure all right, this code should run on your local computer (just open the `grammaticality_judgments.html` file in your browser) or you can upload it to the teaching server and play with it there, using the same sort of directory structure.
 
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTMl and JS files in your code editor (e.g. Atom).
 
