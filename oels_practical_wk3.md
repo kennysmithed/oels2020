@@ -18,7 +18,11 @@ Work through the rest of [section 04 of the Online Experiments with jsPsych tuto
 
 After you have looked at section 04 of the tutorial you should know just enough to make sense of a very simple grammaticality judgment experiment. I'd like you to download and run the code I provide, look at how the code works, and then attempt the exercises below, which involve editing the code in simple ways.
 
-You can download the code for this experiment by FOLLOWING INSTRUCTIONS TO BE ADDED. Note that the files you need are called `grammaticality_judgments.html` and `grammaticality_judgments.js`. You can put them wherever, but I would suggest creating a directory called `grammaticality_judgments` and them saving them in there, to keep everything nice and neat. This code should run on your local computer (just open the `grammaticality_judgments.html` file in your browser) or you can upload it to the teaching server and play with it there.
+You need two files for this experiment, which you can download through the following two links:
+- <a href="code/grammaticality_judgments/grammaticality_judgments.html" download> Download grammaticality_judgments.html</a>
+- <a href="code/grammaticality_judgments/grammaticality_judgments.js" download> Download grammaticality_judgments.js</a>
+
+ You can put those files wherever you want, but I would suggest creating a directory called `grammaticality_judgments` and them saving them in there, to keep everything nice and neat. This code should run on your local computer (just open the `grammaticality_judgments.html` file in your browser) or you can upload it to the teaching server and play with it there.
 
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTMl and JS files in your code editor (e.g. Atom).
 
@@ -104,11 +108,10 @@ Obviously in a real experiment you would save the data rather than just showing 
 
 ## Time permitting: a version of the code using timeline variables
 
-You might have noticed that in `grammaticality_judgments.js` we quite laboriously lay out 4 judgment trials, all of which are identical in structure apart from the stimulus. There are a couple of more efficient ways to do this, one of which is by using jsPsych timeline variables. If you'd like to see how that's done, download and inspect the file `grammaticality_judgments_with_timeline_variables.js`, then see if you can get that to run by telling `grammaticality_judgments.html` to load the timeline javascript file rather than the basic one.
+You might have noticed that in `grammaticality_judgments.js` we quite laboriously lay out 4 judgment trials, all of which are identical in structure apart from the stimulus. There are a couple of more efficient ways to do this, one of which is by using jsPsych timeline variables. If you'd like to see how that's done, download and inspect the file <a href="code/grammaticality_judgments/grammaticality_judgments.js" download> grammaticality_judgments_with_timeline_variables.js</a>, then see if you can get that to run by telling `grammaticality_judgments.html` to load the timeline javascript file rather than the basic one.
 
 You might be wondering what the advantage of using fancier code is, and thinking "I could just copy and paste the judgment trials and edit them directly, isn't that simpler?". It maybe is simpler, but it's also more error prone, since it relies on you not making any mistakes in copying, pasting and editing. In general, if you find yourself doing a lot of copying, pasting and editing when writing code it's a sign that you are doing manually something that the computer could do for you automatically, more quickly and with less chance of errors. We'll come back to that next week when we look at self-paced reading, where the "simple" manual approach would produce some really unwieldy code.
 
-<a href="https://raw.githubusercontent.com/kennysmithed/oels2020/master/grammaticality_judgments/grammaticality_judgments.js" download> Test direct download</a>
 
 ## Re-use
 
