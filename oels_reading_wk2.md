@@ -67,7 +67,7 @@ The population you are sampling from in an online experiment and the environment
 
 ## Reading tasks for this week
 
-There are several things to read/look at this week, to give you a feel for some of the issues around online vs lab data collection, demographics of online populations, what online experiments look like, and what a crowdsourcing site looks like from the participant's perspective.
+There are several things to read/look at this week, to give you a feel for some of the issues around online vs lab data collection, demographics of online populations, what online experiments look like, and what a crowdsourcing site looks like from the participant's perspective. We will use the reading group slot this week to discuss any questions or thoughts you had about what you read (so do please turn up with questions or comments!), and also talk through the schedule for the rest of the course.
 
 Read:
 - [The wikipedia page explaining what MTurk is.](https://en.wikipedia.org/wiki/Amazon_Mechanical_Turk)
