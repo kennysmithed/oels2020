@@ -5,7 +5,7 @@ description: Running experiments online, why and how
 
 ## The plan for week 2
 
-Week 2 is our first week of actual content. The reading in week 2 is designed to give you a brief intro to why people collect data online, advantages and shortcomings, to lay out some of the options in terms of how to build experiments and what platforms people use to connect with participants, and to give you a feel for what online experiments can look like (focussing on my experiments). There is a set reading for this week, but also the blog post (this document) is longer than usual, because there are quite a few threads to pull together.
+Week 2 is our first week of actual content. The reading in week 2 is designed to give you a brief intro to why people collect data online, advantages and shortcomings, to lay out some of the options in terms of how to build experiments and what platforms people use to connect with participants, and to give you a feel for what online experiments can look like (focussing on my experiments). There is a set reading for this week, but also the blog post (this document) is longer than usual, because there are quite a few threads to pull together. We will use the reading group slot this week to discuss any questions or thoughts you had about what you read (so do please turn up with questions or comments!), and also talk through the schedule for the rest of the course.
 
 For [the practical component of week 2](oels_practical_wk2.md) we'll help you get set up with jsPsych, and learn enough of the basics so we can jump in to building simple experiments in week 3.
 
@@ -67,7 +67,7 @@ The population you are sampling from in an online experiment and the environment
 
 ## Reading tasks for this week
 
-There are several things to read/look at this week, to give you a feel for some of the issues around online vs lab data collection, demographics of online populations, what online experiments look like, and what a crowdsourcing site looks like from the participant's perspective. We will use the reading group slot this week to discuss any questions or thoughts you had about what you read (so do please turn up with questions or comments!), and also talk through the schedule for the rest of the course.
+There are several things to read/look at this week, to give you a feel for some of the issues around online vs lab data collection, demographics of online populations, what online experiments look like, and what a crowdsourcing site looks like from the participant's perspective.
 
 Read:
 - [The wikipedia page explaining what MTurk is.](https://en.wikipedia.org/wiki/Amazon_Mechanical_Turk)
