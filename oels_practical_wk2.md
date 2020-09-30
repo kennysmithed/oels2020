@@ -21,8 +21,8 @@ Some things to note as you work through the practical.
 
 Once you have done these tasks you should be able to access the teaching server, upload code, edit code in something like Atom, and have a (very basic) idea of what a trivial jsPsych "hello world" experiment looks like. Next week we'll look at an actual experiment written in jsPsych. And if you need help getting any of this stuff to work, remember that the practical drop-in sessions and the discussion board are available.
 
-## [Back to the course main page](index.md)
-
 ## Re-use
 
 All aspects of this work are licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
+
+## [Back to the course main page](index.md)
