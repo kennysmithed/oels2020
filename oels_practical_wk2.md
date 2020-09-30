@@ -24,5 +24,3 @@ Once you have done these tasks you should be able to access the teaching server,
 ## Re-use
 
 All aspects of this work are licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
-
-## [Back to the course main page](index.md)
