@@ -14,7 +14,11 @@ No prior experience in coding is assumed, but you have to be prepared to dive in
 
 ## Class times
 
-TBC - hopefully we can find a time which will work for us all to chat live, but asynchronous options for interaction will be available.
+We have class 10am-11am Wednesday, Thursday and Friday. We will meet on Microsoft Teams, I have added all enrolled students to the course Team. If you can't access Teams or can't find the class meeting, email Kenny.
+
+Wednesday 10-11 is the main class meeting, in the form of a reading group - we will discuss the week's reading and cover any questions, comments, thoughts you have.
+
+Thursday and Friday 10-11 are drop-in labs, you can come along any time in those hours and I will be available to help you through any difficulties you are having with the practical element of the course.
 
 ## Assessment
 
