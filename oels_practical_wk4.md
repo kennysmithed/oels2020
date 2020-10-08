@@ -12,7 +12,7 @@ Remember, as usual the idea is that you do as much of this as you can on your ow
 ## Tutorial content
 
 Work through [section 05 of the Online Experiments with jsPsych tutorial](https://softdev.ppls.ed.ac.uk/online_experiments/javascript.html). It's up to you whether you want to do the exercises dotted through the tutorial or not. The key things you need to take away from the tutorial are:
-- How to represent an array and loop through it.
+- How to represent an array and loop through it - you have actually already seen arrays, they are just lists enclosed in square brackets, so the new thing is the `for` loop.
 - The basic info on javascript functions - what a function looks like, and how you make a function return some value.
 
 ## A self-paced reading experiment
