@@ -51,9 +51,9 @@ But make an early start on the reading and programming for week 2.
 ### Week 4 (12th October): Self-paced reading
 
 - *Scientific content:* processing costs of syntactic dependencies
-- *Technical content:* collecting reaction time data
+- *Technical content:* collecting reaction time data, more complex nested trials
 - [Reading](oels_reading_wk4.md)
-- Programming task
+- [Programming task](oels_practical_wk4.md)
 
 ### Week 5 (19th October): No class
 
