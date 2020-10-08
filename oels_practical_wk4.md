@@ -169,7 +169,7 @@ For this experiment I have also added a trial (just before our very final `final
 
 The [survey-html-form](https://www.jspsych.org/plugins/jspsych-survey-html-form/) plugin provides a way to mix various response types on a single form - in this example I am going to include a radio-button response (select one from a number of options), a text-box response that only accepts numbers, and a larger text box for more open comments. But there are lots of other options - if you are wondering "can I do X?", look at the documentation for the [input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input), [textarea](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea) and [select](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) tags.
 
-As usual, we do this by creating a single trial - note that it has `type: 'survey-html-form'`, and in my html file I therefore have to load the appropriate plugin (line 8 of self_paced_reading.html does that).
+We include our demographics questionnaire by creating a single trial - note that it has `type: 'survey-html-form'`, and in my html file I therefore have to load the appropriate plugin (line 8 of `self_paced_reading.html` does that).
 
 ```js
 var demographics_form = {
@@ -185,9 +185,9 @@ var demographics_form = {
 }
 ```
 
-The interesting stuff happens in the `html` parameter, so I'll break that down for you. Once again this is a string (enclosed in double quotes) that includes some HTML markup tags. The simplest part of that is the the bit of code that collects the age info:
+The interesting stuff happens in the `html` parameter of this trial, so I'll break that down for you. Once again this is a string (enclosed in double quotes) that includes some HTML markup tags. The simplest part of that is the the bit of code that collects the age info:
 
-```HTML
+```
 <p style='text-align:left'>What is your age? <br> \
     <input name='age' type='number'></p>
 ```
@@ -198,7 +198,7 @@ The comments box is the same idea, but instead of using an `<input>` tag we are 
 
 The radio buttons (yes vs no for "Are you a native speaker of English?") are slightly more complex. The relevant part looks like this:
 
-```HTML
+```
 <input type='radio' name='english' value='yes'>yes<br>\
 <input type='radio' name='english' value='no'>no<br>\
 ```
@@ -209,7 +209,7 @@ So that is two input fields, one for yes and one for no, but they have the same 
 
 The full timeline for this simple 2-trial experiment then looks like this:
 
-```js
+```
 var full_timeline = [consent_screen,instruction_screen_1,
                      spr_trial_1,spr_trial_2,
                      demographics_form,
