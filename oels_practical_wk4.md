@@ -216,7 +216,7 @@ So that is two input fields, one for yes and one for no, but they have the same 
 
 The full timeline for this simple 2-trial experiment then looks like this:
 
-```
+```js
 var full_timeline = [consent_screen,instruction_screen_1,
                      spr_trial_1,spr_trial_2,
                      demographics_form,
