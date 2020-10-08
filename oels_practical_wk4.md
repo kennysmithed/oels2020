@@ -5,12 +5,19 @@ description: Collecting reaction time data, more complex nested trials
 
 ## The plan for week 4 practical
 
-This week we are going to look at code for a simple self-paced reading experiment - as you should know from the reading this week, in a self-paced reading experiment your participants read sentences word by word, and you are interested in where they are slowed down (which might indicate processing difficulties). We therefore care about reaction times (which we didn't for our grammaticality judgments task last week, although jsPsych collected them for us anyway). We are also going to see some slightly more complex timelines, with trials that consist of several parts and even a javascript function that simplifies the process of building those complex trials for us. Finally, I'll add an example at the end of how to collect demographic info from your participants, which is often something you want to do.
+This week we are going to look at a bit more of the [Online Experiments with jsPsych tutorial](https://softdev.ppls.ed.ac.uk/online_experiments/index.html), and then look at code for a simple self-paced reading experiment - as you should know from the reading this week, in a self-paced reading experiment your participants read sentences word by word, and you are interested in where they are slowed down (which might indicate processing difficulties). We therefore care about reaction times (which we didn't for our grammaticality judgments task last week, although jsPsych collected them for us anyway). We are also going to see some slightly more complex timelines, with trials that consist of several parts and even a javascript function that simplifies the process of building those complex trials for us (the tutorial section you work through this week will teach you some basics of javascript to help you understand that). Finally, I'll add an example at the end of how to collect demographic info from your participants, which is often something you want to do.
 
 Remember, as usual the idea is that you do as much of this as you can on your own (might be none of it, might be all of it) and then come to the practical drop-in sessions or use the chat on Teams to get help with stuff you need help with.
 
+## Tutorial content
+
+Work through [section 05 of the Online Experiments with jsPsych tutorial](https://softdev.ppls.ed.ac.uk/online_experiments/javascript.html). It's up to you whether you want to do the exercises dotted through the tutorial or not. The key things you need to take away from the tutorial are:
+- How to represent an array and loop through it.
+- The basic info on javascript functions - what a function looks like, and how you make a function return some value.
 
 ## A self-paced reading experiment
+
+After you have looked at section 05 of the tutorial you will be equipped to look at the self-paced reading experiment, which uses a little bit of javascript (an array, a loop, a function) to make building a complex trial list a bit easier.
 
 ### Getting started
 
@@ -131,7 +138,7 @@ the spaces using a built-in javascript function called `split`), and then uses a
 little `for` loop to build the word-by-word stimulus list. Then it slots that
 word-by-word stimulus list plus the comprehension question into our trial template, and returns that trial.
 
-Here's the function. I have called it `make_spr_trial` (spr = self-paced reading), and it takes two arguments: a sentence to present word by word, and a yes-no comprehension question.
+Here's the function. I have called it `make_spr_trial` (spr = self-paced reading), and it takes two arguments (Alisdair calls them *parameters* in section 5 of the tutorial, I guess he was raised wrong): a sentence to present word by word, and a yes-no comprehension question.
 
 ```js
 
