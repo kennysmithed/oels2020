@@ -14,7 +14,7 @@ Remember, as usual the idea is that you do as much of this as you can on your ow
 
 ### Getting started
 
-As per last week, I'd like you to download and run the code I provide, look at how the code works, and then attempt the exercises below, which involve editing the code in simple ways.
+As per last week, I'd like you to download and run the code I provide, look at how the code works, and then attempt the exercises below, which involve editing the code in simple ways and puzzling over the output.
 
 You need two files for this experiment, which you can download through the following two links:
 - <a href="code/self_paced_reading/self_paced_reading.html" download> Download self_paced_reading.html</a>
@@ -24,15 +24,15 @@ Again, the code makes some assumptions about the directory structure it's going 
 
 ![suggested directory structure](images/spr_directory_structure.png)
 
-Assuming you have the directory structure all right, this code should run on your local computer (just open the `self_paced_reading.html` file in your browser) or you can upload it to the public_html folder on the jspsychlearning server and play with it there (if your directory structure is as suggested the url will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/self_paced_reading/self_paced_reading.html).
+Assuming you have the directory structure all right, this code should run on your local computer (just open the `self_paced_reading.html` file in your browser) or you can upload the whole `self_paced_reading` folder to the public_html folder on the jspsychlearning server and play with it there (if your directory structure is as suggested the url for your experiment will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/self_paced_reading/self_paced_reading.html).
 
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTML and js files in your code editor (e.g. Atom).
 
 ### Nested timelines
 
-Each individual trial is actually rather complex: it involves word-by-word presentation of a sentence, followed by a comprehension question (the comprehension questions are there to prevent participants just rattling through the sentence without actually reading it).
+Each individual trial in a self-paced reading experiment is actually rather complex: it involves word-by-word presentation of a sentence, followed by a comprehension question - the comprehension questions are there to prevent participants just rattling through the sentence without actually reading it.
 
-The way we are going to do this is to have multiple trials per sentence: one trial for each word in that sentence, and then a final trial for the comprehension question. These are all `type:'html-keyboard-response'` - for the word-by-word presentation we just want the participant to hit spacebar to progress, then we will make the comprehension question a yes/no answer (basically just like in the grammaticality judgments code).
+The way we are going to do this in jsPsych is to have multiple trials per sentence: one trial for each word in that sentence, and then a final trial for the comprehension question. These are all `type:'html-keyboard-response'` - for the word-by-word presentation we just want the participant to hit spacebar to progress, then we will make the comprehension question a yes/no answer (basically just like in the grammaticality judgments code).
 
 We *could* do this all manually, and just specify a huge long trial list like this:
 
@@ -61,7 +61,7 @@ var spr_trial_the_basic_way = [
 That will present the sentence "A self-paced reading trial" one word at a time,
 waiting for a spacebar response after each word, then present a y/n comprehension question at the end. However, that is quite unwieldy - there is lots of redundant information (we have to specify every time the trial type, the spacebar input), building the trial list for a long experiment with hundreds of sentences is going to be very error prone, and it would be impossible to randomise the order without messing everything up horribly!
 
-Thankfully jsPsych provides a nice way around this. A slightly more sophisticated solution involves using nested timelines (explained here under [Nested timelines](https://www.jspsych.org/overview/timeline/) in the jsPsych documentation: we create a trial which has its own timeline, and then that is expanded into a series of trials, one trial per item
+Thankfully jsPsych provides a nice way around this. A slightly more sophisticated solution involves using nested timelines (explained under *Nested timelines* in [the relevant part of the jsPsych documentation](https://www.jspsych.org/overview/timeline/): we create a trial which has its own timeline, and then that is expanded into a series of trials, one trial per item
 in the timeline (so each of these complex trials functions a bit like its own stand-alone embedded experiment with its own timeline). We can use nested timelines to form a more compressed representation of the long trial sequence above and get rid of some of the redundancy.
 
 The simplest way to do this is to split the long sequence for a single self-paced reading trial into a pair of trials: the self-paced reading part, which has its own nested timeline of several words, and then the comprehension question. That would look like this:
@@ -77,7 +77,7 @@ var spr_trial_using_nested_timeline = [
    choices:['y','n']}]
 ```
 
-The first part of that is an `html-keyboard-response` trial, which accepts space as the only valid input, and which has a nested timeline will expand out so that we have our sentence presented in a sequence of 4 trials. Then we have the comprehension question, another `html-keyboard-response` trial but no nested timeline and looking for a yes-no response.
+The first part of that is an `html-keyboard-response` trial, which accepts space as the only valid input, and which has a nested timeline that will expand out so that we have our sentence presented in a sequence of 4 trials. Then we have the comprehension question, another `html-keyboard-response` trial but no nested timeline and looking for a y-n response.
 
 I find that quite clear to look at, but you'll notice that there's still some redundancy (we have to specify twice that type is `html-keyboard-response`), plus we are just producing a flat array of reading trials then a comprehension question - you could imagine that if we want to randomise the order somehow, we might accidentally seperate a sentence and its comprehension question.
 
@@ -94,9 +94,9 @@ var spr_trial_using_very_nested_timeline =
       choices:['y','n']}]}]
 ```
 
-So that's a single `html-keyboard-response` trial which has a nested timeline; the first item in the nested timeline is the spacebar-response trials, which itself has a nested timeline, and then the the second item in the timeline is a single trial with different choices, stimulus and prompt. Personally I find that slightly more confusing to look at in the code, but I like that what is conceptually a single trial - a sentence plus its comprehension question - is now a single (complex) trial in the experiment.
+So that's a single `html-keyboard-response` trial which has a nested timeline; the first item in the nested timeline is the spacebar-response trials, which itself has a nested timeline, and then the second item in the timeline is a single trial with different choices, stimulus and prompt. Personally I find that slightly more confusing to look at in the code, but I like that what is conceptually a single trial - a sentence plus its comprehension question - is now a single (complex) trial in the experiment.
 
-These three ways of representing a self-paced reading trial all work, and look the same from the participant perspective - which one you choose might be decided by things like what you plan to do for randomisation, or how confident you are that you understand what the nested trial lists are doing!
+It's important to emphasise that these three ways of representing a self-paced reading trial all work, and look the same from the participant perspective - which one you choose might be decided by things like what you plan to do for randomisation, or how confident you are that you understand what the nested trial lists are doing!
 
 Nested trial lists therefore make it quite easy to build a single self-paced reading trial. However, it's still going to be a bit laborious to build a sequence of such trials. In order to build two trials we'd have to do something like this:
 
@@ -131,7 +131,7 @@ the spaces using a built-in javascript function called `split`), and then uses a
 little `for` loop to build the word-by-word stimulus list. Then it slots that
 word-by-word stimulus list plus the comprehension question into our trial template, and returns that trial.
 
-Here's the function. It's called make_spr_trial, and it takes two arguments: a sentence to present word by word, and a yes-no comprehension question.
+Here's the function. I have called it `make_spr_trial` (spr = self-paced reading), and it takes two arguments: a sentence to present word by word, and a yes-no comprehension question.
 
 ```js
 
@@ -161,11 +161,13 @@ var spr_trial_2 = make_spr_trial("Another self paced reading trial","Trick quest
 
 ### Other bits and pieces, including collecting demographics
 
-As usual, your experiment will need a consent screen and some instruction screens. Those bits are fairly boring so I won't bother showing the code here, but: as per last week, for the initial consent screen I am using a button response - I like a button response here because I think it makes it less likely that people will keypress through before they realise what they are supposed to be doing; for the instruction screen I am using keyboard response in the same way I did last week. Note that jsPsych provides an instructions plugin (https://www.jspsych.org/plugins/jspsych-instructions/) which would be better if you were providing many many pages of instructions.
+As usual, your experiment will need a consent screen and some instruction screens. Those bits are basically the same as last week so I won't bother showing the code here, but two quick comments:
+- As per last week, for the initial consent screen I am using a button response - I like a button response here because I think it makes it less likely that people will keypress through before they realise what they are supposed to be doing.
+- For the instruction screen I am using a keyboard response trial in the same way I did last week. But note that jsPsych provides an instructions plugin (https://www.jspsych.org/plugins/jspsych-instructions/) which would be better if you were providing several pages of instructions.
 
-For this experiment I have also added a penultimate trial (just before our very final `final_screen` trial) where we collect some additional info from the participant. Often you want to collect demographic information from your participants - e.g. age, gender, whether they are a native speaker of some language, and also give them the opportunity to provide free-text comments (e.g. in case there is a problem with your experiment that they have noticed). In general you shouldn't collect data you don't actually need - it wastes the participants' time, potentially means you are storing unnecessary personal information about your participants, and also opens up various temptations at analysis time ("Hmm, this experiment doesn't looked like it worked, how boring. But wait! If i split it by gender and age then I get a weird pattern of results, maybe I can pretend I predicted that all along and publish this?"), so don't feel you always need to include the exact questions I have put here, these are just some examples of how to collect some common response types.
+For this experiment I have also added a trial (just before our very final `final_screen` trial) where we collect some additional info from the participant. Often you want to collect demographic information from your participants - e.g. age, gender, whether they are a native speaker of some language - and give them the opportunity to provide free-text comments (e.g. in case there is a problem with your experiment that they have noticed). In general you shouldn't collect data you don't actually need - it wastes the participants' time, potentially means you are storing unnecessary personal information about your participants, and also opens up various temptations at analysis time ("Hmm, this experiment doesn't looked like it worked, how boring. But wait! If I split it by gender and age, which I collected for no real reason, then I get a weird pattern of significant results, maybe I can pretend I predicted that all along and publish this?"). So don't feel you always need to include the exact questions I have put here, these are just some examples of how to collect some common response types.
 
-The survey-html-form plugin provides a way to mix various response types on a single form, [survey-html-form](https://www.jspsych.org/plugins/jspsych-survey-html-form/) - in this example I am going to include a radio-button response (select one from a number of options), a text-box response that only accepts numbers, and a larger text box for more open comments. But there are lots of other options - if you are wondering "can I do X?", look at the documentation for the [<input>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input), [<textarea>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea) and [<select>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) tags.
+The [survey-html-form](https://www.jspsych.org/plugins/jspsych-survey-html-form/) plugin provides a way to mix various response types on a single form - in this example I am going to include a radio-button response (select one from a number of options), a text-box response that only accepts numbers, and a larger text box for more open comments. But there are lots of other options - if you are wondering "can I do X?", look at the documentation for the [input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input), [textarea](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea) and [select](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) tags.
 
 As usual, we do this by creating a single trial - note that it has `type: 'survey-html-form'`, and in my html file I therefore have to load the appropriate plugin (line 8 of self_paced_reading.html does that).
 
@@ -229,7 +231,7 @@ Attempt these problems.
 
 - How would you add extra trials to this code, to ask people to read some additional sentences and answer comprehension questions on them? Try adding a few extra trials.
 - Add another demographics question, e.g. a text box to list other languages spoke, or some additional radio buttons with more than 2 options.
-- Have a look at the data that is displayed at the end of the experiment. Can you see where the stimulus and the response for each trial is recorded? Can you see how the demographics data is recorded? Can you work out what the "internal_node_id" column is doing (which looks like e.g. "0.0-2.0-0.0-0.0" ... "0.0-2.0-0.0-1.0 ... "0.0-2.0-0.0-2.0")?
+- Have a look at the data that is displayed at the end of the experiment. Can you see where the stimulus and the response for each trial is recorded? Can you see where the crucial reaction time data for each trial is recorded? Can you see how the demographics data is recorded? Can you work out what the "internal_node_id" column is doing (which looks like e.g. "0.0-2.0-0.0-0.0" ... "0.0-2.0-0.0-1.0 ... "0.0-2.0-0.0-2.0")?
 - If you were going to analyse this kind of data, you would need to pull out the relevant trials (i.e. the ones involving self-paced reading trials, and comprehension questions). Is it going to be easy to do that - how would you identify those trials? If you were particularly interested in certain words in certain contexts, is it going to be easy to pull those trials out?
 
 
