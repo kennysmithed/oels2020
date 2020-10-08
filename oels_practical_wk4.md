@@ -187,23 +187,23 @@ var demographics_form = {
 
 The interesting stuff happens in the `html` parameter of this trial, so I'll break that down for you. Once again this is a string (enclosed in double quotes) that includes some HTML markup tags. The simplest part of that is the the bit of code that collects the age info:
 
-```
-<p style='text-align:left'>What is your age? <br> \
-    <input name='age' type='number'></p>
+```js
+"<p style='text-align:left'>What is your age? <br> \
+    <input name='age' type='number'></p>"
 ```
 
-So it's a paragraph (enclosed in `<p> ... </p>`), and I have used `style='text-align:left'` to make it left-justified so it doesn't look too awful. There's a question ("what is your age?"), then a `<br>` tag to produce a line break (so not as big as a new paragraph), then `<input name='age' type='number'>`. That creates an input field, which will be referred to as `age` in our code (that's how it comes out in the results, as you will see later, and we tell it that this trial is of the `number` type, which lets th browser know how to display it (e.g. if we swap `type='number'` for `type='text'` then you lose the little scroller to increase/decrease the number.)
+So it's a paragraph (enclosed in `<p> ... </p>`), and I have used `style='text-align:left'` to make it left-justified so it doesn't look too awful. There's a question ("What is your age?"), then a `<br>` tag to produce a line break. Then `<input name='age' type='number'>` creates an input field, which will be referred to as `age` in our code (that's how it appears in the results, as you will see later), and we tell it that this trial is of the `number` type, which lets the browser know how to display it (e.g. if we swap `type='number'` for `type='text'` then you lose the little scroller to increase/decrease the number.)
 
-The comments box is the same idea, but instead of using an `<input>` tag we are using `<textarea><\textarea>`. Note that there is nothing between those tags - if you put in some text (e.g. `<textarea>Initial text<\textarea>`) then that would appear in your box without needing to be typed in by the participant, which is not really useful for us here. We can also specify the size of the box in rows and columns - people often take their cue about the length of the response desired based on the size of the box.
+The comments box is the same idea, but instead of using an `<input>` tag we are using `<textarea><\textarea>`. Note that there is nothing between those tags - if you put in some text (e.g. `<textarea>Initial text<\textarea>`) then that would appear in your textbox without needing to be typed in by the participant, which is not really useful for us here. We can also specify the size of the box in rows and columns - people often take their cue about the length of the response desired based on the size of the box.
 
 The radio buttons (yes vs no for "Are you a native speaker of English?") are slightly more complex. The relevant part looks like this:
 
-```
-<input type='radio' name='english' value='yes'>yes<br>\
-<input type='radio' name='english' value='no'>no<br>\
+```js
+"<input type='radio' name='english' value='yes'>yes<br>\
+<input type='radio' name='english' value='no'>no<br>"
 ```
 
-So that is two input fields, one for yes and one for no, but they have the same name (`name='english'`). The browser knows in those circumstances to only allow people to select *one* option from among those options that share the same name. Then we have `value='yes'` and for the yes input and `value='no'` for the no input - this is the response *that will be recorded* depending on which button the participant selects (if you leave the `value` bit out you get a very unhelpful answer of "on", i.e. it just tells you that the participant answered the question but not which answer they gave). Then finally we have the text that appears alongside the button, yes and no respectively, with a `<br>` in between the buttons to make it look nice.
+So that is two input fields, one for yes and one for no, but they have the same name (`name='english'`). The browser knows in those circumstances to only allow people to select *one* option from among those options that share the same name. Then we have `value='yes'` for the yes input and `value='no'` for the no input - this is the response *that will be recorded* depending on which button the participant selects (if you leave the `value` bit out then the code records a very unhelpful answer of "english=on", i.e. it just tells you that the participant answered the question but not which answer they gave). Then finally we have the text that appears alongside the button, yes and no respectively, with a `<br>` in between the buttons to make it look nice.
 
 ### The full timeline
 
@@ -216,7 +216,7 @@ var full_timeline = [consent_screen,instruction_screen_1,
                      final_screen]
 ```
 
-And then we use `jsPsych.init` to run it - again,  nothing fancy going on here, and we are just dumping the data to the display at the end. Next week I'll show you how to do something a bit more useful with the data.
+And then we use `jsPsych.init` to run it - again,  nothing fancy going on here, and we are just dumping the data to the display at the end. Next week I'll show you how to do something a bit more useful with the data, i.e. save it as a CSV file.
 
 ```js
 jsPsych.init({
@@ -230,9 +230,9 @@ jsPsych.init({
 Attempt these problems.
 
 - How would you add extra trials to this code, to ask people to read some additional sentences and answer comprehension questions on them? Try adding a few extra trials.
-- Add another demographics question, e.g. a text box to list other languages spoke, or some additional radio buttons with more than 2 options.
-- Have a look at the data that is displayed at the end of the experiment. Can you see where the stimulus and the response for each trial is recorded? Can you see where the crucial reaction time data for each trial is recorded? Can you see how the demographics data is recorded? Can you work out what the "internal_node_id" column is doing (which looks like e.g. "0.0-2.0-0.0-0.0" ... "0.0-2.0-0.0-1.0 ... "0.0-2.0-0.0-2.0")?
-- If you were going to analyse this kind of data, you would need to pull out the relevant trials (i.e. the ones involving self-paced reading trials, and comprehension questions). Is it going to be easy to do that - how would you identify those trials? If you were particularly interested in certain words in certain contexts, is it going to be easy to pull those trials out?
+- Add another demographics question, e.g. a text box to list other languages spoken, or some additional radio buttons with more than 2 options.
+- Have a look at the data that is displayed at the end of the experiment. Can you see where the stimulus for each trial is recorded? Can you see where the crucial reaction time data for each trial is recorded? Can you see how the demographics data is recorded? Can you work out what the "internal_node_id" column is doing (which looks like e.g. "0.0-2.0-0.0-0.0" ... "0.0-2.0-0.0-1.0 ... "0.0-2.0-0.0-2.0")?
+- If you were going to analyse this kind of data, you would need to pull out the relevant trials (i.e. the ones involving self-paced reading, and comprehension questions). Is it going to be easy to do that based on the kind of output the code produces? How would you identify those trials? If you were particularly interested in certain words in certain contexts, is it going to be easy to pull those trials out of the data the code produces?
 
 
 ## Re-use
