@@ -255,7 +255,7 @@ Attempt these problems.
 *PLoS ONE, 10,* e0116946.](https://doi.org/10.1371/journal.pone.0116946)
 
 [Forster, K. I., Guerrera, C. & Elliot, L. (2009). The maze task: Measuring forced incremental sentence processing time.
-*Behavior Research Methods, 41,* 163-171.](https://doi:10.3758/BRM.41.1.163)
+*Behavior Research Methods, 41,* 163-171.](https://doi.org/10.3758/BRM.41.1.163)
 
 ## Re-use
 
