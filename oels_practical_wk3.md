@@ -14,6 +14,14 @@ Work through the rest of [section 04 of the Online Experiments with jsPsych tuto
 - The basic info on key codes for keyboard-response trials.
 - The general gist of timeline variables - we won't be doing anything with factorial designs, but we will do a very simple kind of timeline variable in the more advanced version of today's code, and we might need timeline variables later in the course too.
 
+Jumping back into this practical at section 04 can be a bit confusing if you haven't touched it for a week, so to help you out: once you have completed sections 01-03 and the "Putting the code in its own file" section of section 04 (which was the last thing last week), you should have a directory called `hello` that contains 4 things: an `experiment.html` file, an `experiment.js` file, an image called `nasa_proxima.png`, and a `jspsch-6` folder containing all the jsPsych library stuff (that you downloaded as a bundle - you can just copy that entire folder into your `hello` folder). Download links for the html and js files are below - if you download those and arrange as described, then you can jump into section 04 of the tutorial at the "Adding more images" header and start adding things to the `experiment.js` file (e.g. a second image trial, the `on_finish` stuff, etc).
+
+Here are the two files you need to do that:
+- <a href="code/hello/experiment.html" download> Download experiment.html</a>
+- <a href="code/hello/experiment.js" download> Download experiment.js</a>
+
+Remember that the path on lines 5, 6 and 7 of `experiment.html` needs to have the correct name for the jsPsych folder - for me the folder is called `jspsych-6`, for you it might be called w.g. `jspsych-6.1.0` so you would need to edit those lines to have the correct folder name. 
+
 ## A grammaticality judgment experiment
 
 After you have looked at section 04 of the tutorial you should know just enough to make sense of a very simple grammaticality judgment experiment. I'd like you to download and run the code I provide, look at how the code works, and then attempt the exercises below, which involve editing the code in simple ways.
