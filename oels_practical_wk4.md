@@ -27,7 +27,7 @@ You need two files for this experiment, which you can download through the follo
 - <a href="code/self_paced_reading/self_paced_reading.html" download> Download self_paced_reading.html</a>
 - <a href="code/self_paced_reading/self_paced_reading.js" download> Download self_paced_reading.js</a>
 
-Again, the code makes some assumptions about the directory structure it's going to live in - regardless of whether you are putting this on your own computer or on the jspsychlearning server, these should sit in a folder called something like `self_paced_reading`, alongside your `grammaticality_judgments` folder from last week and a `jspsych-6` folder containing all the jsPsych code - so your folder will now look something like this.
+Again, the code makes some assumptions about the directory structure it's going to live in - regardless of whether you are putting this on your own computer or on the jspsychlearning server, these should sit in a folder called something like `self_paced_reading`, alongside your `grammaticality_judgments` folder from last week and a `jspsych-6.1.0` folder containing all the jsPsych code - so your folder will now look something like this.
 
 ![suggested directory structure](images/spr_directory_structure.png)
 
