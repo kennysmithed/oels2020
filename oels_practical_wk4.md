@@ -236,7 +236,7 @@ jsPsych.init({
 
 Attempt these problems.
 
-- How would you add extra trials to this code, i.e. additional sentences and related comprehension questions? Replace my silly placeholder sentences with some more appropriate ones, e.g. inspired by the items in Table 2 of Enochsen & Culbertson (2015).
+- How would you add extra trials to this code, i.e. additional sentences and related comprehension questions? Replace my silly placeholder sentences with some more appropriate ones, e.g. inspired by the items in Table 2 of Enochson & Culbertson (2015).
 - Add another demographics question, e.g. a text box to list other languages spoken, or some additional radio buttons with more than 2 options.
 - Have a look at the data that is displayed at the end of the experiment. Can you see where the stimulus for each trial is recorded? Can you see where the crucial reaction time data for each trial is recorded? Can you see how the demographics data is recorded? Can you work out what the "internal_node_id" column is doing (which looks like e.g. "0.0-2.0-0.0-0.0" ... "0.0-2.0-0.0-1.0 ... "0.0-2.0-0.0-2.0")?
 - If you were going to analyse this kind of data, you would need to pull out the relevant trials (i.e. the ones involving self-paced reading, and comprehension questions). Is it going to be easy to do that based on the kind of output the code produces? How would you identify those trials? If you were particularly interested in certain words in certain contexts, is it going to be easy to pull those trials out of the data the code produces?
