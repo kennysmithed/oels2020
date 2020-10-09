@@ -248,13 +248,13 @@ Attempt these problems.
 
 ## References
 
-[Boyce, V., Futrell, R. & Levy, R. P. (2020). Maze Made Easy: Better and easier measurement of incremental processing difficulty.
+[Boyce, V., Futrell, R., & Levy, R. P. (2020). Maze Made Easy: Better and easier measurement of incremental processing difficulty.
 *Journal of Memory and Language, 111,* 104082.](https://doi.org/10.1016/j.jml.2019.104082)
 
 [Enochson, K., & Culbertson, J. (2015). Collecting Psycholinguistic Response Time Data Using Amazon Mechanical Turk.
 *PLoS ONE, 10,* e0116946.](https://doi.org/10.1371/journal.pone.0116946)
 
-[Forster, K. I., Guerrera, C. & Elliot, L. (2009). The maze task: Measuring forced incremental sentence processing time.
+[Forster, K. I., Guerrera, C., & Elliot, L. (2009). The maze task: Measuring forced incremental sentence processing time.
 *Behavior Research Methods, 41,* 163-171.](https://doi.org/10.3758/BRM.41.1.163)
 
 ## Re-use
