@@ -236,11 +236,26 @@ jsPsych.init({
 
 Attempt these problems.
 
-- How would you add extra trials to this code, to ask people to read some additional sentences and answer comprehension questions on them? Try adding a few extra trials.
+- How would you add extra trials to this code, i.e. additional sentences and related comprehension questions? Replace my silly placeholder sentences with some more appropriate ones, e.g. inspired by the items in Table 2 of Enochsen & Culbertson (2015).
 - Add another demographics question, e.g. a text box to list other languages spoken, or some additional radio buttons with more than 2 options.
 - Have a look at the data that is displayed at the end of the experiment. Can you see where the stimulus for each trial is recorded? Can you see where the crucial reaction time data for each trial is recorded? Can you see how the demographics data is recorded? Can you work out what the "internal_node_id" column is doing (which looks like e.g. "0.0-2.0-0.0-0.0" ... "0.0-2.0-0.0-1.0 ... "0.0-2.0-0.0-2.0")?
 - If you were going to analyse this kind of data, you would need to pull out the relevant trials (i.e. the ones involving self-paced reading, and comprehension questions). Is it going to be easy to do that based on the kind of output the code produces? How would you identify those trials? If you were particularly interested in certain words in certain contexts, is it going to be easy to pull those trials out of the data the code produces?
+- [Optional, more challenging] An alternative to self-paced reading is the Maze task (e.g. Forster et al., 2009; Boyce et al., 2020); like self-paced reading your participants work through a sentence word by word, but unlike in self-paced reading at each step they chose one of two continuations for the sentence (see image below from Boyce et al., 2020 - G-Maze refers to mazes where the distractors are English words which would be ungrammatical continuations, L-maze has non-word distractors). Can you convert the self-paced reading code to run a maze task? For each word presentation you will need an alternative continuation, and some way of the participant selecting their continuation (e.g. keyboard? button?). Maze tasks also don't feature comprehension questions so you can drop those (the idea is that selecting the correct continuation throughout shows you are paying attention). Mazes also abort the sentence when the participant makes a mistake - we haven't covered this yet and it is somewhat tricky, but is possible using `on_finish` and  `jsPsych.endCurrentTimeline` (see example in [jsPsych core documentation](https://www.jspsych.org/core_library/jspsych-core/)).
 
+![mazes](images/mazes.jpg)
+
+
+
+## References
+
+[Boyce, V., Futrell, R. & Levy, R. P. (2020). Maze Made Easy: Better and easier measurement of incremental processing difficulty.
+*Journal of Memory and Language, 111,* 104082.](https://doi.org/10.1016/j.jml.2019.104082)
+
+[Enochson, K., & Culbertson, J. (2015). Collecting Psycholinguistic Response Time Data Using Amazon Mechanical Turk.
+*PLoS ONE, 10,* e0116946.](https://doi.org/10.1371/journal.pone.0116946)
+
+[Forster, K. I., Guerrera, C. & Elliot, L. (2009). The maze task: Measuring forced incremental sentence processing time.
+*Behavior Research Methods, 41,* 163-171.](https://doi:10.3758/BRM.41.1.163)
 
 ## Re-use
 
