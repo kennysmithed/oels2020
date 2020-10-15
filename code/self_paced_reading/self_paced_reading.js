@@ -108,7 +108,9 @@ Often you want to collect demographic information from your participants - e.g.
 age, gender, whether they are a native speaker of some language - and also give
 them the opportunity to provide free-text comments (e.g. in case there is a problem
 with your experiment that they have noticed). The survey-html-form plugin provides
-a way to mix various response types on a single form -
+a way to mix various response types on a single form. Note that the age response
+is flagged as required - this prevents participants from going past this trial
+without providing a response.
 */
 
 var demographics_form = {
@@ -118,7 +120,7 @@ var demographics_form = {
             <input type='radio' name='english' value='yes'>yes<br>\
             <input type='radio' name='english' value='no'>no<br></p> \
         <p style='text-align:left'>What is your age? <br> \
-            <input name='age' type='number'></p> \
+            <input required name='age' type='number'></p> \
         <p style='text-align:left'>Any other comments?<br> \
             <textarea name='comments'rows='10' cols='60'></textarea></p>"
 };
