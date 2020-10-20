@@ -22,7 +22,7 @@ Thursday and Friday 10-11 are drop-in labs, you can come along any time in those
 
 ## Assessment
 
-Two pieces, due on 12th November and 17th December, all other details TBC.
+Two pieces, due on 12th November and 17th December, full details in [the assignment brief](AssignmentBrief.pdf).
 
 ## Course Materials
 
