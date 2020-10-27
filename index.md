@@ -64,7 +64,7 @@ You could use the opportunity for catchup or lookahead reading.
 - *Scientific content:* probability matching and regularisation
 - *Technical content:* multiple trial types, images, button responses
 - [Reading](oels_reading_wk6.md)
-- Programming task
+- [Programming task](oels_practical_wk6.md)
 
 ### Week 7 (2nd November): Audio stimuli
 
