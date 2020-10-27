@@ -28,7 +28,7 @@ Again, the code makes some assumptions about the directory structure it's going 
 
 ![suggested directory structure](images/wl_directory_structure.png)
 
-Assuming you have the directory structure all right, this code should run on your local computer (just open the `word_learning.html` file in your browser) or you can upload the whole `word_learning` folder to the public_html folder on the jspsychlearning server and play with it there. Note that the code that saves the data to the server will only work if your code is actually running on the jspsychlearning server - if you are running it on your own computer the data will not save anywhere, although it will still be shown on-screen. This is because your personal computer isn't running anything that can handle POST commands and processing them with PHP, which is what is involved in saving data - those things are all set up on the jspsychlearning server for you.
+Assuming you have the directory structure all right, this code should run on your local computer (just open the `word_learning.html` file in your browser) or you can upload the whole `word_learning` folder to the public_html folder on the jspsychlearning server and play with it there (if your directory structure is as suggested the url for your experiment will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/word_learning/word_learning.html where UUN is your UUN). Note that the code that saves the data to the server will only work if your code is actually running on the jspsychlearning server - if you are running it on your own computer the data will not save anywhere, although it will still be shown on-screen. This is because your personal computer isn't running anything that can handle POST commands and processing them with PHP, which is what is involved in saving data - those things are all set up on the jspsychlearning server for you.
 
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTML and js files in your code editor (e.g. Atom).
 
@@ -335,7 +335,7 @@ jsPsych.init({
 ## Exercises with the word learning experiment code
 
 Attempt these problems.
-- Run the code once times and look at the `wordlearning_data.csv` file to make sure it makes sense to you.
+- Run the code on the server once and look at the `wordlearning_data.csv` file to make sure it makes sense to you.
 - Run the code several times and look at the `wordlearning_data.csv` file - you might have to refresh it on cyberduck to see the latest data. What happens to this data file every time you run the code? If you had multiple participants doing this experiment, what would you *like* to happen, and roughly how would you achieve that?
 - The code here is for the low-load version of the Ferdinand et al. experiment, with 1 object. How would you modify the code to do something with higher load, e.g. 2 or 3 objects, each with 2 labels, with all the observation and production trials fully randomised (i.e. you do all the observation trials, then all the production trials, but all the objects are interspersed randomly within each phase).
 - How would you do a blocked design, with several objects but the observation or production trials organised such that all the trials for one object are together, then all the trials for the next object are together?
