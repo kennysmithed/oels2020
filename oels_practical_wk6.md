@@ -32,9 +32,96 @@ Assuming you have the directory structure all right, this code should run on you
 
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTML and js files in your code editor (e.g. Atom).
 
-### Explanation of the code
+### Nested timelines again
 
-I am writing this now!
+Like in the self-paced reading experiment, individual trials in this word-learning experiment are somewhat complex - they involve a sequence of steps. There are also two trial types in the experiment - observation trials, which are presentations on an object plus a label (I think of these as training trials, so if I say "training" somewhere I mean "observation", but I am trying to be consistent with the terminology we used in the paper), and production trials, where the participant is prompted to select a label for an object (I think of these as test trials).
+
+Each observation trial consists of 2 steps: display the object for 1 second, then display the object plus a label for 2 seconds.
+
+Each production trial consists of three steps: display the object, then display the object plus two labels and have the participant select a label, then have the participant confirm their label choice with a further click (which serves to centre their cursor, to prevent them mashing through the experiment too fast by clicking continually on one side).
+
+
+This should all sound familiar from the self-paced reading experiment, and we are going to handle it in the same way, by using nested timelines - the only difference is that each trial in the nested timeline in the self-paced reading experiment was essentially the same (see a word, press space) whereas here the component trials differ a little more.
+
+### Trial data
+
+You should by now be familiar with the idea that each jsPsych trial has some properties that we can set - the trial `type` (html with keyboard response, image with button response etc), the valid `choices`, the `trial_duration` etc. In the same way, each trial has a `data` property. By default the `data` property is populated automatically by the plugin, and records data relevant to that trial type - for each plugin you'll notice there's a section of the documentation telling you what it records, for instance I can see from [the image-button-response documentation](https://www.jspsych.org/plugins/jspsych-image-button-response/) (which is the plugin that we'll be using in this experiment) that it records reaction time and the index of the button that the participant pressed. But we are also allowed to add stuff to the `data` property, to augment this automatically-generated content.
+
+In this experiment we are going to use this `data` property in two ways. First, we are going to flag trials which actually contain important data. You will have already noticed that jsPsych gathers data on *all* trial types, including things like reaction times and stimulus on the consent screen. Recording everything is a good way to avoid losing anything, but it does make for quite a cluttered data structure at the end of the experiment. For certain critical trials in this experiment, we are going to add some information to the trial data, a `block` property, indicating trials that belong to the experiment phases/blocks that we really care about (what the participant saw on an observation trial, what they selected on a production trial); marking up those trials in that way will make it easy to find the important data at the end of the experiment.
+
+Second, the `data` from one trial sticks around as the experiment runs. We can therefore look at the `data` property of earlier trials when constructing a new trial, which allows us to build sequences of trials where what the participant does at one trial (which button they clicked) affects what they see at the next trial (we look at the `data` from the earlier trial, extract the info we want, then use that to build the new trial).
+
+### Observation trials
+
+OK, let's get started with the code. Remember that each observation trial consists of 2 steps: display the object (an image) for 1 second, then display the object plus a label (some text) for 2 seconds. There are several ways you could do this in jsPsych, most obviously using the `image-keyboard-response` and `image-button-response` plugins - since we will need buttons later, I am going to use the `image-button-response` plugin.
+
+Again, the simplest way to do this would be to construct each sub-part of each trial as a stand-alone thing, and then stick them together into a timeline. For instance, if I want to show `object4` (a shiny cylinder thing) paired with the label 'bup' then the label 'cav' I could do something like this:
+
+```js
+var observation_object4_only = {type:'image-button-response',
+                          stimulus:'images/object4.jpg',
+                          choices:[],
+                          trial_duration:1000}
+var observation_object4_bup = {type:'image-button-response',
+                              stimulus:'images/object4.jpg',
+                              choices:[],
+                              prompt:'bup',
+                              trial_duration:2000}
+var observation_object4_cav = {type:'image-button-response',
+                              stimulus:'images/object4.jpg',
+                              choices:[],
+                              prompt:'cav',
+                              trial_duration:2000}
+
+var simple_observation_timeline = [observation_object4_only,  
+                                    observation_object4_bup,
+                                    observation_object4_only, observation_object4_cav]
+```
+Then if we run that `simple_observation_timeline` we will get the trial sequence we want.
+
+A couple of things to note here. First, my `choices` are set to `[]` (an empty array), which means the participant cannot provide a response (there are no buttons shown on screen)- that's fine, since we just want them to watch a learn. The `stimulus` parameter points to a particular image file, in the `images` folder, which you will see matches the directory structure I am using - keeping your stimuli separate from your code keeps things nice and neat and is essential if you are building an experiment with hundreds or thousands of stimuli. I am using the `prompt` to show the label beneath the object - the Ferdinand paper shows the label *above* the object, but there is no built-in jsPsych plugin that does that, so rather than hacking about with the plugin code I am just showing the label underneath (it surely doesn't matter anyway).
+
+This would work OK, but it has a couple of drawbacks. Firstly, the fact that the `observation_object4_only` trial lacks a prompt means that things will jump about a bit on the screen - the object will move up when the experiment reaches the trials with labels, to make space for the prompt, which is quite unpleasant to look at. This is actually easily fixed by including some *dummy text* as a prompt on those trials - then every trial has a prompt, and so things don't jump around on-screen so much. So we could do that like this, using `'&nbsp;'` which is a special whitespace character in HTML that will give us a blank prompt:
+
+```js
+var observation_object4_only = {type:'image-button-response',
+                              stimulus:'images/object4.jpg',
+                              choices:[],
+                              prompt:'&nbsp;', //dummy text
+                              trial_duration:1000}
+```
+
+The more important problem with this simple approach, like I said in connection with the self-paced reading experiment, is that building this flat timeline is going to be very laborious and redundant for an experiment involving more than a few observation trials, and quite error prone (even writing this little example I forgot to change the `prompt` for the second trial from bup to cav), and there is no easy way to randomise the trial list without hopelessly scrambling everything. So instead I am adopting the same approach as in the self-paced reading experiment: using nested timelines to tie together the sub-parts of a single trial, and wrapping the whole thing in a function that builds a single observation trial for us. The code for that is as follows:
+
+```js
+function make_observation_trial(object,label) {
+  var object_filename = 'images/' + object + '.jpg' //build file name for the object
+  trial = {type:'image-button-response',
+           stimulus:object_filename,
+           choices:[],
+           timeline:[{prompt:'&nbsp;', //dummy text
+                      trial_duration:1000},
+                     {prompt:label,
+                       trial_duration:2000,
+                       data:{block:'observation'}
+                      }]}
+  return trial
+}
+```
+
+So this bit of code creates a function, called `make_observation_trial` - we specify the object and the label and it does the rest for us, returning a complex trial with a nested timeline containing the two sub-parts (object only, then object plus label).
+
+A couple of things to note here:
+- It is going to be annoying to have to specify the full path of the image files every time we use this function, so instead I am just going to specify what object we want (e.g. `'object4'`) and the code works out what the filename will be (it sticks the directory name on the front and the .jpg extension on the end).
+- The trial has a nested timeline - the toplevel specifies the common properties shared by all trials (`type`, `stimulus`, null `choices`), then for each sub-trial in the nested timeline we specify the bits that vary (the first sub-trial has a dummy prompt and a duration of 1000ms, the second has the label as the prompt and a longer duration).
+- For the second sub-trial I have also specified something for the `data` parameter - it says
+
+```js
+data:{block:'observation'}
+```
+
+`{block:'observation'}` is javascript notation for a dictionary, which says basically "create a data structure with labelled entries; one of those entries is called block, and make its contents equal to the string 'observation'". This is the format that jsPsych expects `data` entries to be - dictionaries - and jsPsych will happily add to the starting data we have given it, adding the stimulus, trial duration etc like it always does. But now we have a way of spotting observation trials in the data that jsPsych generates - we just search for data items which have the `block` property set to `'observation'`. This might seem a bit mysterious but it will come in handy later.
+
 
 ## References
 
