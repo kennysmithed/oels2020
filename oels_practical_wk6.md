@@ -332,6 +332,15 @@ jsPsych.init({
 
 `jsPsych.data.get().filter([{block: 'observation'}, {block:'production'}])` uses a built-in jsPsych function, `filter`, to select the trials we want - specifically, that command says "give me only trial data for trials where the `block` property is equal to `'observation'` or `'production'`" (which is the two labels we added). The filter function is documented in [the jsPsych documentation on data manipulation](Aggregating and manipulating jsPsych data), in the section on "Aggregating and manipulating jsPsych data". Then we turn that data collection into a csv formatted-string (using another jsPsych function, `csv()`). Then finally we use the `saveData` function (copied directly from Alisdair's tutorial code) to save that data to the server in a file called  `wordlearning_data.csv` - if you run the code on the server you should see there is a file called `wordlearning_data.csv` in the folder called `server_data`, which is at quite a high level in your directory structure (at the same level as the `public_html` folder, so you might have to jump up a few levels from your code).
 
+## Exercises with the word learning experiment code
+
+Attempt these problems.
+- Run the code once times and look at the `wordlearning_data.csv` file to make sure it makes sense to you.
+- Run the code several times and look at the `wordlearning_data.csv` file - you might have to refresh it on cyberduck to see the latest data. What happens to this data file every time you run the code? If you had multiple participants doing this experiment, what would you *like* to happen, and roughly how would you achieve that?
+- The code here is for the low-load version of the Ferdinand et al. experiment, with 1 object. How would you modify the code to do something with higher load, e.g. 2 or 3 objects, each with 2 labels, with all the observation and production trials fully randomised (i.e. you do all the observation trials, then all the production trials, but all the objects are interspersed randomly within each phase).
+- How would you do a blocked design, with several objects but the observation or production trials organised such that all the trials for one object are together, then all the trials for the next object are together?
+- Can you figure out how to use the `jsPsych.randomization.shuffleNoRepeats` function [documented here](https://www.jspsych.org/core_library/jspsych-randomization/) to do a version where observation and test trials for multiple objects are interspersed, but you never see the same object twice in a row?
+- Ferdinand et al. (2019) also have a *non-linguistic* version of the same experiment, where rather than words labelling objects participants saw coloured marbles being drawn from a bag (there were no fancy animations, it was just a picture of a bag and a marble), then generated some more marble draws themselves. You don't have to implement it, but what sorts of changes would you need to make to the word learning code to implement this non-linguistic version?
 
 ## References
 
