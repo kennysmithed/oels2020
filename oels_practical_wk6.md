@@ -209,7 +209,129 @@ var production_step2 = {type:'image-button-response',
 
 Inside `on_start` we shuffle the two labels (using the same randomisation function as we used earlier to shuffle the observation trials - it will shuffle any list you give it) and then set the `trial.choices` parameter to that shuffled ordering - so by the time the participant actually sees the choices on the screen, `on_start` will have run and the two buttons will appear in either order.
 
-That will work, but we still haven't addressed the trickiest problem - how do we build the 3rd step of a production trial, where the label I select at step 2 is shown to me again? This is a feature of many experimental designs, where you want to make behaviour at later trials depend on the participant response - you might want to provide corrective feedback, repeat trials that they get wrong, or (as in our case) show something that relates to their earlier response.
+That will work, but we still haven't addressed the trickiest problem - how do we build the 3rd step of a production trial, where the label I select at step 2 is shown to me again? This is a pretty common thing to want to do - many experimental designs, where you want to make behaviour at later trials depend on the participant response, for example you might want to provide corrective feedback, repeat trials that a participant gets wrong, or (as in our case) show something that relates to their earlier response.
+
+The way to do this is to store the info you need from one trial in its `data` property, then you can use some built-in jsPsych functions to look back at the earlier trial and read the information you need from the relevant bit of that `data`. We already know that button response trials automatically record the index of the button the participant pressed, in `data.button_pressed` - 0 if they pressed the first button, 1 if they pressed the second, etc. But that actually isn't super-useful, because we are randomising the button positions - we don't know if button 0 is buv or cal in our example, and slightly weirdly, jsPsych doesn't automatically save the `choices` parameter. The solution to this is to add that information to the trial data ourself, and then on the next trial we can dig it out. At the start of the step 2 trial we'll make a note of the order of the randmised labels (in `on_start`) and then end of the step 2 trial, after the participant has made their selection, we'll use `on_finish` plus our knowledge of the order the buttons appeared and the built-in record of which button they pressed to work out which *label* they pressed. Then in step 3 we can just retrieve that information. So our step 2 trial would look like this:
+
+```js
+var production_step2 = {type:'image-button-response',
+                        stimulus:'images/object4.jpg',
+                        choices:[], //dummy choices initially
+                        on_start: function(trial) {
+                          var shuffled_label_choices = jsPsych.randomization.shuffle(['buv','cal'])
+                          trial.choices = shuffled_label_choices
+                          trial.data = {label_choices:shuffled_label_choices}}
+
+                        on_finish: function(data) {
+                             var button_number = data.button_pressed
+                             var label_pressed = data.label_choices[button_number]
+                             data.label_selected = label_pressed}
+                      }
+
+```
+
+The only thing that has changed about `on_start` is that we now add some info to the trial `data` - we create an entry called `label_choices` where we store the shuffled labels that are shown to the participant. Then we an an `on_finish` parameter, which looks up which button the participant pressed (`data.button_pressed` - the plugin does this automatically for us), then combine that with the `data.label_choices` info we saved to work out what label they selected (`data.label_choices[button_number]` will return the 0th label if they clicked button 0, the 1st label if they clicked button 1, etc) and save *that* info in the trial `data` to, as `label_selected`.
+
+Then the final step 3 trial is fairly straightforward - when that trial starts (i.e. using `on_start`) we can use a built-in jsPsych function to retrieve the last trial's `data`, then just read off the `label_pressed` info we saved. That looks like this:
+
+```js
+var production_step3 = {type:'image-button-response',
+                        stimulus:'images/object4.jpg',
+                        choices:[], //dummy choices initially
+                        on_start: function(trial) {
+                          var last_trial_response = jsPsych.data.get().last(1).values()[0]
+                          var last_trial_label = last_trial_response.label_selected
+                          trial.choices=[last_trial_label]
+                          }
+                      }
+```
+
+The only slightly intimidating part of that is the first line where we use `jsPsych.data.get().last(1).values()[0]` - that function returns *all* the data from all trials so far, so we have to dig into it to get the last trial (that's what `last(1)` does - if you wanted to go 5 trials back you could do that with e.g. `last(5)`), then that contains a lot of info we don't need so we dig out what we want using the `values()` function (I have no idea what all the other stuff is to be honest), then that gives us a list of which we take the first item (which is what the `[0]` does), and at last we have our `data` from the last trial. In case you are wondering how I figured all that out: I didn't, it's in the [Advanced Options For Trials section](https://www.jspsych.org/overview/trial/) of the jsPsych overview, I just copied it. Anyway, once we have our last trial data we just retrieve the info we want (which we saved under `label_selected`), then we set the choices for *this* trial to that label and we are done. Phew.
+
+Or nearly done. Of course doing every production trial as a sequence of 3 trials would be a pain, for all the usual reasons, so instead what we are going to do is wrap those three trials up in a function that creates a complex trial with a nested timeline. But all the logic and the details are the same - we give the function the image and the label choices, and it builds us a complex trial. That's what is in the code below. I have made one tiny addition, which is to add some `block` information to the trial data for the crucial click-a-button part of this trial, just like I added `block` information to the observation trials above - this time I note that this is a production trial rather than an observation trial.
+
+```js
+function make_production_trial(object,label_choices) {
+  var object_filename = 'images/' + object + '.jpg'
+  var trial = {type:'image-button-response',
+                         stimulus:object_filename,
+                         timeline: [//subtrial 1: just show the object
+                                    {choices:label_choices, //these buttons are invisible and unclickable!
+                                      button_html:'<button style="visibility: hidden;" class="jspsych-btn">%choice%</button>',
+                                      response_ends_trial:false,
+                                      trial_duration:1000},
+                                    //subtrial 2: show the two labelled buttons and have the participant select
+                                    {choices: [],
+                                      //at the start of the trial, randomise the left-right order of the labels
+                                      //and note that randomisation in data
+                                      on_start: function(trial) {
+                                        var shuffled_label_choices = jsPsych.randomization.shuffle(label_choices)
+                                        trial.choices = shuffled_label_choices
+                                        trial.data = {block:'production',
+                                                      label_choices:shuffled_label_choices}
+                                    },
+
+                                     //at the end, use data.button_pressed to figure out
+                                     //which label they selected, and add that to data
+                                     on_finish: function(data) {
+                                        var button_number = data.button_pressed
+                                        var label_pressed = data.label_choices[button_number]
+                                        data.label_selected = label_pressed}
+                                      },
+                                    //subtrial 3: show the image plus selected label, make the participant click that label
+                                    //(to re-center their mouse)
+                                    {choices:[],
+                                      on_start:function(trial) {
+                                        //get the last trial response (the data generated by the button-click)
+                                        var last_trial_data = jsPsych.data.get().last(1).values()[0]
+                                        //look up the label_selected on that last trial
+                                        var last_trial_label = last_trial_data.label_selected
+                                        trial.choices=[last_trial_label] //this is your only choice
+                                      },
+                                  }]}
+  return trial
+}
+```
+
+That is a fairly hairy-looking bit of code, but hopefully you understand how the three sub-trials fit together. If not, ask in labs! And then at long last we can build our list of production trials using this function - I'll take 5 trials, to test participants 5 times on the label for object 4. Since they are all the same (apart from the trial-by-trial randomisation of the labels) there's no point in shuffling them, but if I wanted to do production tests on several objects I could do that in the same way as I did above for observation trials - build seperate lists for the different objects, then stick them together using `concat` and shuffle the order.
+
+```js
+var production_trial_1 = make_production_trial('object4',['buv','cal'])
+var production_trials = jsPsych.randomization.repeat([production_trial_1], 5)
+```
+
+### Filtering and saving data
+
+The next bit of the code is the usual stuff with placeholders for consent and instructions, so I'll skip over that. The very final few lines of the code then build and run our timeline.
+
+Building the timeline uses `concat`, for the same reasons I gave earlier - we want to combine various lists of trials, rather than a whole bunch of single trials, but we need to make sure they are combined into a single flat list. So the `concat` command looks like this:
+
+```js
+var full_timeline = [].concat(consent_screen,
+                              instruction_screen_observation,
+                              observation_trials,
+                              instruction_screen_production,
+                              production_trials,
+                              final_screen)
+```
+
+Then we run the timeline. As usual, when we finish (so using the `on_finish` option) we are going to display the data on the screen. But we also want to save some of the trial data (the interesting trials - the crucial steps of the observation and test trials) to a csv file on the server. There are three new lines of code to do that.
+
+```js
+jsPsych.init({
+    timeline: full_timeline,
+    on_finish: function(){
+      //use data.get and filter to select the trials we want
+      var relevant_data = jsPsych.data.get().filter([{block: 'observation'}, {block:'production'}])
+      var relevant_data_as_csv = relevant_data.csv() //convert that to a csv file
+      saveData("wordlearning_data.csv", relevant_data_as_csv) //save it
+      jsPsych.data.displayData('csv') //and also dump *all* the data to screen
+    }
+});
+```
+
+`jsPsych.data.get().filter([{block: 'observation'}, {block:'production'}])` uses a built-in jsPsych function, `filter`, to select the trials we want - specifically, that command says "give me only trial data for trials where the `block` property is equal to `'observation'` or `'production'`" (which is the two labels we added). The filter function is documented in [the jsPsych documentation on data manipulation](Aggregating and manipulating jsPsych data), in the section on "Aggregating and manipulating jsPsych data". Then we turn that data collection into a csv formatted-string (using another jsPsych function, `csv()`). Then finally we use the `saveData` function (copied directly from Alisdair's tutorial code) to save that data to the server in a file called  `wordlearning_data.csv` - if you run the code on the server you should see there is a file called `wordlearning_data.csv` in the folder called `server_data`, which is at quite a high level in your directory structure (at the same level as the `public_html` folder, so you might have to jump up a few levels from your code).
+
 
 ## References
 
