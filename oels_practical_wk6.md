@@ -56,28 +56,28 @@ Second, the `data` from one trial sticks around as the experiment runs. We can t
 
 OK, let's get started with the code. Remember that each observation trial consists of 2 steps: display the object (an image) for 1 second, then display the object plus a label (some text) for 2 seconds. There are several ways you could do this in jsPsych, most obviously using the `image-keyboard-response` and `image-button-response` plugins - since we will need buttons later, I am going to use the `image-button-response` plugin.
 
-Again, the simplest way to do this would be to construct each sub-part of each trial as a stand-alone thing, and then stick them together into a timeline. For instance, if I want to show `object4` (a shiny cylinder thing) paired with the label 'bup' then the label 'cav' I could do something like this:
+Again, the simplest way to do this would be to construct each sub-part of each trial as a stand-alone thing, and then stick them together into a timeline. For instance, if I want to show `object4` (a shiny cylinder thing) paired with the label 'buv' then the label 'cal' I could do something like this:
 
 ```js
 var observation_object4_only = {type:'image-button-response',
                                 stimulus:'images/object4.jpg',
                                 choices:[],
                                 trial_duration:1000}
-var observation_object4_bup = {type:'image-button-response',
+var observation_object4_buv = {type:'image-button-response',
                               stimulus:'images/object4.jpg',
                               choices:[],
-                              prompt:'bup',
+                              prompt:'buv',
                               trial_duration:2000}
-var observation_object4_cav = {type:'image-button-response',
+var observation_object4_cal = {type:'image-button-response',
                               stimulus:'images/object4.jpg',
                               choices:[],
-                              prompt:'cav',
+                              prompt:'cal',
                               trial_duration:2000}
 
 var simple_observation_timeline = [observation_object4_only,  
-                                    observation_object4_bup,
+                                    observation_object4_buv,
                                     observation_object4_only,
-                                    observation_object4_cav]
+                                    observation_object4_cal]
 ```
 Then if we run that `simple_observation_timeline` we will get the trial sequence we want.
 
@@ -96,7 +96,7 @@ var observation_object4_only = {type:'image-button-response',
                                 trial_duration:1000}
 ```
 
-The more important problem with this simple approach, like I said in connection with the self-paced reading experiment, is that building this flat timeline is going to be very laborious and redundant for an experiment involving more than a few observation trials, and quite error prone (even writing this little example I forgot to change the `prompt` for the second trial from bup to cav, which might end up being an important mistake in a frequency-learnng experiment), and there is no easy way to randomise the trial list without hopelessly scrambling everything.
+The more important problem with this simple approach, like I said in connection with the self-paced reading experiment, is that building this flat timeline is going to be very laborious and redundant for an experiment involving more than a few observation trials, and quite error prone (even writing this little example I forgot to change the `prompt` for the second trial from buv to cal, which might end up being an important mistake in a frequency-learnng experiment), and there is no easy way to randomise the trial list without hopelessly scrambling everything.
 
 So instead I am adopting the same approach as in the self-paced reading experiment: using nested timelines to tie together the sub-parts of a single trial, and wrapping the whole thing in a function that builds a single observation trial for us in a neat, compartmentalised way. The code for that is as follows:
 
@@ -123,6 +123,93 @@ A couple of things to note here:
 - The trial has a nested timeline - the top level specifies the common properties shared by all trials (`type`, `stimulus`, `choices`), then for each sub-trial in the nested timeline we specify the bits that vary (the first sub-trial has a dummy prompt and a duration of 1000ms, the second has the label as the prompt and a longer duration).
 - For the second sub-trial I have also specified something for the `data` parameter - it says `data:{block:'observation'}`. `{block:'observation'}` is javascript notation for a dictionary, which says basically "create a data structure with labelled entries; one of those entries is called block, and that entry contains the string 'observation'". This is the format that jsPsych expects `data` entries to be - i.e. dictionaries - and jsPsych will happily add to the starting data we have given it, recording the stimulus, trial duration etc like it always does alongside our `block` property. But now we have a way of spotting observation trials in the data at the end of the experiment - we just search for data items which have the `block` property set to `'observation'`. This might seem a bit mysterious at the moment but it will hopefully be clearer later.
 
+Now we can use this function to make some observation trials - in the code I make a 5-trial observation phase, where object4 is paired with two non-word labels, buv and cal. The first step is to make those two trial types with the two different labels, using our new function:
+
+```js
+observation_trial_1 = make_observation_trial('object4','buv')
+observation_trial_2 = make_observation_trial('object4','cal')
+```
+
+Now we are going to need several of these trials in training - let's say I want 3 buvs and 2 cals. I could just do this manually, but it's easier and less error-prone to use the built-in function that jsPsych provides for repeating trials, `jsPsych.randomization.repeat`.
+
+```js
+observation_trials_1_repeated = jsPsych.randomization.repeat([observation_trial_1], 3)
+observation_trials_2_repeated = jsPsych.randomization.repeat([observation_trial_2], 2)
+```
+Note that we give `jsPsych.randomization.repeat` a list of trials (so in our case, just one trial enclosed in square brackets) and tell it how many repetitions we want of those trials.
+
+Finally we then need to stick these together into a flat trial list for our observation phase, then shuffle the order of trials so we don't see all the buvs then all the cals in sequence. First we need to stick our two separate trial lists together. You might thing we could just do this like this:
+
+```js
+observation_trials_oopsie = [observation_trials_1_repeated,observation_trials_2_repeated]
+```
+But that is going to confused jsPsych - it wants the experiment timeline to be a flat array of trials, and here we have actually given it an array consisting of two arrays (`observation_trials_1_repeated` and `observation_trials_2_repeated` are themselves arrays), so it doesn't know what to do with it. Instead we have to use a built-in javascript function, `concat`, to concatenate (stick together) the two arrays into a long flat array:
+
+```
+observation_trials_unshuffled = [].concat(observation_trials_1_repeated,observation_trials_2_repeated)
+```
+
+What that essentially says is "take an empty array (`[]`) and then concatenate to it these two guys, `observation_trials_1_repeated`, and `observation_trials_2_repeated`", which will produce what we want - a nice flat list of our 5 trials.
+
+Finally, we want to randomise the order of our observation trials, so that the buvs and cals are randomly shuffled. Again, randomising trial lists is a very standard thing to do so jsPsych provides a neat way of doing it:
+
+```
+observation_trials = jsPsych.randomization.shuffle(observation_trials_unshuffled)
+```
+
+And that's our observation timeline built. Now we need to build the production trials.
+
+### Production trials
+
+We will use some of the same tricks (a function that creates a trial with a nested timeline, adding a `block` property to the data) in building the production trials. Remember that each production trial consists of three steps: display the object, then display the object plus two labels and have the participant select a label, then have the participant confirm their label choice with a further click in the middle. Steps 1 and 2 are fairly straightforward, except that we want to randomise the order in which the labels appear on each trial. But step 3 is tricky - the label shown at the 3rd step of the trial needs to depend on what button the participant clicks on the 2nd step.
+
+Rather than dumping the final code in here I am going to talk you through it in the same way as for the observation phase, starting out with imagining how you'd do a single production trial as a sequence of three separate trials, then going from that to a single trial with a nested timeline.
+
+Here's what the the first two steps of a production trial would look like - show the object, then show the object plus two labelled buttons. Let's say we want to show object4 with the options buv and cal, to follow on from our observation phase above.
+
+```js
+var production_step1 = {type:'image-button-response',
+                        stimulus:'images/object4.jpg',
+                        choices:[],
+                        trial_duration:1000}
+
+var production_step2 = {type:'image-button-response',
+                        stimulus:'images/object4.jpg',
+                        choices:['buv','cal']}
+```
+
+That is pretty simple - one trial of a fixed duration, then a second trial where you show the two label options and get a response - but there are a couple of problems.
+
+Firstly, things are going to jump around on the screen - the first step doesn't have any choices (i.e. no buttons on screen), the second step does, so the object will move up to make room for the buttons and it'll look horrible. We can actually fix that by changing the first step so the buttons are there but *invisible* and also *unclickable* - that sounds completely mad, but it means that everything looks nice. The way we do that is as follows:
+
+```js
+var production_step1 = {type:'image-button-response',
+                        stimulus:'images/object4.jpg',
+                        choices:['buv','cal'],
+                        button_html:'<button style="visibility: hidden;" class="jspsych-btn">%choice%</button>',
+                        response_ends_trial:false,
+                        trial_duration:1000}
+```
+
+Note that I have changed three things here. I have added the choices in - buv and cal - but I have set `response_ends_trial` to `false`, so even if the participant clicks them nothing will happen. Then to make the buttons invisible as well as unclickable I am using the `button_html` property (which I read about in the plugin documentation) and setting a particular button style (hidden visibility). This is not obvious by the way - it took me half an hour or so of looking at the jsPsych plugin documentation and then googling for how to make html buttons invisible.  
+
+The second problem is that in my step 2 trial, the labels will always appear in the same order - buv on the left, cal on the right. That might be a problem - maybe people will be biased to click on one side, or maybe this will encourage them to always click on the same side and given very self-consistent responses. So we want to randomise the order of the buttons, and we want to do this *independently* for every trial, so that sometimes buv is on the left and sometimes its on the right. Furthermore,
+
+There are a couple of ways you could do this in jsPsych. I am going to do it using the `on_start` property of trials - this allows us to specify some code to run when thr trial starts but before anything is displayed on screen, and importantly the `on_start` stuff can alter the other trial properties. Specifically, for the step 2 trial, initially we'll start off with empty `choices` and then generate a random ordering of the labels in the `on-start`.
+
+```js
+var production_step2 = {type:'image-button-response',
+                        stimulus:'images/object4.jpg',
+                        choices:[], //dummy choices initially
+                        on_start: function(trial) {
+                          var shuffled_label_choices = jsPsych.randomization.shuffle(['buv','cal'])
+                          trial.choices = shuffled_label_choices}
+                      }
+```
+
+Inside `on_start` we shuffle the two labels (using the same randomisation function as we used earlier to shuffle the observation trials - it will shuffle any list you give it) and then set the `trial.choices` parameter to that shuffled ordering - so by the time the participant actually sees the choices on the screen, `on_start` will have run and the two buttons will appear in either order.
+
+That will work, but we still haven't addressed the trickiest problem - how do we build the 3rd step of a production trial, where the label I select at step 2 is shown to me again? This is a feature of many experimental designs, where you want to make behaviour at later trials depend on the participant response - you might want to provide corrective feedback, repeat trials that they get wrong, or (as in our case) show something that relates to their earlier response.
 
 ## References
 
