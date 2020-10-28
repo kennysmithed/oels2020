@@ -223,7 +223,8 @@ var production_step2 = {type:'image-button-response',
                         on_start: function(trial) {
                           var shuffled_label_choices = jsPsych.randomization.shuffle(['buv','cal'])
                           trial.choices = shuffled_label_choices
-                          trial.data = {label_choices:shuffled_label_choices}}
+                          trial.data = {label_choices:shuffled_label_choices}
+                        }
                         on_finish: function(data) {
                              var button_number = data.button_pressed
                              var label_pressed = data.label_choices[button_number]
@@ -232,9 +233,9 @@ var production_step2 = {type:'image-button-response',
 
 ```
 
-The only thing that has changed about `on_start` is that we now add some info to the trial `data` - we create an entry called `label_choices` where we store the shuffled labels that are shown to the participant. Then we an an `on_finish` parameter, which looks up which button the participant pressed (`data.button_pressed` - the plugin does this automatically for us), then combine that with the `data.label_choices` info we saved to work out what label they selected (`data.label_choices[button_number]` will return the 0th label if they clicked button 0, the 1st label if they clicked button 1, etc) and save *that* info in the trial `data` to, as `label_selected`.
+The only thing that has changed about `on_start` is that we now add some info to the trial `data` - we create an entry called `label_choices` where we store the shuffled labels that are shown to the participant. Then we add an `on_finish` parameter, which looks up which button the participant pressed (`data.button_pressed` - the plugin records that automatically for us) and  combines that with the `data.label_choices` info we saved to work out what label they selected (`data.label_choices[button_number]` will return the 0th label if they clicked button 0, the 1st label if they clicked button 1, etc) and save *that* info in the trial `data` too, as `label_selected`.
 
-Then the final step 3 trial is fairly straightforward - when that trial starts (i.e. using `on_start`) we can use a built-in jsPsych function to retrieve the last trial's `data`, then just read off the `label_pressed` info we saved. That looks like this:
+Then the final step 3 trial is fairly straightforward - when that trial starts (i.e. using `on_start` again) we can use a built-in jsPsych function to retrieve the last trial's `data`, then just read off the `label_pressed` info we saved. That looks like this:
 
 ```js
 var production_step3 = {type:'image-button-response',
@@ -248,7 +249,7 @@ var production_step3 = {type:'image-button-response',
                       }
 ```
 
-The only slightly intimidating part of that is the first line where we use `jsPsych.data.get().last(1).values()[0]` - that function returns *all* the data from all trials so far, so we have to dig into it to get the last trial (that's what `last(1)` does - if you wanted to go 5 trials back you could do that with e.g. `last(5)`), then that contains a lot of info we don't need so we dig out what we want using the `values()` function (I have no idea what all the other stuff is to be honest), then that gives us a list of which we take the first item (which is what the `[0]` does), and at last we have our `data` from the last trial. In case you are wondering how I figured all that out: I didn't, it's in the [Advanced Options For Trials section](https://www.jspsych.org/overview/trial/) of the jsPsych overview, I just copied it. Anyway, once we have our last trial data we just retrieve the info we want (which we saved under `label_selected`), then we set the choices for *this* trial to that label and we are done. Phew.
+The only slightly intimidating part of that is the first line where we use `jsPsych.data.get().last(1).values()[0]` to access the last trial. `jsPsych.data.get()` is a jsPsych function that returns *all* the data from all trials so far, so we have to dig into it to get the last trial; that's what `last(1)` does - if you wanted to go 5 trials back you could do that with e.g. `last(5)`. So that gives us the last trial, but that contains *a lot* of info we don't need so we dig out what we want using the `values()` function (I have no idea what all the other stuff saved there is to be honest), then that gives us a list of which we take the first item (which is what the `[0]` does), and at last we have our `data` from the last trial. In case you are wondering how I figured all that out: I didn't, it's in the [Advanced Options For Trials section](https://www.jspsych.org/overview/trial/) of the jsPsych overview, I just copied it. Anyway, once we have our last trial data we just retrieve the info we want (which we saved under `label_selected`), then we set the choices for *this* trial to that label and we are done. Phew.
 
 Or nearly done. Of course doing every production trial as a sequence of 3 trials would be a pain, for all the usual reasons, so instead what we are going to do is wrap those three trials up in a function that creates a complex trial with a nested timeline. But all the logic and the details are the same - we give the function the image and the label choices, and it builds us a complex trial. That's what is in the code below. I have made one tiny addition, which is to add some `block` information to the trial data for the crucial click-a-button part of this trial, just like I added `block` information to the observation trials above - this time I note that this is a production trial rather than an observation trial.
 
@@ -295,7 +296,9 @@ function make_production_trial(object,label_choices) {
 }
 ```
 
-That is a fairly hairy-looking bit of code, but hopefully you understand how the three sub-trials fit together. If not, ask in labs! And then at long last we can build our list of production trials using this function - I'll take 5 trials, to test participants 5 times on the label for object 4. Since they are all the same (apart from the trial-by-trial randomisation of the labels) there's no point in shuffling them, but if I wanted to do production tests on several objects I could do that in the same way as I did above for observation trials - build seperate lists for the different objects, then stick them together using `concat` and shuffle the order.
+That is a fairly hairy-looking bit of code, but hopefully you understand how the three sub-trials fit together. If not, ask in labs!
+
+At long last we can build our list of production trials using this function - I'll take 5 trials, to test participants 5 times on the label for object 4. Since these 5 trials are all the same (apart from the trial-by-trial randomisation of the labels, which happens when the trial actually starts) there's no point in shuffling them, but if I wanted to do production tests on several objects I could do that in the same way as I did above for observation trials - build seperate lists for the different objects, then stick them together using `concat` and shuffle the order.
 
 ```js
 var production_trial_1 = make_production_trial('object4',['buv','cal'])
@@ -332,17 +335,17 @@ jsPsych.init({
 });
 ```
 
-`jsPsych.data.get().filter([{block: 'observation'}, {block:'production'}])` uses a built-in jsPsych function, `filter`, to select the trials we want - specifically, that command says "give me only trial data for trials where the `block` property is equal to `'observation'` or `'production'`" (which is the two labels we added). The filter function is documented in [the jsPsych documentation on data manipulation](Aggregating and manipulating jsPsych data), in the section on "Aggregating and manipulating jsPsych data". Then we turn that data collection into a csv formatted-string (using another jsPsych function, `csv()`). Then finally we use the `saveData` function (copied directly from Alisdair's tutorial code) to save that data to the server in a file called  `wordlearning_data.csv` - if you run the code on the server you should see there is a file called `wordlearning_data.csv` in the folder called `server_data`, which is at quite a high level in your directory structure (at the same level as the `public_html` folder, so you might have to jump up a few levels from your code).
+`jsPsych.data.get().filter([{block: 'observation'}, {block:'production'}])` uses a built-in jsPsych function, `filter`, to select the trials we want - specifically, that command says "give me only trial data for trials where the `block` property is equal to `'observation'` or `'production'`" (which is the two labels we added to allow us to pick out the observation and production trials). The filter function is documented in [the jsPsych documentation on data manipulation](Aggregating and manipulating jsPsych data), in the section on "Aggregating and manipulating jsPsych data". Then we turn that filtered data collection into a csv formatted-string (using another jsPsych function, `csv()`). Then finally we use the `saveData` function (copied directly from section 06 of Alisdair's tutorial code) to save that data to the server in a file called  `wordlearning_data.csv` - if you run the code on the server you should see there is a file called `wordlearning_data.csv` in the folder called `server_data`, which is at quite a high level in your directory structure (you might have to jump up a few levels in the directory structure to find that folder).
 
 ## Exercises with the word learning experiment code
 
 Attempt these problems.
-- Run the code on the server once and look at the `wordlearning_data.csv` file to make sure it makes sense to you.
+- Run the code on the server once and look at the `wordlearning_data.csv` file to make sure it makes sense to you. You can alos compare the data saved in the server with the data dumped in the browser - can you see how the filtering works, and which data format do you prefer?
 - Run the code several times and look at the `wordlearning_data.csv` file - you might have to refresh it on cyberduck to see the latest data. What happens to this data file every time you run the code? If you had multiple participants doing this experiment, what would you *like* to happen, and roughly how would you achieve that?
-- The code here is for the low-load version of the Ferdinand et al. experiment, with 1 object. How would you modify the code to do something with higher load, e.g. 2 or 3 objects, each with 2 labels, with all the observation and production trials fully randomised (i.e. you do all the observation trials, then all the production trials, but all the objects are interspersed randomly within each phase).
+- The code here is for the low-load linguistic version of the Ferdinand et al. (2019) experiment, with 1 object. How would you modify the code to do something with higher load, e.g. 2 or 3 objects, each with 2 labels, with all the observation and production trials fully randomised (i.e. you do all the observation trials, then all the production trials, but all the objects are interspersed randomly within each phase)?
 - How would you do a blocked design, with several objects but the observation or production trials organised such that all the trials for one object are together, then all the trials for the next object are together?
 - Can you figure out how to use the `jsPsych.randomization.shuffleNoRepeats` function [documented here](https://www.jspsych.org/core_library/jspsych-randomization/) to do a version where observation and test trials for multiple objects are interspersed, but you never see the same object twice in a row?
-- Ferdinand et al. (2019) also have a *non-linguistic* version of the same experiment, where rather than words labelling objects participants saw coloured marbles being drawn from a bag (there were no fancy animations, it was just a picture of a bag and a marble), then generated some more marble draws themselves. You don't have to implement it, but what sorts of changes would you need to make to the word learning code to implement this non-linguistic version?
+- Ferdinand et al. (2019) also have a *non-linguistic* version of the same experiment, where rather than words labelling objects participants observed coloured marbles being drawn from a bag (there were no fancy animations, it was just a picture of a marble above a picture of a bag), then produced some more marble draws themselves. You don't have to implement it, but what sorts of changes would you need to make to the word learning code to implement this non-linguistic version?
 
 ## References
 
