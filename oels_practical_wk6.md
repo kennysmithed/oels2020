@@ -142,20 +142,20 @@ Note that we give `jsPsych.randomization.repeat` a list of trials (so in our cas
 Finally we then need to stick these 5 observation trials together into a flat trial list for our observation phase, then shuffle the order of trials so we don't see all the buvs in a row then all the cals in a row. First we need to stick our two separate trial lists together. You might thing we could just do this like this:
 
 ```js
-observation_trials_oopsie = [observation_trials_1_repeated,observation_trials_2_repeated]
+var observation_trials_oopsie = [observation_trials_1_repeated,observation_trials_2_repeated]
 ```
-But that is going to confused jsPsych - it wants the experiment timeline to be a flat array of trials, and here we have actually given it an array consisting of two arrays (`observation_trials_1_repeated` and `observation_trials_2_repeated` are themselves arrays), so it doesn't know what to do with it. Instead we have to use a built-in javascript function, `concat`, to concatenate (stick together) the two arrays into a long flat array:
+But that is going to confuse jsPsych - it wants the experiment timeline to be a flat array of trials, and here we have actually given it an array consisting of two arrays (`observation_trials_1_repeated` and `observation_trials_2_repeated` are themselves arrays), so it doesn't know what to do with it. Instead we have to use a built-in javascript function, `concat`, to concatenate (stick together) the two arrays into a long flat array:
 
-```
-observation_trials_unshuffled = [].concat(observation_trials_1_repeated,observation_trials_2_repeated)
+```js
+var observation_trials_unshuffled = [].concat(observation_trials_1_repeated,observation_trials_2_repeated)
 ```
 
-What that essentially says is "take an empty array (`[]`) and then concatenate to it these two guys, `observation_trials_1_repeated`, and `observation_trials_2_repeated`", which will produce what we want - a nice flat list of our 5 trials.
+What that essentially says is "take an empty array (`[]`) and then concatenate to it these two arrays, `observation_trials_1_repeated`, and `observation_trials_2_repeated`", which will produce what we want - a nice flat list of our 5 trials.
 
 Finally, we want to randomise the order of our observation trials, so that the buvs and cals are randomly shuffled. Again, randomising trial lists is a very standard thing to do so jsPsych provides a neat way of doing it:
 
 ```
-observation_trials = jsPsych.randomization.shuffle(observation_trials_unshuffled)
+var observation_trials = jsPsych.randomization.shuffle(observation_trials_unshuffled)
 ```
 
 And that's our observation timeline built. Now we need to build the production trials.
