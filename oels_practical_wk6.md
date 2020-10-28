@@ -97,7 +97,7 @@ var observation_object4_only = {type:'image-button-response',
 ```
 Note that just including `prompt: " "` doesn't work, the code correctly identifies the fact that the prompt is empty, we have to include some content there.
 
-The more important problem with this simple approach, like I said in connection with the self-paced reading experiment, is that building this flat timeline is going to be very laborious and redundant for an experiment involving more than a few observation trials, and quite error prone (even writing this little example I forgot to change the `prompt` for the second trial from buv to cal, which might end up being an important mistake in a frequency-learnng experiment), and there is no easy way to randomise the trial list without hopelessly scrambling everything.
+The more important problem with this simple approach, like I said in connection with the self-paced reading experiment, is that building this flat timeline is going to be very laborious and redundant for an experiment involving more than a few observation trials, and quite error prone (even just writing out this little example I forgot to change the `prompt` for the second trial from buv to cal, which might end up being an important mistake in a frequency-learning experiment), and there is no easy way to randomise the trial list without hopelessly scrambling everything.
 
 So instead I am adopting the same approach as in the self-paced reading experiment: using nested timelines to tie together the sub-parts of a single trial, and wrapping the whole thing in a function that builds a single observation trial for us in a neat, compartmentalised way. The code for that is as follows:
 
@@ -117,7 +117,7 @@ function make_observation_trial(object,label) {
 }
 ```
 
-So this bit of code creates a function, called `make_observation_trial` - we specify the object and the label and it does the rest for us, returning a complex trial with a nested timeline containing the two sub-parts (object only, then object plus label).
+This bit of code creates a function, called `make_observation_trial`. We specify the object and the label and it does the rest for us, returning a complex trial with a nested timeline containing the two sub-parts (object only, then object plus label).
 
 A couple of things to note here:
 - It is going to be annoying to have to specify the full path of the image files every time we use this function, so instead we just pass in the name of the object we want displayed (e.g. `'object4'`) and the code works out what the filename will be (it sticks the directory name on the front and the .jpg extension on the end).
@@ -137,9 +137,9 @@ Now we are going to need several of these trials in training - let's say I want 
 observation_trials_1_repeated = jsPsych.randomization.repeat([observation_trial_1], 3)
 observation_trials_2_repeated = jsPsych.randomization.repeat([observation_trial_2], 2)
 ```
-Note that we give `jsPsych.randomization.repeat` a list of trials (so in our case, just one trial enclosed in square brackets) and tell it how many repetitions we want of those trials.
+Note that we give `jsPsych.randomization.repeat` a list of trials (so in our case, just one trial enclosed in square brackets) and tell it how many repetitions we want of those trials. [The documentation for that repeat function is here](https://www.jspsych.org/core_library/jspsych-randomization/) if you are curious.
 
-Finally we then need to stick these together into a flat trial list for our observation phase, then shuffle the order of trials so we don't see all the buvs then all the cals in sequence. First we need to stick our two separate trial lists together. You might thing we could just do this like this:
+Finally we then need to stick these 5 observation trials together into a flat trial list for our observation phase, then shuffle the order of trials so we don't see all the buvs in a row then all the cals in a row. First we need to stick our two separate trial lists together. You might thing we could just do this like this:
 
 ```js
 observation_trials_oopsie = [observation_trials_1_repeated,observation_trials_2_repeated]
