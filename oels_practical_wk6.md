@@ -42,7 +42,7 @@ Each production trial consists of three steps: display the object, then display 
 
 (NB. Ferdinand et al. have a 4th stage at the end of each production trial where you then see the object plus the selected label for 2 further seconds - I have not included that in the code here, I don't think it's crucial and I couldn't make it look nice in jsPsych without making everything else much more complicated!).
 
-This should all sound familiar from the self-paced reading experiment, and we are going to handle it in the same way, by using nested timelines - the only difference is that each trial in the nested timeline in the self-paced reading experiment was essentially the same (see a word, press space) whereas here the component trials differ a little more.
+Complex multi-part trials should sound familiar from the self-paced reading experiment, and we are going to handle it in the same way, by using nested timelines - the only difference is that each trial in the nested timeline in the self-paced reading experiment was essentially the same (see a word, press space) whereas here the component trials differ a little more.
 
 ### Trial data
 
@@ -50,13 +50,13 @@ You should by now be familiar with the idea that each jsPsych trial has some pro
 
 In this experiment we are going to use this `data` property in two ways. First, we are going to flag trials which actually contain important data. You will have already noticed that jsPsych gathers data on *all* trial types, including things like reaction times and stimulus on the consent screen. Recording everything is a good way to avoid losing anything, but it does make for quite a cluttered data structure at the end of the experiment. For certain critical trials in this experiment, we are going to add some information to the trial data, a `block` property, indicating trials that belong to the experiment phases/blocks that we really care about (what the participant saw on an observation trial, what they selected on a production trial); marking up those trials in that way will make it easy to find the important data at the end of the experiment.
 
-Second, the `data` from one trial sticks around as the experiment runs. We can therefore look at the `data` property of earlier trials when constructing a new trial, which allows us to build sequences of trials where what the participant does at one trial (which button they clicked) affects what they see at the next trial (we look at the `data` from the earlier trial, extract the info we want, then use that to build the new trial).
+Second, the `data` from one trial sticks around as the rest of the experiment runs. We can therefore look at the `data` property of earlier trials when constructing a new trial, which allows us to build sequences of trials where what the participant does at one trial (e.g. which button they clicked) affects what they see at the next trial: we look at the `data` from the earlier trial, extract the info we want, then use that to build the new trial.
 
 ### Observation trials
 
-OK, let's get started with the code. Remember that each observation trial consists of 2 steps: display the object (an image) for 1 second, then display the object plus a label (some text) for 2 seconds. There are several ways you could do this in jsPsych, most obviously using the `image-keyboard-response` and `image-button-response` plugins - since we will need buttons later, I am going to use the `image-button-response` plugin.
+OK, let's get started with the code. Remember that each observation trial consists of 2 steps: display the object (an image) for 1 second, then display the object plus a label (some text) for 2 seconds. There are several ways you could do this in jsPsych, most obviously using the `image-keyboard-response` or `image-button-response` plugins - since we will need buttons later, I am going to use the `image-button-response` plugin.
 
-Again, the simplest way to do this would be to construct each sub-part of each trial as a stand-alone thing, and then stick them together into a timeline. For instance, if I want to show `object4` (a shiny cylinder thing) paired with the label 'buv' then the label 'cal' I could do something like this:
+Again, the simplest way to do this would be to construct each sub-part of each observation trial as a stand-alone thing, and then stick them together into a timeline. For instance, if I want to show `object4` (a shiny cylinder thing) paired with the label 'buv' then the label 'cal' I could do something like this:
 
 ```js
 var observation_object4_only = {type:'image-button-response',
@@ -64,15 +64,15 @@ var observation_object4_only = {type:'image-button-response',
                                 choices:[],
                                 trial_duration:1000}
 var observation_object4_buv = {type:'image-button-response',
-                              stimulus:'images/object4.jpg',
-                              choices:[],
-                              prompt:'buv',
-                              trial_duration:2000}
+                                stimulus:'images/object4.jpg',
+                                choices:[],
+                                prompt:'buv',
+                                trial_duration:2000}
 var observation_object4_cal = {type:'image-button-response',
-                              stimulus:'images/object4.jpg',
-                              choices:[],
-                              prompt:'cal',
-                              trial_duration:2000}
+                                stimulus:'images/object4.jpg',
+                                choices:[],
+                                prompt:'cal',
+                                trial_duration:2000}
 
 var simple_observation_timeline = [observation_object4_only,  
                                     observation_object4_buv,
@@ -82,11 +82,11 @@ var simple_observation_timeline = [observation_object4_only,
 Then if we run that `simple_observation_timeline` we will get the trial sequence we want.
 
 A couple of things to note here.
-- My `choices` are set to `[]` (an empty array), which means the participant cannot provide a response (there are no buttons shown on screen) - that's fine, since we just want them to watch a learn.
-- The `stimulus` parameter points to a particular image file, in the `images` folder, which you will see matches the directory structure I am using - keeping your stimuli separate from your code keeps things nice and neat and is essential if you are building an experiment with hundreds or thousands of stimuli.
-- I am using the `prompt` to show the label beneath the object - the Ferdinand paper shows the label *above* the object, but there is no built-in jsPsych plugin that does that, so rather than hacking about with the plugin code I am just showing the label underneath (it surely doesn't matter anyway).
+- My `choices` are set to `[]` (an empty array), which means the participant cannot provide a response (there are no buttons shown on screen) - that's fine, since we just want them to watch and learn on these observation trials.
+- The `stimulus` parameter points to a particular image file, in the `images` folder, which you will see matches the directory structure I am using. Keeping your stimuli separate from your code keeps things nice and neat and is essential if you are building an experiment with hundreds or thousands of stimuli.
+- I am using the `prompt` to show the label beneath the object. The Ferdinand paper shows the label *above* the object, but there is no built-in jsPsych plugin that does that, so rather than hacking about with the plugin code I am just showing the label underneath (it surely doesn't matter anyway).
 
-This would work OK, but it has a couple of drawbacks. Firstly, the fact that the `observation_object4_only` trial doesn't have a `prompt` means that things will jump about a bit on the screen - the object will move up when the experiment reaches the trials with labels, to make space for the prompt, which is quite unpleasant to look at. This is actually easily fixed by including some *dummy text* as a prompt on the trials where we don;t want any text in the prompt- then every trial has a prompt, and so things don't jump around on-screen so much. We could do that like this, using `&nbsp;` which is a special whitespace character in HTML that will give us a blank prompt:
+This would work OK, but it has a couple of drawbacks. Firstly, the fact that the `observation_object4_only` trial doesn't have a `prompt` means that things will jump about a bit on the screen - the object will move up when the experiment reaches the trials with labels, to make space for the prompt, then drop down again when we are showing the object with no label, and all that movement is quite unpleasant to look at. This is actually easily fixed by including some *dummy text* as a prompt on the trials where we don't want any text in the prompt - then every trial has a prompt, and so things don't jump around on-screen so much. We could do that like this, using `&nbsp;` which is a special whitespace character in HTML that will give us a blank prompt:
 
 ```js
 var observation_object4_only = {type:'image-button-response',
@@ -95,6 +95,7 @@ var observation_object4_only = {type:'image-button-response',
                                 prompt:'&nbsp;', //dummy text
                                 trial_duration:1000}
 ```
+Note that just including `prompt: " "` doesn't work, the code correctly identifies the fact that the prompt is empty, we have to include some content there.
 
 The more important problem with this simple approach, like I said in connection with the self-paced reading experiment, is that building this flat timeline is going to be very laborious and redundant for an experiment involving more than a few observation trials, and quite error prone (even writing this little example I forgot to change the `prompt` for the second trial from buv to cal, which might end up being an important mistake in a frequency-learnng experiment), and there is no easy way to randomise the trial list without hopelessly scrambling everything.
 
