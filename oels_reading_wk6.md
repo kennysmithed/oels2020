@@ -15,7 +15,7 @@ Read:
 *Cognition, 184,* 53-68.](https://doi.org/10.1016/j.cognition.2018.12.002)
 
 
-As you read this paper and make note of any questions, criticisms or ideas it gives you, and be prepared to discuss these in our reading group session. Once you have read the paper, you also need to work through [this week's practical task](oels_practical_wk4.md).
+As you read this paper and make note of any questions, criticisms or ideas it gives you, and be prepared to discuss these in our reading group session. Once you have read the paper, you also need to work through [this week's practical task](oels_practical_wk6.md).
 
 A couple of things to note as you work through the paper:
 - Section 2 very carefully explains why we use *entropy drop* to measure regularization. It's worth taking a look and I think it helpfully demystifies entropy, but if you are find it heavy going you can work with the following summary. Entropy measures variability, high entropy means highly variable, 0 entropy means 0 variability. Entropy change compares the entropy of a participants' training (i.e. the variability of what they were *supposed* to learn) with the entropy of their productions (i.e. the variability of their attempted reproduction). If someone's productions are more variable than their training data the entropy change will be positive; if someone's productions are less variable than their training then the entropy change will be negative; since regularization involves a loss of variation, we therefore expect more regularization to show up as a negative change in entropy, and bigger negative change means more regularization.
