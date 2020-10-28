@@ -152,9 +152,9 @@ var observation_trials_unshuffled = [].concat(observation_trials_1_repeated,obse
 
 What that essentially says is "take an empty array (`[]`) and then concatenate to it these two arrays, `observation_trials_1_repeated`, and `observation_trials_2_repeated`", which will produce what we want - a nice flat list of our 5 trials.
 
-Finally, we want to randomise the order of our observation trials, so that the buvs and cals are randomly shuffled. Again, randomising trial lists is a very standard thing to do so jsPsych provides a neat way of doing it:
+Finally, we want to randomise the order of our observation trials, so that the buvs and cals are randomly shuffled. Again, randomising trial lists is a very standard thing to do so jsPsych provides a neat way of doing it (documented in the same place as the `repeat` function, link above):
 
-```
+```js
 var observation_trials = jsPsych.randomization.shuffle(observation_trials_unshuffled)
 ```
 
