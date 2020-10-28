@@ -1,6 +1,6 @@
 ---
 title: Week 7 reading
-description: Audio stimuli
+description: Speech perception, social influences on phonetic adaptation
 ---
 
 ## The plan for week 7

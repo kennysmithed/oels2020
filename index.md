@@ -62,7 +62,7 @@ You could use the opportunity for catchup or lookahead reading.
 ### Week 6 (26th October): Word learning / frequency learning
 
 - *Scientific content:* probability matching and regularisation
-- *Technical content:* multiple trial types, images, button responses
+- *Technical content:* using trial data for contingent trials, filtering and saving data
 - [Reading](oels_reading_wk6.md)
 - [Programming task](oels_practical_wk6.md)
 
