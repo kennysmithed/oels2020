@@ -16,7 +16,7 @@ Just as a footnote: I actually edited this paper for PLoS ONE, which means it wa
 
 As you read this paper and make note of any questions, criticisms or ideas it gives you, and be prepared to discuss these in our reading group session. Once you have read the paper, you also need to work through [this week's practical task](oels_practical_wk7.md).
 
-A couple of things to note as you work through the paper (basically trying to clarify something that takes me a few minutes to figure out every time I read this paper!):
+A couple of things to note as you work through the paper (basically trying to clarify things that takes me a few minutes to figure out every time I read this paper!):
 - The experiment consists of three stages:
   - A questionnaire on social networks.
   - A block of picture selection trials, where in each trial participants hear a description (e.g. "the fresh dill", "the orange telephone") and click on one of two images (e.g. pictures of fresh or dry dill, pictures of an orange or black telephone). The purpose of this block is to expose participants to exemplars of /d/ and /t/ being produced by a (female) speaker; in the manipulated-/d/ condition participants encounter instances of /d/ (e.g. in "dill") which have 24ms VOT, which is an unusually long VOT for a /d/ (i.e. they somewhat /t/-like), conversely in the manipulated-/t/ condition participants encounter the 24ms VOT segment as a /t/ (e.g. in "the orange telephone), which is an unusually short VOT for a /t/ (i.e. it is somewhat /d/-like).
