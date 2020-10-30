@@ -340,7 +340,7 @@ jsPsych.init({
 ## Exercises with the word learning experiment code
 
 Attempt these problems.
-- Run the code on the server once and look at the `wordlearning_data.csv` file to make sure it makes sense to you. You can alos compare the data saved in the server with the data dumped in the browser - can you see how the filtering works, and which data format do you prefer?
+- Run the code on the server once and look at the `wordlearning_data.csv` file to make sure it makes sense to you. You can also compare the data saved in the server with the data dumped in the browser - can you see how the filtering works, and which data format do you prefer?
 - Run the code several times and look at the `wordlearning_data.csv` file - you might have to refresh it on cyberduck to see the latest data. What happens to this data file every time you run the code? If you had multiple participants doing this experiment, what would you *like* to happen, and roughly how would you achieve that?
 - The code here is for the low-load linguistic version of the Ferdinand et al. (2019) experiment, with 1 object. How would you modify the code to do something with higher load, e.g. 2 or 3 objects, each with 2 labels, with all the observation and production trials fully randomised (i.e. you do all the observation trials, then all the production trials, but all the objects are interspersed randomly within each phase)?
 - How would you do a blocked design, with several objects but the observation or production trials organised such that all the trials for one object are together, then all the trials for the next object are together?
