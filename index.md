@@ -69,9 +69,9 @@ You could use the opportunity for catchup or lookahead reading.
 ### Week 7 (2nd November): Audio stimuli
 
 - *Scientific content:* speech perception, social influences on phonetic adaptation
-- *Technical content:* audio stimuli
+- *Technical content:* Audio, trial data again, saving data trial by trial
 - [Reading](oels_reading_wk7.md)
-- Programming task
+- [Programming task](oels_practical_wk7.md)
 
 ### Week 8 (9th November): Confederate priming
 
