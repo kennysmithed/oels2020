@@ -176,7 +176,7 @@ function make_image_selection_stimulus(sound,manipulated,target_image,foil_image
 }
 ```
 
-`sound` is the name of the sound file (minus all the path info etc - the code will add that for me), `manipulated` is either `true` (use the 24ms VOT version) or `false` (use the normal version), and `target_image` and `foil_image` are the names of the target and foil picture (again, minus any path info). The function doesn't do anything fancy, and mainly just bundles this information we pass in into the correct format and returns that - however, it builds the full sound file name for us, and based on the value of `manipulated` it will either include "_man" at the end of the file name or not (rememeber, files with "_man" on the end are the manipulated audio versions).
+`sound` is the name of the sound file (minus all the path info etc - the code will add that for me), `manipulated` is either `true` (use the 24ms VOT version) or `false` (use the normal version), and `target_image` and `foil_image` are the names of the target and foil picture (again, minus any path info). The function doesn't do anything fancy, and mainly just bundles this information we pass in into the correct format and returns that - however, it builds the full sound file name for us, and based on the value of `manipulated` it will either include "_man" at the end of the file name or not (remember, files with "_man" on the end are the manipulated audio versions).
 
 
 Here is how I use it to build my `selection_stim_list`:
@@ -216,9 +216,36 @@ This is the same trial structure as before (i.e the nested timeline, the `button
 
 That's it for the picture selection phase of this experiment, which is the most complex part.
 
-### Phoneme categorization_trials
+### Phoneme categorization trials
 
-In preparation!
+This will be relatively simple. Remember that in each phoneme categorization trial the participant hears a voice (either the same speaker as in the picture selection phase or a new [male] speaker) and indicates by button press if that word is "dean" or "teen" (i.e. whether it started with a /d/ or a /t/); we can do all this using the `audio-button-response` plugin. We can use essentially exactly the same approach as above, except that we always present the same two choices on each trial (dean vs teen). Here's the code:
+
+```js
+var categorization_stim_list = [{stimulus:'phoneme_categorization_sounds/samespeaker_VOT5.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT25.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT80.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/newspeaker_VOT5.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/newspeaker_VOT25.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/newspeaker_VOT80.mp3'}
+                              ]
+
+var categorization_trials = {type:'audio-button-response',
+                              choices:['dean','teen'],
+                              post_trial_gap: 500,
+                              timeline:jsPsych.randomization.shuffle(categorization_stim_list),
+                              on_start: function(trial) {
+                                  trial.data = {button_choices:trial.choices}
+                              },
+                              on_finish: function(data) {
+                                var button_number = data.button_pressed
+                                data.button_selected = data.button_choices[button_number]
+                                savePerceptualLearningDataLine(data)
+                              }}
+
+```
+
+A few things to note:
+
 
 
 ## Exercises with the word learning experiment code
