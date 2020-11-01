@@ -37,7 +37,7 @@ The experiment consists of three stages:
 
 ### Social network questionnaire
 
-[The full set of questions is available in the paper supporting information](https://doi.org/10.1371/journal.pone.0183593.s005). As you can see, there are various text-box questions which are easy enough to implement in jsPsych using the `survey-html-form` plugin (look again at the end of [the week 4 practical](oels_practical_wk4.md)). In the code I have only implemented the first three questions, which all require numeric answers:
+[The full set of questions is available in the supporting information of Lev-Ari (2017)](https://doi.org/10.1371/journal.pone.0183593.s005). As you can see, there are various text-box questions which are easy enough to implement in jsPsych using the `survey-html-form` plugin (look again at the end of [the week 4 practical](oels_practical_wk4.md)). In the code I have only implemented the first three questions, which all require numeric answers:
 
 ```js
 var social_network_questionnaire = {
@@ -56,10 +56,10 @@ var social_network_questionnaire = {
              <input required name='age' type='number'></p> \
         <p style='text-align:left'>With how many people do you converse orally \
         in a typical week? (Please only include people with whom you regularly \
-          talk for longer than 5 minutes)<br> \
+        talk for longer than 5 minutes)<br> \
              <input required name='n_speak_to' type='number'></p> \
-          <p style='text-align:left'>How many hours do you usually spend on \
-          conversing orally with people in a typical week?<br>\
+        <p style='text-align:left'>How many hours do you usually spend on \
+        conversing orally with people in a typical week?<br>\
              <input required name='hours_speak_to' type='number'></p>"
 };
 
@@ -67,9 +67,9 @@ var social_network_questionnaire = {
 
 ### Picture selection trials
 
-Remember that on each picture selection task the participant hears a description ("the fresh dill" etc) and the clicks on one of two images. We can do this fairly straightforwardly using the `audio-button-response` plugin ([here is the documentation](https://www.jspsych.org/plugins/jspsych-audio-button-response/)): we specify a `stimulus` which is the audio file we want to play, and then we can make the buttons be images rather than text; you have seen buttons several times already, but never with images, so that involves something a bit new.
+Remember that on each picture selection trial the participant hears a description ("the fresh dill" etc) and the clicks on one of two images. We can do this fairly straightforwardly using the `audio-button-response` plugin ([here is the documentation](https://www.jspsych.org/plugins/jspsych-audio-button-response/)): we specify a `stimulus` which is the audio file we want to play, and then we can make the buttons be images rather than text; you have seen buttons several times already, but never with images, so that involves something a bit new.
 
-You will notice that the directory for this experiment contains two folders: `picture_selection_sounds` and `picture_selection_images`. That contains all the sound files and images we should need. My example code just uses a few of these, but you can look at <a href="code/perceptual_stims.csv" download> the full list of stimuli</a> to see how these all fit together. The important things at this point are:
+You will notice that the directory for this experiment contains folders called `picture_selection_sounds` and `picture_selection_images`. Those contains all the sound files and images we should need. My example code just uses a few of these, but you can look at <a href="code/perceptual_stims.csv"> the full list of stimuli</a> to see the full list of what images and sounds are available and how they fit together. The important things at this point are:
 - For the critical trials (i.e. not filler trials), there are two versions of each sound file, called e.g. `fresh_dill.mp3` and `fresh_dill_man.mp3` - the `man` on the end signifies that this is a manipulated sound file, in this case with the initial sound in "dill" replaced with the ambiguous 24ms VOT segment (it's worth listening to the two files to see how subtle the difference is). So we can control whether the participant hears a manipulated sound or a normal sound just by changing the name of the sound file we play.
 - The image files come in pairs (e.g. `fresh_dill.jpg` is paired with `dry_dill.jpg`), and the 'correct' image should have the same name as its sound file (i.e. `fresh_dill.mp3` goes with `fresh_dill.jpg`).
 
