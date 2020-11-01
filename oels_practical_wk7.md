@@ -70,12 +70,12 @@ var social_network_questionnaire = {
 Remember that on each picture selection trial the participant hears a description ("the fresh dill" etc) and the clicks on one of two images. We can do this fairly straightforwardly using the `audio-button-response` plugin ([here is the documentation](https://www.jspsych.org/plugins/jspsych-audio-button-response/)): we specify a `stimulus` which is the audio file we want to play, and then we can make the buttons be images rather than text; you have seen buttons several times already, but never with images, so that involves something a bit new.
 
 You will notice that the directory for this experiment contains folders called `picture_selection_sounds` and `picture_selection_images`. Those contains all the sound files and images we should need. My example code just uses a few of these, but you can look at <a href="code/perceptual_stims.csv"> the full list of stimuli</a> to see the full list of what images and sounds are available and how they fit together. The important things at this point are:
-- For the critical trials (i.e. not filler trials), there are two versions of each sound file, called e.g. `fresh_dill.mp3` and `fresh_dill_man.mp3` - the `man` on the end signifies that this is a manipulated sound file, in this case with the initial sound in "dill" replaced with the ambiguous 24ms VOT segment (it's worth listening to the two files to see how subtle the difference is). So we can control whether the participant hears a manipulated sound or a normal sound just by changing the name of the sound file we play.
+- For the critical trials (i.e. not filler trials), there are two versions of each sound file, called e.g. `fresh_dill.mp3` and `fresh_dill_man.mp3` - the `man` on the end signifies that this is a manipulated sound file, in this case with the initial sound in "dill" replaced with the ambiguous 24ms VOT segment (it's worth listening to the two files to see how subtle the difference is). We can control whether the participant hears a manipulated sound or a normal sound just by changing the name of the sound file we play.
 - The image files come in pairs (e.g. `fresh_dill.jpg` is paired with `dry_dill.jpg`), and the 'correct' image should have the same name as its sound file (i.e. `fresh_dill.mp3` goes with `fresh_dill.jpg`).
 
-So what we want to do on each picture selection trial is play the sound file and show two buttons with the pair of images. We'll start off doing this without images and with text instead, and gradually build up to the implementation that's in the code.
+So what we want to do on each picture selection trial is play the sound file and show two buttons with the pair of images. We'll start off doing this without images and with text buttons instead, and gradually build up to the implementation that's in the code.
 
-Forgetting about images for a moment, we could build a simple seelction task like this:
+Forgetting about images for a moment, we could build a simple selection task like this:
 
 ```js
 var dill_trial = {type:'audio-button-response',
@@ -84,7 +84,7 @@ var dill_trial = {type:'audio-button-response',
                 }
 ```
 
-That would play the sound file `picture_selection_sounds/fresh_dill.mp3` (note that we have to tell the code that this sound file can be found in the folder `picture_selection_sounds`), and give the participant two text-button options, "fresh_dill" and "dry_dill" (so no images yet). The order of those choices is fixed though - the target is on the left - and unless we want to manually randomise when constructing our trial list it might be wise to borrow some of the tricks from the word learning experiment and randomise the order of the buttons on every trial. As usual, the jsPsych plugin won;t record this for us, so we will have to use the `data` object again to keep track of what order the buttons are in and which one the participant clicked on. We can just borrow the code from the word learning experiment to do this:
+That would play the sound file `picture_selection_sounds/fresh_dill.mp3` (note that we have to tell the code that this sound file can be found in the folder `picture_selection_sounds`), and give the participant two text-button options, "fresh_dill" and "dry_dill" (so no images yet). The order of those choices is fixed though - the target is on the left - and unless we want to manually randomise when constructing our trial list it might be wise to borrow some of the tricks from the word learning experiment and randomise the order of the buttons on every trial. As usual, the jsPsych plugin won't record this for us, so we will have to use the `data` object again to keep track of what order the buttons are in and which one the participant clicked on. We can just borrow the code from the word learning experiment to do this:
 
 ```js
 var dill_trial = {type:'audio-button-response',
@@ -105,9 +105,9 @@ var dill_trial = {type:'audio-button-response',
                 }
 ```
 
-So we initially specify the default ordering of the choices as `["fresh_dill","dry_dill"]`, then in `on_start` we randomise that order, set `choices` to the new randomised order and then make a note in `data` of that randomised order, under the heading `button_choices`. Then in `on_finish` (i.e. after the participant has pressed a button) we use the `button_pressed` information recorded automatically to work out which choice the participant selected, and store that in `data` as `button_selected`. By this point `button_` is getting quite overloaded - there's `button_pressed` which is the button index recorded by the plugin, `button_choices` which is out list of choices, and `button_selected` which is the choice corresponding to the button index the participant clicked. If you find that confusing you could call `button_choices` and/or `button_selected` something different - those names are somewhat arbitrary, I could have gone with a different name.
+So we initially specify the default ordering of the choices as `["fresh_dill","dry_dill"]`, then in `on_start` we randomise that order, set `choices` to the new randomised order and then make a note in `data` of that randomised order, under the heading `button_choices`. Then in `on_finish` (i.e. after the participant has pressed a button) we use the `button_pressed` information recorded automatically to work out which choice the participant selected, and store that in `data` as `button_selected`. By this point `button_` is getting quite overloaded - there's `button_pressed` which is the button index recorded by the plugin, `button_choices` which is our list of choices, and `button_selected` which is the choice corresponding to the button index the participant clicked. If you find that confusing you could call `button_choices` and/or `button_selected` something different - those names are somewhat arbitrary, I could have gone with a different name.
 
-At this point we are getting close to what we want - play a sound file, click on a button, with the button position randomised - but f course our buttons just have the text "fresh_dill" and "dry_dill" in them, and actually we want the images from the corresponding image files. One way to do that is to replace our simple text button choices with `<img ...>` tags, which tell the browser to show an image rather than some text. For instance, this would work:
+At this point we are getting close to what we want - play a sound file, click on a button, with the button position randomised - but of course our buttons just have the text "fresh_dill" and "dry_dill" in them, and actually we want the images from the corresponding image files. One way to do that is to replace our simple text button choices with `<img ...>` tags, which tell the browser to show an image rather than some text. For instance, this would work:
 
 ```js
 var dill_trial = {type:'audio-button-response',
@@ -117,7 +117,7 @@ var dill_trial = {type:'audio-button-response',
                           ...
                         }
 ```
-(with ... meaning everything else the same as the earlier example). We use the `img` tag to make the broswer include an image, and then use `src` to tell it where to get the image from (note that we include the directory name, `picture_selection_images`, and the image type, `.jpg`). We also tell it how big we want the image to be - in this case, telling it to display the image at 250 pixels width. Then everything else will work as before, the two buttons will be shuffled, and we'll end up with clickable image buttons. The only downside is that this is quite redundant - for *both* buttons we specify exactly the same information about the file path, the width etc, which seems kind of inefficient and potentially error prone. Also, all that button formatting stuff will be saved in `data` and eventually added to our experiment data, which is a bit messy and will make it hard to look at.
+(with ... meaning everything else the same as the earlier example). We use the `img` tag to make the broswer include an image, and then use `src` to tell it where to get the image from (note that we include the directory name, `picture_selection_images`, and the image type, `.jpg`). We also tell it how big we want the image to be - in this case, telling it to display the image at 250 pixels width. Then everything else will work as before, the two buttons will be shuffled, and we'll end up with clickable image buttons. The only downside is that this is quite redundant - for *both* buttons we specify exactly the same information about the file path, the width etc, which seems kind of inefficient and potentially error prone. Also, all that button formatting stuff will be saved in `data` and eventually added to our experiment data, which is a bit messy and will make our data hard to look at.
 
 There is actually a way around this, which is to use the `button_html` parameter of the plugin, which allows us to specify how all the buttons should be shown. I used this briefly in the word learning experiment for the invisible buttons, but we can use it here too to specify that the `choices` should be used as part of the name for image files when building the buttons. Integrating this into the code (with ... meaning everything else the same as the earlier example):
 
@@ -187,7 +187,7 @@ var selection_stim_list = [make_image_selection_stimulus("fresh_dill",true,"fres
                            make_image_selection_stimulus("animal_ear",false,"animal_ear","animal_nose")]
 ```
 
-Now I feel much happier about my procedure for building my picture selection trial list. It's nice and clear to me what the sound and images are going to be. And it's nice and clear if it's a manipulated-audio trial or not - in this case I have manipulated audio for the /d/ trial but not for the /t/ trial and not for the filler trials (NB: there *are not manipulated audio files for the fillers*, so if you try that it will complain that it can't find those files).
+Now I feel much happier about my procedure for building my picture selection trial list. It's nice and clear to me what the sound and images are going to be. And it's nice and clear if it's a manipulated-audio trial or not - in this case I have manipulated audio for the /d/ trial but not for the /t/ trial and not for the filler trials (NB: there *are no manipulated audio files for the fillers*, so if you try that it will complain that it can't find those files).
 
 Then I can plug that `selection_stim_list` into my picture selection trial as a nested timeline. I am also going to add 3 things to my picture selection trials, which I will explain once I show you the code.
 
@@ -195,7 +195,7 @@ Then I can plug that `selection_stim_list` into my picture selection trial as a 
 var selection_trials = {type:'audio-button-response',
                         timeline: jsPsych.randomization.shuffle(selection_stim_list), //shuffle
                         button_html: '<button class="jspsych-btn"> <img src="picture_selection_images/%choice%.jpg" width=250px></button>',
-                        post_trial_gap: 500, //a little space between trials
+                        post_trial_gap: 500, //a little pause between trials
                         on_start: function(trial) {
                             var shuffled_label_choices = jsPsych.randomization.shuffle(trial.choices)
                             trial.choices = shuffled_label_choices
@@ -212,7 +212,7 @@ var selection_trials = {type:'audio-button-response',
 This is the same trial structure as before (i.e the nested timeline, the `button_html`, the `on_start` and `on_end` functions), but with 3 additions:
 - I am using `jsPsych.randomization.shuffle` to shuffle the nested timeline - so my picture selection trials will play in random order.
 - I have added a `post_trial_gap` of 500ms - this inserts a little 500ms-long blank space after each picture selection trials. I always worry about people just mashing the buttons through these experiments, or accidentally clicking through multiple trials at once - inserting a little pause makes this less likely, plus makes the whole experience a little less frenetic.
-- In the `on_finish`, as well as the usual stuff, I am calling a functio called `savePerceptualLearningDataLine` - you haven't seen this function yet, it is defined below, but it is going to save the data for us after every trial. As I mentioned last week, this is a tiny bit more complicated than saving all the data at once at the end, but it's really worth the effort - in online experiments people often suffer technical problems mid-way (or claim to!) and saving the data trial-by-trial means you can actually see how far they got and pay them accordingly. If you just save the data at the end then if someone tells you they were doing the experiment and had a technical problem you have no way of verifying that, plus you lose all their data.
+- In the `on_finish`, as well as the usual stuff, I am calling a function called `savePerceptualLearningDataLine` - you haven't seen this function yet, it is defined below, but it is going to save the data for us after every trial. As I mentioned last week, this is a tiny bit more complicated than saving all the data at once at the end of the experiment, but it's really worth the effort - in online experiments people often suffer technical problems mid-way (or claim to!) and saving the data trial-by-trial means you can actually see how far they got and pay them accordingly. If you just save the data at the end then if someone tells you they were doing the experiment and had a technical problem you have no way of verifying that, plus you lose all their data.
 
 That's it for the picture selection phase of this experiment, which is the most complex part.
 
@@ -246,8 +246,8 @@ var categorization_trials = {type:'audio-button-response',
 ```
 
 A few things to note:
-- `categorization_stim_list` is our list of audio stimuli that we will use - I have set it up here as the same speaker condition, playing all the available `samespeaker` audio files. I have to specify the path to these audio files, which are in the `phoneme_categorization_sounds` directory - I could have written a little wrapper function like I did in the picture selection test to add the path info, but here I don't find the redundancy to bad.
-- We then use `categorization_stim_list` as the nested timeline in `categorization_trials`, with randomised order. Everything else about `categorization_trials` is the same as the code we used above to create `selection_trials` except that the `choices` are always the same, and I am *not* left-right randomising the order of the choices.
+- `categorization_stim_list` is our list of audio stimuli that we will use - I have set it up here as the same speaker condition, playing all the available `samespeaker` audio files. I have to specify the path to these audio files, which are in the `phoneme_categorization_sounds` directory - I could have written a little wrapper function like I did in the picture selection test to add the path info, but here I don't find the redundancy too bad.
+- We then use `categorization_stim_list` as the nested timeline in `categorization_trials`, with randomised order. Everything else about `categorization_trials` is the same as the code we used above to create the picture selection trials, except that the `choices` are always the same, and I am *not* left-right randomising the order of the buttons.
 - As with the picture selection trials, `on_finish` we are using the `savePerceptualLearningDataLine(data)` to record the trial data - I'll talk you through that function below.
 
 ### Saving data trial by trial
@@ -278,7 +278,7 @@ That just uses the `saveData` function to write a string to the file, where that
 
 ### A note on preloading images
 
-You might notice that when you run through the experiment the images in the buttons take a moment to load at the start of each trial. jsPsych is set up to *preload* as much stuff as it can - on `audio-button-response` trials it preloads the audio specified in the `stimulus` parameter, on `image-button-response` trials it preloads the image specified in the `stimulus`. But it doesn't automatically preload our button images, because they don't appear in a place it automatically knows to preload. It is actually possible to tell jsPsych to preload extra stimuli, which you can do in `jsPsych.init` like this (see [the jsPsych documentation](https://www.jspsych.org/core_library/jspsych-core/#jspsychinit) for other stuff you can do at initialisation). The way to do this would be to build a list of images that you use in the buttons, then preload those, e.g. like this:
+You might notice that when you run through the experiment the images in the buttons take a moment to load at the start of each trial. jsPsych is set up to *preload* as much stuff as it can - on `audio-button-response` trials it preloads the audio specified in the `stimulus` parameter, on `image-button-response` trials it preloads the image `stimulus`. But it doesn't automatically preload our button images, because they don't appear in a place it expects to have to preload. It is actually possible to tell jsPsych to preload extra stimuli, which you can do in `jsPsych.init` (see [the jsPsych documentation](https://www.jspsych.org/core_library/jspsych-core/#jspsychinit) for other stuff you can do at initialisation). The way to do this would be to build a list of images that you use in the buttons, then preload those, e.g. like this:
 
 ```js
 var all_button_images = ["picture_selection_images/fresh_dill.jpg",
@@ -291,7 +291,7 @@ var all_button_images = ["picture_selection_images/fresh_dill.jpg",
                           "picture_selection_images/animal_nose.jpg"]
 
 jsPsych.init({
-    preload_images:all_button_images,
+    preload_images: all_button_images,
     timeline: full_timeline,
     on_finish: function(){
       jsPsych.data.displayData('csv') //and also dump *all* the data to screen
@@ -299,18 +299,19 @@ jsPsych.init({
 });
 ```
 
-That is a little bit unsatisfactory because we are manually building the list of images to preload. We could extract this automatically from `selection_stim_list`, e.g. using a for-loop to work through `selection_stim_list` and extract the image names from `choices` and add them to a preload list, but this code is already long enough for one week!
+That is a little bit unsatisfactory because we are manually building the list of images to preload. We could extract this automatically from `selection_stim_list`, e.g. using a for-loop to work through `selection_stim_list` and extract the image names from `choices` and add them to a preload list, but this code is already long enough for one week so I will leave that as an optional exercise for the keen!
 
 ## Exercises with the word learning experiment code
 
 Attempt these problems.
 - Run the code once and look at the `perceptuallearning_data.csv` file to make sure it makes sense to you. You can also compare the data saved in the server with the data dumped in the browser. Run the code again and see what happens to that file, and think about how you might get around that problem.
-- Check you can add a few more picture selection trials with other images and sound files (you might need to consult the <a href="code/perceptual_stims.csv" download> the full list of stimuli</a>).
+- Check you can add a few more picture selection trials with other images and sound files (you might need to consult the <a href="code/perceptual_stims.csv"> the full list of stimuli</a>).
 - There are 4 conditions in the experiment - all combinations manipulated /d/ or manipulated /t/, same speaker or new speaker in the categorisation test. How would you build stimulus lists for these different conditions, i.e. what would you need to change in the code to change the condition a participant experienced? You don't have to do anything fancy here - ideally we'd like to have the code assign participants to a random condition every time the experiment starts, and we'll cover that soon, but at this point just figure out what bits of the stimulus list you need to manually edit to flip from one condition to another.
 - How would you modify this code so that the phoneme categorisation trials are all repeated several times? Note that there is a manual way to do this and a fast way, using some built-in jsPsych functions for repeating things.
 - The code doesn't currently save the social network questionnaire data. Can you add a new function, saveQuestionnaireData, which runs at the end of the questionnaire trial and saves that data to a file on the server?
 - At the moment the dean-teen buttons always appear in the same order. Can you randomise their left-right position and still keep track of which option the participant clicked?
-- [Harder] One thing I don't like about the `audio-button-response` plugin is that it doesn't have an option to make the audio non-interruptible - if you click part-way through the audio it will register your response and move to the next trial. Can you fix it to produce a non-interruptible audio, i.e. you can't click until the audio is done? Hint: the trick here is going to look at the things you *can* set in the `audio-button-response` plugin (check [the documentation](https://www.jspsych.org/plugins/jspsych-audio-button-response/) and then figuring out how to achieve what you want with a *sequence* of trials that look like a single trial.  
+- [Harder, optional] One thing I don't like about the `audio-button-response` plugin is that it doesn't have an option to make the audio non-interruptible - if you click part-way through the audio it will register your response and move to the next trial. Can you fix it to produce a non-interruptible audio, i.e. you can't click until the audio is done? Hint: the trick here is going to look at the things you *can* set in the `audio-button-response` plugin (check [the documentation](https://www.jspsych.org/plugins/jspsych-audio-button-response/)) and then figuring out how to achieve what you want with a *sequence* of trials that look like a single trial to your participant.
+- [Harder, optional] Add code to automatically preload all the images used as buttons in the picture selection phase, without having to manually specify the image list.
 
 ## References
 
