@@ -222,12 +222,13 @@ This will be relatively simple. Remember that in each phoneme categorization tri
 
 ```js
 var categorization_stim_list = [{stimulus:'phoneme_categorization_sounds/samespeaker_VOT5.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT10.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT15.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT20.mp3'},
                                 {stimulus:'phoneme_categorization_sounds/samespeaker_VOT25.mp3'},
-                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT80.mp3'},
-                                {stimulus:'phoneme_categorization_sounds/newspeaker_VOT5.mp3'},
-                                {stimulus:'phoneme_categorization_sounds/newspeaker_VOT25.mp3'},
-                                {stimulus:'phoneme_categorization_sounds/newspeaker_VOT80.mp3'}
-                              ]
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT30.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT50.mp3'},
+                                {stimulus:'phoneme_categorization_sounds/samespeaker_VOT80.mp3'}]
 
 var categorization_trials = {type:'audio-button-response',
                               choices:['dean','teen'],
@@ -245,7 +246,35 @@ var categorization_trials = {type:'audio-button-response',
 ```
 
 A few things to note:
+- `categorization_stim_list` is our list of audio stimuli that we will use - I have set it up here as the same speaker condition, playing all the available `samespeaker` audio files. I have to specify the path to these audio files, which are in the `phoneme_categorization_sounds` directory - I could have written a little wrapper function like I did in the picture selection test to add the path info, but here I don't find the redundancy to bad.
+- We then use `categorization_stim_list` as the nested timeline in `categorization_trials`, with randomised order. Everything else about `categorization_trials` is the same as the code we used above to create `selection_trials` except that the `choices` are always the same, and I am *not* left-right randomising the order of the choices.
+- As with the picture selection trials, `on_finish` we are using the `savePerceptualLearningDataLine(data)` to record the trial data - I'll talk you through that function below.
 
+### Saving data trial by trial
+
+The rest of the code sets up the timeline in the usual way (creating placeholders for the instruction screens, using `cocat` to concatenate the various lists of trials, then `jsPsych.init` to run the timeline). The only interesting new thing is the function `savePerceptualLearningDataLine` which we call each time a critical trial (picture selection or phoneme categorization) finishes. We pass this function the trial's `data`, and it digs out the data we want, uses `join` to stick together that list of data into a comma-separated string, and then uses the `saveData` function that we introduced last week to write that data to a file called `perceptuallearning_data.csv`. Since `saveData` appends to the end of the file, each new line of data will be added, rather than over-writing the previous contents of the file.
+
+```js
+function savePerceptualLearningDataLine(data) {
+    // choose the data we want to save - this will also determine the order of the columns
+    var data_to_save = [
+        data.trial_index,data.time_elapsed,
+        data.stimulus,data.button_choices,data.button_selected,
+        data.button_pressed,data.rt];
+    // join these with commas and add a newline
+    var line = data_to_save.join(',')+"\n";
+    saveData('perceptuallearning_data.csv', line);
+}
+```
+
+One shortcoming of this method is that our csv file won't have column names, which is not ideal - you could however write them in the same way, doing something like this before you start the experiment timeline:
+
+```js
+saveData('perceptuallearning_data.csv', "trial_index,time_elapsed,stimulus,button_choices,button_selected,
+button_pressed,rt")
+```
+
+That just uses the `saveData` function to write a string to the file, where that string is the names of all the columns, comma-separated. I haven't put this in the code but you could if you want.
 
 
 ## Exercises with the word learning experiment code
