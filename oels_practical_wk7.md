@@ -276,6 +276,30 @@ button_pressed,rt")
 
 That just uses the `saveData` function to write a string to the file, where that string is the names of all the columns, comma-separated. I haven't put this in the code but you could if you want.
 
+### A note on preloading images
+
+You might notice that when you run through the experiment the images in the buttons take a moment to load at the start of each trial. jsPsych is set up to *preload* as much stuff as it can - on `audio-button-response` trials it preloads the audio specified in the `stimulus` parameter, on `image-button-response` trials it preloads the image specified in the `stimulus`. But it doesn't automatically preload our button images, because they don't appear in a place it automatically knows to preload. It is actually possible to tell jsPsych to preload extra stimuli, which you can do in `jsPsych.init` like this (see [the jsPsych documentation](https://www.jspsych.org/core_library/jspsych-core/#jspsychinit) for other stuff you can do at initialisation). The way to do this would be to build a list of images that you use in the buttons, then preload those, e.g. like this:
+
+```js
+var all_button_images = ["picture_selection_images/fresh_dill.jpg",
+                          "picture_selection_images/dry_dill.jpg",
+                          "picture_selection_images/orange_telephone.jpg",
+                          "picture_selection_images/black_telephone.jpg",
+                          "picture_selection_images/angel_wing.jpg",
+                          "picture_selection_images/airplane_wing.jpg",
+                          "picture_selection_images/animal_ear.jpg",
+                          "picture_selection_images/animal_nose.jpg"]
+
+jsPsych.init({
+    preload_images:all_button_images,
+    timeline: full_timeline,
+    on_finish: function(){
+      jsPsych.data.displayData('csv') //and also dump *all* the data to screen
+    }
+});
+```
+
+That is a little bit unsatisfactory because we are manually building the list of images to preload. We could extract this automatically from `selection_stim_list`, e.g. using a for-loop to work through `selection_stim_list` and extract the image names from `choices` and add them to a preload list, but this code is already long enough for one week!
 
 ## Exercises with the word learning experiment code
 
@@ -284,6 +308,7 @@ Attempt these problems.
 - Check you can add a few more picture selection trials with other images and sound files (you might need to consult the <a href="code/perceptual_stims.csv" download> the full list of stimuli</a>).
 - There are 4 conditions in the experiment - all combinations manipulated /d/ or manipulated /t/, same speaker or new speaker in the categorisation test. How would you build stimulus lists for these different conditions, i.e. what would you need to change in the code to change the condition a participant experienced? You don't have to do anything fancy here - ideally we'd like to have the code assign participants to a random condition every time the experiment starts, and we'll cover that soon, but at this point just figure out what bits of the stimulus list you need to manually edit to flip from one condition to another.
 - How would you modify this code so that the phoneme categorisation trials are all repeated several times? Note that there is a manual way to do this and a fast way, using some built-in jsPsych functions for repeating things.
+- The code doesn't currently save the social network questionnaire data. Can you add a new function, saveQuestionnaireData, which runs at the end of the questionnaire trial and saves that data to a file on the server?
 - At the moment the dean-teen buttons always appear in the same order. Can you randomise their left-right position and still keep track of which option the participant clicked?
 - [Harder] One thing I don't like about the `audio-button-response` plugin is that it doesn't have an option to make the audio non-interruptible - if you click part-way through the audio it will register your response and move to the next trial. Can you fix it to produce a non-interruptible audio, i.e. you can't click until the audio is done? Hint: the trick here is going to look at the things you *can* set in the `audio-button-response` plugin (check [the documentation](https://www.jspsych.org/plugins/jspsych-audio-button-response/) and then figuring out how to achieve what you want with a *sequence* of trials that look like a single trial.  
 
