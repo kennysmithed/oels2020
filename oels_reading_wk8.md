@@ -10,8 +10,10 @@ This page is under development and for now just includes the paper we will be re
 
 ## Reading tasks for this week
 
-Read: TBC
+Read:
+- [Joy, J. E., & Smith, K. (2020). Syntactic adaptation depends on perceived linguistic knowledge: Native English speakers differentially adapt to native and non-native confederates in dialogue. https://doi.org/10.31234/osf.io/pu2qa.](https://doi.org/10.31234/osf.io/)
 
+This is a preprint of a paper that is currently under revision (i.e. we got an initial round of reviewer reports, we are making some revisions to the paper, then it'll go back to the reviewers for another look).
 
 ## Re-use
 
