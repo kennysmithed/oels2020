@@ -270,8 +270,8 @@ function savePerceptualLearningDataLine(data) {
 One shortcoming of this method is that our csv file won't have column names, which is not ideal - you could however write them in the same way, doing something like this before you start the experiment timeline:
 
 ```js
-saveData('perceptuallearning_data.csv', "trial_index,time_elapsed,stimulus,button_choices,button_selected,
-button_pressed,rt")
+saveData('perceptuallearning_data.csv', "trial_index,time_elapsed,stimulus,button_choice_1,button_choice_2,button_selected,
+button_pressed,rt\n")
 ```
 
 That just uses the `saveData` function to write a string to the file, where that string is the names of all the columns, comma-separated. I haven't put this in the code but you could if you want.
