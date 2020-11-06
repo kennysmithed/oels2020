@@ -78,7 +78,7 @@ You could use the opportunity for catchup or lookahead reading.
 - *Scientific content:* syntactic priming and alignment<br>
 - *Technical content:*  recording participant audio
 - [Reading](oels_reading_wk8.md)
-- Programming task
+- [Programming task](oels_practical_wk8.md)
 
 ### Week 9 (16th November): Participant-to-participant interaction
 
