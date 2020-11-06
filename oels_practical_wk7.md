@@ -315,7 +315,7 @@ Attempt these problems.
 
 ## References
 
-- [Lev-Ari, S. (2017). Talking to fewer people leads to having more malleable linguistic representations. *PLoS ONE, 12,* e0183593.](https://doi.org/10.1371/journal.pone.0183593)
+[Lev-Ari, S. (2017). Talking to fewer people leads to having more malleable linguistic representations. *PLoS ONE, 12,* e0183593.](https://doi.org/10.1371/journal.pone.0183593)
 
 ## Re-use
 

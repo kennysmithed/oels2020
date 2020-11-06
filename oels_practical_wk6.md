@@ -349,7 +349,7 @@ Attempt these problems.
 
 ## References
 
-- [Ferdinand, V., Kirby, S., & Smith, K. (2019). The cognitive roots of regularization in language.
+[Ferdinand, V., Kirby, S., & Smith, K. (2019). The cognitive roots of regularization in language.
 *Cognition, 184,* 53-68.](https://doi.org/10.1016/j.cognition.2018.12.002)
 
 ## Re-use
