@@ -76,7 +76,7 @@ You could use the opportunity for catchup or lookahead reading.
 ### Week 8 (9th November): Confederate priming
 
 - *Scientific content:* syntactic priming and alignment<br>
-- *Technical content:*  recording participant audio
+- *Technical content:*  Audio recording, more randomisation stuff, custom preload lists, reading trial lists from CSV
 - [Reading](oels_reading_wk8.md)
 - [Programming task](oels_practical_wk8.md)
 
