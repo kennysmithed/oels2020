@@ -30,10 +30,10 @@ Like last week, this code will *not* run on your local computer - you need to up
 - You need to edit `save_data.php` and `save_audio.php` so that they point to *your* `server_data` folder rather than mine. Open those files in an editor and change the path `/home/ksmith7/server_data/` to `/home/UUN/server_data/` where UUN is your UUN.
 - The code will save audio files to a subfolder of `server_data` called `audio` - so you need to create such a subfolder. You can create new folders in cyberduck quite easily.
 - You will need to use Chrome for the audio to work reliably. Furthermore, you will have to change your Chrome settings to allow it to access the microphone. Quite sensibly, modern browsers have protections that prevent random websites accessing your microphone or camera in unsafe ways; the user always has to give permission, but also those resources are only available when the origin of the code (i.e. our server where the code lives) is secure, i.e. can be trusted to be who it says it is. Our `jspsychlearning` server is not set up like that at the moment, it lacks the necessary certificates, so we have to tell Chrome to trust it for audio recording purposes - obviously you wouldn't ask real participants to do this step, you'd have to set up a secure server for your code, but in our case it's only us trying out the code and we know it's nothing dodgy, so we can use this work-around. The way to do this is as follow the following 4 steps (which I got from [here](https://medium.com/@Carmichaelize/enabling-the-microphone-camera-in-chrome-for-local-unsecure-origins-9c90c3149339)).
-  1. In chrome, follow this link to [chrome://flags/#unsafely-treat-insecure-origin-as-secure](chrome://flags/#unsafely-treat-insecure-origin-as-secure).
-  2. Find and enable the `Insecure origins treated as secure` section.
-  3. Add http://jspsychlearning.ppls.ed.ac.uk to the text box of origins you want to treat as secure.
-  4. Close that window and restart Chrome.
+  - In chrome, follow this link to [chrome://flags/#unsafely-treat-insecure-origin-as-secure](chrome://flags/#unsafely-treat-insecure-origin-as-secure).
+  - Find and enable the `Insecure origins treated as secure` section.
+  - Add http://jspsychlearning.ppls.ed.ac.uk to the text box of origins you want to treat as secure.
+  - Close that window and restart Chrome.
 
 Once you have done those various steps you are ready to try out the experiment. There are actually two versions of the experiment included in the zip file:
 - A short version with a small number of trials. The code for this is in `confederate_priming.html` and `confederate_priming.js`, and the URL will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/confederate_priming/confederate_priming.html if your directory structure is as suggested. This is the code I will start with in the explanation below.
