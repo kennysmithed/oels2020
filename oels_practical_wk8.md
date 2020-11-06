@@ -13,7 +13,7 @@ Remember, as usual the idea is that you do as much of this as you can on your ow
 
 I cobbled together some audio recording code for the online experiments in Loy & Smith (2020); Annie Holz then jsPsych-ified it ([she has her own audio recording demo](https://experiments.ppls.ed.ac.uk/)), and I tweaked that code for this demo experiment.
 
-For this demo experiment we are using audio stims produced by my RA Clem Ashton, who was the native English-speaking confederate in some experiments we ran (not actually those reported in the current draft of Loy & Smith, 2020, but some follow-ups).
+For this demo experiment we are using audio stims produced by my RA Clem Ashton, who was the native English-speaking confederate in some experiments we ran (not actually those reported in the current draft of Loy & Smith, 2020, but some follow-ups). The images (which I love) were drawn by Jia Loy and are the ones we used in the experiments described in the paper.
 
 ## A confederate priming experiment
 
@@ -21,7 +21,7 @@ For this demo experiment we are using audio stims produced by my RA Clem Ashton,
 
 As usual, I'd like you to download and run the code I provide, look at how the code works, and then attempt the exercises below, which involve editing the code in simple ways.
 
-You need a bunch of files for this experiment - as per last week, an html file, a js file, two php files (for saving CSV and audio data), and then various folders containing images, sounds, trial lists etc. Again, rather than downloading them individually, download the following zip file and then uncompress it into your usual jspsych folder:
+You need a bunch of files for this experiment - as per last week, an html file, a js file, *two* php files (for saving CSV and audio data), and then various folders containing images, sounds, trial lists etc. Again, rather than downloading them individually, download the following zip file and then uncompress it into your usual jspsych folder:
 - <a href="code/confederate_priming.zip" download> Download confederate_priming.zip</a>
 
 Again, the code makes some assumptions about the directory structure it's going to live in - you need to extract these files to a folder called something like `confederate_priming`, alongside your `grammaticality_judgments`, `self_paced_reading`, `word_learning`, `perceptual_learning` and `jspsych-6.1.0` folders.
@@ -30,10 +30,10 @@ Like last week, this code will *not* run on your local computer - you need to up
 - You need to edit `save_data.php` and `save_audio.php` so that they point to *your* `server_data` folder rather than mine. Open those files in an editor and change the path `/home/ksmith7/server_data/` to `/home/UUN/server_data/` where UUN is your UUN.
 - The code will save audio files to a subfolder of `server_data` called `audio` - so you need to create such a subfolder. You can create new folders in cyberduck quite easily.
 - You will need to use Chrome for the audio to work reliably. Furthermore, you will have to change your Chrome settings to allow it to access the microphone. Quite sensibly, modern browsers have protections that prevent random websites accessing your microphone or camera in unsafe ways; the user always has to give permission, but also those resources are only available when the origin of the code (i.e. our server where the code lives) is secure, i.e. can be trusted to be who it says it is. Our `jspsychlearning` server is not set up like that at the moment, it lacks the necessary certificates, so we have to tell Chrome to trust it for audio recording purposes - obviously you wouldn't ask real participants to do this step, you'd have to set up a secure server for your code, but in our case it's only us trying out the code and we know it's nothing dodgy, so we can use this work-around. The way to do this is as follow the following 4 steps (which I got from [here](https://medium.com/@Carmichaelize/enabling-the-microphone-camera-in-chrome-for-local-unsecure-origins-9c90c3149339)).
-  - In chrome, follow this link to [chrome://flags/#unsafely-treat-insecure-origin-as-secure](chrome://flags/#unsafely-treat-insecure-origin-as-secure).
+  - In chrome, copy this address into the navigation bar: chrome://flags/#unsafely-treat-insecure-origin-as-secure and go there.
   - Find and enable the `Insecure origins treated as secure` section.
   - Add http://jspsychlearning.ppls.ed.ac.uk to the text box of origins you want to treat as secure.
-  - Close that window and restart Chrome.
+  - Save those settings if that is an option, then close that window and restart Chrome.
 
 Once you have done those various steps you are ready to try out the experiment. There are actually two versions of the experiment included in the zip file:
 - A short version with a small number of trials. The code for this is in `confederate_priming.html` and `confederate_priming.js`, and the URL will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/confederate_priming/confederate_priming.html if your directory structure is as suggested. This is the code I will start with in the explanation below.
