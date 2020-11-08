@@ -43,7 +43,330 @@ First, get the code and run through it so you can see what it does. If you have 
 
 ### Structure of the experiment
 
-In preparation!
+The experiment consists of two trial types, which alternate:
+- Picture selection trials, where participants hear audio from their partner (in fact, pre-recorded audio from our confederate) and select the matching picture from an array of 4 pictures.
+- Picture description trials, where participants see a picture and produce a description for their partner using a provided verb, clicking a mic icon to start and stop recording.
+
+We are interested in whether, on critical trials featuring a ditransitive event,
+the construction used in the description on the picture selection trial (PO or DO) influences the description the participant produces on the immediately following picture description trial.
+
+Picture selection trials work in essentially the same was as picture selection trials in the perceptual learning experiment, using the `audio-button-response` plugin. Picture description trials are a series of `image-button-response` trials (with the participant clicking on a mic button to start and stop recording), with some additional infrastructure to handle recording audio. We also simulate the confederate preparing to speak and making a selection based on the participant's productions by inserting variable "waiting for partner" screens. The code therefore uses plugins you are already familiar with - the main new addition to the code is some functions which record audio, but you don't actually need to know how this works (although the code is there for you to look if you are interested).
+
+### Loading the code for recording audio
+
+Rather than putting all the audio recording code plus all the other experiment code in one long js file, I have split it - the audio recording code is in `confederate_priming_utilities.js`, which we load in our `confederate_priming.html` file at the same time as specifying the plugins etc we need and loading the `confederate_priming.js` file.
+
+```html
+<script src="../jspsych-6.1.0/jspsych.js"></script>
+<script src="../jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+<script src="../jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+<script src="../jspsych-6.1.0/plugins/jspsych-image-button-response.js"></script>
+<script src="../jspsych-6.1.0/plugins/jspsych-audio-button-response.js"></script>
+<link href="../jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+<script src="confederate_priming_utilities.js"></script>
+<script src="confederate_priming.js"></script>
+```
+
+The browser doesn't actually care if code is split over more than one file - it reads them in one after another, so variables and functions created in one file are accessible in code in another file. Splitting the code in this way makes for code that's easier to work with and also conceptually cleaner, in that you parcel off one set of functions (in this case, for recording audio) into its own file.
+
+For our purposes all you have to know is that `confederate_priming_utilities.js` creates some variables and functions that we can use in our main experiment code. These are:
+
+`recording_counter`  is just a counter where we keep track of how many audio recordings we have made - the first recording is 0, the second 1 etc. We use these in the filenames of recordings and also in the CSV data saved on the server so that we can link particular recordings to particular experiment trials.
+
+`request_mic_access()` is a function which creates the various media and recorder objects we need to record audio, and will prompt the participant for mic access via a pop-up.
+
+`start_recording(filename_prefix)` is a function starts audio recording from the participants' mic. When the audio recording stops, the audio will be saved
+to a file on the server (in `server_data/audio`) called filename_prefix_recording_counter.webm - e.g. if you pass in filename prefix "kennyaudio" the first recording will be saved as kennyaudio_0.
+
+`stop_recording()` is a function which stops the current audio recording, triggering saving of the audio file, and also increments the `recording_counter` so that the next recording has a different counter value and different file name.
+
+### Random elements of the experiment
+
+The first part of `confederate_priming.js` is comments on the audio recording code (for human reading, the code ignores these) and then some code for saving our data trial by trial - the function `save_confederate_priming_data(data)` saves trial data in the same way as the `save_perceptual_learning_data` function from last week, and you'll see it used in the functions below. Since you have seen similar functions before, I'll skip to the new code, which starts with several functions for handling random elements of the experiment.
+
+First, we are going to assign each participant a random participant ID - this means we can save one CSV file and one set of audio recordings per participant, rather than cramming everything into a single file as we have been doing so far. We create these random IDs using a jsPsych built-in function:
+
+```js
+var participant_id = jsPsych.randomization.randomID(10);
+```
+
+This creates a variable, `participant_id`, which we can use later. The participant IDs are a list of 10 randomly-generated letters and numbers - since there are many many possible combinations of length 10 (36 to the power 10, which is more than 3,600,000,000,000,000) in practice this should mean that no two participants are assigned the same ID, and therefore each participant has a unique ID.
+
+At various points in the experiment we also want to create a random wait, to simulate another participant composing their description or selecting an image based on the genuine participant's description. In the Loy & Smith (2020) paper we had a fairly intricate system for generating these random delays, making them quite long initially (to simulate a partner who was not yet used to the task) and then reducing over time (to simulate increasing familiarity, but also not too needlessly waste our real participants' time). My impression is that this was reasonably successful - not too many participants guessed they were interacting with a simulated partner - and also worth the effort, in that most of the people who *did* guess that they were not interacting with a real person were cued by their partner's response delays (in particular, noting that they were quite short and quite reliable). Here for simplicity's sake we just create a function which returns a random delay between 1000ms and 3000ms, using some built-in javascript code for random number generation:
+
+```js
+function random_wait() {
+  return 1000+(Math.floor(Math.random() * 2000))
+}
+```
+
+`Math.random()` generates a random number between 0 and 1 (e.g 0.127521, 0.965341, etc). We then multiply that by 2000 and use `Math.floor` to round down to a whole number (e.g. our random numbers will become 255, 1930 respectively), then add 1000ms to produce random waits in our desired range (e.g. 1255ms, 2930ms).
+
+Finally, we need some code to randomly decide whether to include images in their default or reversed orientation. Participants will be describing events involving characters and objects, and we have good reasons to expect that the order in which characters appear in those scenes might influence the word order participants use (e.g. if people tend to process images left to right, and the recipient of a giving action is always in the left, maybe people will be likely to mention that recipient earlier in their description, introducing a bias for DO order). We therefore want to eliminate those kinds of systematic biases by presenting images in both possible orientations (e.g. recipient on the left or the right). The `images` folder contains two versions of each image - the orientation that Jia drew them in, and then a reversed image where the image is flipped/mirrored on its horizontal axis. The two images have the same name except that the reversed image has "_r" added at the end - so for example, the two images below are `artist_brushes_book.jpg` and `artist_brushes_book_r.jpg`.
+
+![artist_brushes_book](images/artist_brushes_book.jpg)
+![artist_brushes_book_r](images/artist_brushes_book_r.jpg)
+
+Our `random_image_flip` function will handle this for us - every time we want to include an image, we use `random_image_flip(image_name)`, which takes an image name and either returns that image name or the reversed version, by adding "" (i.e. nothing) or "_r" to the end of the image name. The random element is achieved by picking either "" or "_r" at random using `jsPsych.randomization.shuffle`.
+
+```js
+function random_image_flip(image_name) {
+  var image_affixes = ["","_r"]
+  var selected_affix = jsPsych.randomization.shuffle(image_affixes)[0]
+  var new_image_name = image_name + selected_affix
+  return new_image_name
+}
+```
+
+### Picture selection trials
+
+Now we are in a position to start coding up our main trial types. We'll start with picture selection trials, which work in a very similar way to picture selection trials in the perceptual learning experiment - participants hear some audio and then click on an image button. The only added complication here is that we want to simulate another person thinking for a moment before starting their description, which we will achieve by adding a "waiting for partner" message, on-screen for a random duration, followed by our picture selection trial. Each picture selection trial therefore consists of two sub-trials: a random wait, then the picture selection. As usual, we'll write a function where we specify the main parts of the trial (the audio file the participant will hear, the images they will choose among) and then the function returns a complex trial object for us. Here's the code:  
+
+```js
+function make_picture_selection_trial(sound,images) {
+  var sound_file = "sounds/" + sound + ".mp3"
+  var image_choices = []
+  for (image of images) {
+    image_choices.push(random_image_flip(image))
+  }
+  //simple waiting message
+  var waiting_for_partner = {type:'html-keyboard-response',
+                             stimulus:"Waiting for partner to speak",
+                             choices:[],
+                             trial_duration:function() {return random_wait()}}
+  //audio trial
+  var selection_trial = {type:'audio-button-response',
+                         stimulus:sound_file,
+                         choices:image_choices,
+                         button_html: '<button class="jspsych-btn"> <img src="images/%choice%.jpg" width=250px></button>',
+                         post_trial_gap: 500, //a little pause after the participant makes their choice
+                         on_start: function(trial) {
+                              var shuffled_label_choices = jsPsych.randomization.shuffle(trial.choices)
+                              trial.choices = shuffled_label_choices
+                              trial.data = {button_choices:shuffled_label_choices}
+                          },
+                         on_finish: function(data) {
+                              var button_number = data.button_pressed
+                              data.button_selected = data.button_choices[button_number]
+                              data.trial_type = 'picture_selection'
+                              save_confederate_priming_data(data) //save the trial data
+                            }
+                          }
+  var full_trial = {timeline:[waiting_for_partner,selection_trial]}
+  return full_trial
+}
+
+```
+
+Several things to note here. First, we need to do some book-keeping: adding the path for the sound file (all our sound files are in the `sounds` directory and have `.mp3` on the end)
+
+```js
+var sound_file = "sounds/" + sound + ".mp3"
+```
+and randomising the orientation in which the images will be presented by working through the `images` list with a for-loop, randomly flipping each image or not and building up our array of `image_choices`:
+
+```js
+var image_choices = []
+for (image of images) {
+  image_choices.push(random_image_flip(image))
+}
+```
+
+Our random wait is then a simple `html-keyboard-response` trial, where there are no button responses accepted (`choices` is set to [], i.e. nothing the participant can press will make the trial end prematurely) and with a random `trial_duration`.
+
+```js
+var waiting_for_partner = {type:'html-keyboard-response',
+                           stimulus:"Waiting for partner to speak",
+                           choices:[],
+                           trial_duration:function() {return random_wait()}}
+```
+
+Our actual selection trial requires quite a large block of code to generate it (see above, where we create `selection_trial`), but this is all stuff you have seen before - an `audio-button-response trial`, where we randomise the button position `on_start`, and then work out which button the participant actually clicked `on_finish`, saving the trial data to the server using the `save_confederate_priming_data` function too. The one thing we have added is an extra parameter to the trial `data` object, simply marking these trials as picture selection trials:
+
+```js
+data.trial_type = 'picture_selection'
+```
+This will just make our data file a little clearer.
+
+Finally, we stick our waiting trial and our picture selection trial together as a single trial consisting of just a timeline and returning that two-part trial.:
+
+```js
+var full_trial = {timeline:[waiting_for_partner,selection_trial]}
+return full_trial
+```
+
+### Picture description trials
+
+Next we create our picture description trials - remember, for these the participant sees an image, clicks a button to start recording a description, clicks again to stop recording, and then waits for their partner to make a picture selection based on their description (in reality, just gets a waiting message and waits for a random time). This can be achieved with a 3-part timeline: the initial part of the trial where the participant sees the image and clicks a button to start recording, then the second part where they speak and then click again to stop recording, then the random wait. The first two trial types are just `image-button-response` trials, and the random wait will again be an `html-keyboard-response` trial with a random duration. Again, we are going to write a function which builds this complex trial for us - we pass in the target image to be described plus the verb to be used in the description. The full code is:
+
+```js
+function make_picture_description_trial(target_image,verb) {
+  var target_image_flipped = random_image_flip(target_image)
+  var picture_plus_white_mic = {type:'image-button-response',
+                                stimulus:"images/"+target_image_flipped+".jpg",
+                                stimulus_width: 500,
+                                prompt:verb,
+                                choices:['mic'],
+                                button_html:'<button class="jspsych-btn" style="background-color: white;"> <img src="mic_images/%choice%.png" width=75px></button>'}
+  var picture_plus_orange_mic = {type:'image-button-response',
+                                 stimulus:"images/"+target_image_flipped+".jpg",
+                                 stimulus_width: 500,
+                                 choices:['mic'],
+                                 prompt:verb,
+                                 button_html:'<button class="jspsych-btn" style="background-color: Darkorange;"> <img src="mic_images/%choice%.png" width=75px></button>',
+                                 on_start: function(trial) {
+                                   start_recording(participant_id)},
+                                 on_finish: function(data) {
+                                   stop_recording()
+                                   data.recording_counter = recording_counter
+                                   data.trial_type = 'picture_description'
+                                   save_confederate_priming_data(data)}
+                                 }
+  var waiting_for_partner = {type:'html-keyboard-response',
+                             stimulus:"Waiting for partner to select",
+                             choices:[],
+                             trial_duration: function() {return random_wait()},
+                             post_trial_gap: 500} //short pause after the confederate makes their selection
+  var full_trial = {timeline:[picture_plus_white_mic,
+                              picture_plus_orange_mic,
+                              waiting_for_partner]}
+  return full_trial
+}
+```
+
+Let's step through that chunk by chunk. First we randomly flip the image so that not all images appear in the default orientation:
+
+```js
+var target_image_flipped = random_image_flip(target_image)
+```
+
+Next we have the first sub-trial where the participant sees the image plus a "start recording" button and clicks to begin recording. This is just an `image-button-response` trial, with our target image and a button showing a picture of a mic:
+
+```js
+var picture_plus_white_mic = {type:'image-button-response',
+                              stimulus:"images/"+target_image_flipped+".jpg",
+                              stimulus_width: 500,
+                              prompt:verb,
+                              choices:['mic'],
+                              button_html:'<button class="jspsych-btn" style="background-color: white;"> <img src="mic_images/%choice%.png" width=75px></button>'}
+```
+
+We set the size of the picture (I though 500 pixels wide was reasonable), and show the verb the participant should use in the `prompt` (it's not super-prominent, but it will do - you would want to write instructions which highlighted this verb text to the participants so they know what the prompt is doing). The participant's `choices` on this trial is just the mic button - we use the `mic` image file, which is in the `mic_images` folder, and do a little bit of formatting in `button_html` so the mic image appears with a white background (which we'll change below to orange to indicate they are recording).
+
+When the participant is ready they click the mic button, which progresses them to the next trial. This is where the action happens: we have to indicate they are recording (which we do by turning the mic button orange), actually start the recording, and then when the click the mic again we have to stop the recording and save the trial data. The code for all that looks like this:
+
+```js
+var picture_plus_orange_mic = {type:'image-button-response',
+                               stimulus:"images/"+target_image_flipped+".jpg",
+                               stimulus_width: 500,
+                               choices:['mic'],
+                               prompt:verb,
+                               button_html:'<button class="jspsych-btn" style="background-color: Darkorange;"> <img src="mic_images/%choice%.png" width=75px></button>',
+                               on_start: function(trial) {
+                                 start_recording(participant_id)},
+                               on_finish: function(data) {
+                                 stop_recording()
+                                 data.recording_counter = recording_counter
+                                 data.trial_type = 'picture_description'
+                                 save_confederate_priming_data(data)}
+                               }
+```
+
+A bunch of stuff is the same as in the `picture_plus_white_mic` trial - the image, its size, the mic button, the verb prompt - so there is no big visual change. But a couple of things are different.
+
+First, we change the background colour of the mic image to orange, so the participant can see their click had an effect and they are now recording. This is done in the `button_html` parameter, where we set the mic button background to dark orange.
+
+```
+button_html:'<button class="jspsych-btn" style="background-color: Darkorange;"> <img src="mic_images/%choice%.png" width=75px></button>',
+```
+
+Next, the trial has an `on_start` function, where we use the `start_recording` function to start recording from the participant's mic. Remember, this function is defined in our `confederate_priming_utilities.js` file, and we specify the name of the file where we want the audio saved - here we are using the participant's ID (which we created earlier and stored in the variable `participant_id`), so that each participant's audio will be recorded in easily-identified and separate sets of files:
+
+```js
+on_start: function(trial) {
+  start_recording(participant_id)},
+```
+
+Finally, when the participant is done talking they click the mic button again to stop recording - so in this trial's `on_finish` parameter (which runs when they click the mic button again) we stop the recording using our `stop_recording()` function, which again is defined in our `confederate_priming_utilities.js` file.
+
+```js
+on_finish: function(data) {
+  stop_recording()
+  ...
+}
+```
+ We also want to save the data from this trial, which we do using `save_confederate_priming_data` - but when we do that, we want to keep a note of `recording_counter` (which is our internal counter of recording numbers), so that when it comes time to listen to the recordings we can link the audio recording files (which include `recording_counter` in their name) with the specific trial in the experiment. To do that, we make a note of `recording_counter` in our trial data, and also mark this trial as a picture description trial, then save that data.
+
+ ```js
+ on_finish: function(data) {
+   ...
+ data.recording_counter = recording_counter
+ data.trial_type = 'picture_description'
+ save_confederate_priming_data(data)}
+ ```
+
+Finally, we add the waiting message with random duration, in exactly the same way as for picture selection trials, and then build and return a trial with a nested timeline featuring our three trials (white mic, orange mic, waiting message):
+
+```js
+var waiting_for_partner = {type:'html-keyboard-response',
+                           stimulus:"Waiting for partner to select",
+                           choices:[],
+                           trial_duration: function() {return random_wait()},
+                           post_trial_gap: 500} //short pause after the confederate makes their selection
+var full_trial = {timeline:[picture_plus_white_mic,
+                            picture_plus_orange_mic,
+                            waiting_for_partner]}
+return full_trial
+```
+
+### Building the interaction timeline
+
+```js
+var interaction_trials = [make_picture_selection_trial("E1N_16_the_clown_buys_the_cake",
+                                                       ["clown_buys_cake","artist_buys_cake","clown_buys_vase","artist_buys_vase"]),
+                          make_picture_description_trial("artist_waves","waves"),
+                          make_picture_selection_trial("E1N_16_the_cowboy_hands_the_cup_to_the_golfer",
+                                                       ["cowboy_hands_golfer_cup","golfer_hands_cowboy_cake","golfer_hands_cowboy_cup","cowboy_hands_golfer_cake"]),
+                          make_picture_description_trial("sailor_gives_wizard_apple","gives"),
+                          make_picture_selection_trial("E1N_16_the_wizard_loans_the_prisoner_the_apple",
+                                                       ["wizard_loans_prisoner_apple","prisoner_loans_wizard_vase","prisoner_loans_wizard_apple","wizard_loans_prisoner_vase"]),
+                          make_picture_description_trial("pirate_holds_cake","holds"),
+                          make_picture_selection_trial("E1N_16_the_sailor_offers_the_prisoner_the_cup",
+                                                       ["sailor_offers_prisoner_cup","prisoner_offers_clown_cup","clown_offers_prisoner_cup","prisoner_offers_sailor_cup"]),
+                          make_picture_description_trial("soldier_offers_clown_apple","offers")]
+```
+
+### A custom preload list
+
+```js
+var button_images_list = []
+for (trial of interaction_trials) {
+  var trial_embedded_timeline = trial.timeline
+  for (subtrial of trial_embedded_timeline) {
+    if (subtrial.type=='audio-button-response') {
+      var image_choices = subtrial.choices
+      for (image of image_choices) {
+        var full_image_name = "images/" + image + ".jpg"
+        button_images_list.push(full_image_name)
+      }
+    }
+  }
+}
+```
+
+### Running the timeline
+
+```js
+jsPsych.init({
+    preload_images: button_images_list,
+    timeline: full_timeline,
+    on_finish: function(){
+      jsPsych.data.displayData('csv') //and also dump *all* the data to screen
+    }
+});
+```
+
+### Advanced: reading the trial list from a CSV file 
 
 ## References
 
