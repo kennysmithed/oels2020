@@ -301,7 +301,7 @@ jsPsych.init({
 
 That is a little bit unsatisfactory because we are manually building the list of images to preload. We could extract this automatically from `selection_stim_list`, e.g. using a for-loop to work through `selection_stim_list` and extract the image names from `choices` and add them to a preload list, but this code is already long enough for one week so I will leave that as an optional exercise for the keen!
 
-## Exercises with the word learning experiment code
+## Exercises with the perceptual learning experiment code
 
 Attempt these problems.
 - Run the code once and look at the `perceptuallearning_data.csv` file to make sure it makes sense to you. You can also compare the data saved in the server with the data dumped in the browser. Run the code again and see what happens to that file, and think about how you might get around that problem.
