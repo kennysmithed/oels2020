@@ -120,7 +120,7 @@ function random_image_flip(image_name) {
 
 ### Picture selection trials
 
-Now we are in a position to start coding up our main trial types. We'll start with picture selection trials, which work in a very similar way to picture selection trials in the perceptual learning experiment - participants hear some audio and then click on an image button. The only added complication here is that we want to simulate another person thinking for a moment before starting their description, which we will achieve by adding a "waiting for partner" message, on-screen for a random duration, followed by our picture selection trial. Each picture selection trial therefore consists of two sub-trials: a random wait, then the picture selection. As usual, we'll write a function where we specify the main parts of the trial (the audio file the participant will hear, the images they will choose among) and then the function returns a complex trial object for us. Here's the code:  
+Now we are in a position to start coding up our main trial types. We'll start with picture selection trials, which work in a very similar way to picture selection trials in the perceptual learning experiment - participants hear some audio and then click on an image button. The only added complication here is that we want to simulate another person thinking for a moment before starting their description, which we will achieve by adding a "waiting for partner" message, on-screen for a random duration, followed by the audio and picture selection by the participant. Each picture selection trial therefore consists of two sub-trials: a random wait, then the picture selection. As usual, we'll write a function where we specify the main parts of the trial (the audio file the participant will hear, `sound`; a list of images they will choose among, `images`) and then the function returns a complex trial object for us. Here's the full chunk of code, I'll walk you through it piece by piece below:  
 
 ```js
 function make_picture_selection_trial(sound,images) {
@@ -158,7 +158,7 @@ function make_picture_selection_trial(sound,images) {
 
 ```
 
-Several things to note here. First, we need to do some book-keeping: adding the path for the sound file (all our sound files are in the `sounds` directory and have `.mp3` on the end)
+First, we need to do some book-keeping: adding the path for the sound file (all our sound files are in the `sounds` directory and have `.mp3` on the end)
 
 ```js
 var sound_file = "sounds/" + sound + ".mp3"
@@ -197,7 +197,9 @@ return full_trial
 
 ### Picture description trials
 
-Next we create our picture description trials - remember, for these the participant sees an image, clicks a button to start recording a description, clicks again to stop recording, and then waits for their partner to make a picture selection based on their description (in reality, just gets a waiting message and waits for a random time). This can be achieved with a 3-part timeline: the initial part of the trial where the participant sees the image and clicks a button to start recording, then the second part where they speak and then click again to stop recording, then the random wait. The first two trial types are just `image-button-response` trials, and the random wait will again be an `html-keyboard-response` trial with a random duration. Again, we are going to write a function which builds this complex trial for us - we pass in the target image to be described plus the verb to be used in the description. The full code is:
+Next we create our picture description trials - remember, for these the participant sees an image, clicks a button to start recording a description, clicks again to stop recording, and then "waits for their partner to make a picture selection" based on their description (in reality, the participant just gets a waiting message and waits for a random time). This can be achieved with a 3-part timeline: the initial part of the trial where the participant sees the image and clicks a button to start recording, then the second part where they speak and then click again to stop recording, then the random wait. The first two trial types are just `image-button-response` trials, and the random wait will again be an `html-keyboard-response` trial with a random duration.
+
+Again, we write a function which builds this complex trial for us - we pass in the target image to be described plus the verb to be used in the description, it returs the complex trial for us. The full code is:
 
 ```js
 function make_picture_description_trial(target_image,verb) {
@@ -240,7 +242,7 @@ Let's step through that chunk by chunk. First we randomly flip the image so that
 var target_image_flipped = random_image_flip(target_image)
 ```
 
-Next we have the first sub-trial where the participant sees the image plus a "start recording" button and clicks to begin recording. This is just an `image-button-response` trial, with our target image and a button showing a picture of a mic:
+Next we have the first sub-trial where the participant sees the image plus a "start recording" button and clicks to begin recording. This is just an `image-button-response` trial:
 
 ```js
 var picture_plus_white_mic = {type:'image-button-response',
@@ -253,7 +255,7 @@ var picture_plus_white_mic = {type:'image-button-response',
 
 We set the size of the picture (I though 500 pixels wide was reasonable), and show the verb the participant should use in the `prompt` (it's not super-prominent, but it will do - you would want to write instructions which highlighted this verb text to the participants so they know what the prompt is doing). The participant's `choices` on this trial is just the mic button - we use the `mic` image file, which is in the `mic_images` folder, and do a little bit of formatting in `button_html` so the mic image appears with a white background (which we'll change below to orange to indicate they are recording).
 
-When the participant is ready they click the mic button, which progresses them to the next trial. This is where the action happens: we have to indicate they are recording (which we do by turning the mic button orange), actually start the recording, and then when the click the mic again we have to stop the recording and save the trial data. The code for all that looks like this:
+When the participant is ready they click the mic button, which progresses them to the next trial. This is where the action happens: we have to indicate they are recording (which we do by turning the mic button orange), actually start the recording, and then when they click the mic button again we have to stop the recording and save the trial data. The code for all that looks like this:
 
 ```js
 var picture_plus_orange_mic = {type:'image-button-response',
@@ -272,11 +274,11 @@ var picture_plus_orange_mic = {type:'image-button-response',
                                }
 ```
 
-A bunch of stuff is the same as in the `picture_plus_white_mic` trial - the image, its size, the mic button, the verb prompt - so there is no big visual change. But a couple of things are different.
+A bunch of stuff is the same as in the `picture_plus_white_mic` trial - the image, its size, the mic button, the verb prompt - so there is no big visual change for the participant. But a couple of things are different.
 
 First, we change the background colour of the mic image to orange, so the participant can see their click had an effect and they are now recording. This is done in the `button_html` parameter, where we set the mic button background to dark orange.
 
-```
+```js
 button_html:'<button class="jspsych-btn" style="background-color: Darkorange;"> <img src="mic_images/%choice%.png" width=75px></button>',
 ```
 
@@ -287,7 +289,7 @@ on_start: function(trial) {
   start_recording(participant_id)},
 ```
 
-Finally, when the participant is done talking they click the mic button again to stop recording - so in this trial's `on_finish` parameter (which runs when they click the mic button again) we stop the recording using our `stop_recording()` function, which again is defined in our `confederate_priming_utilities.js` file.
+Finally, when the participant is done talking they click the mic button again to stop recording - so in this trial's `on_finish` parameter (which runs when they click the mic button) we stop the recording using our `stop_recording()` function.
 
 ```js
 on_finish: function(data) {
@@ -295,7 +297,7 @@ on_finish: function(data) {
   ...
 }
 ```
- We also want to save the data from this trial, which we do using `save_confederate_priming_data` - but when we do that, we want to keep a note of `recording_counter` (which is our internal counter of recording numbers), so that when it comes time to listen to the recordings we can link the audio recording files (which include `recording_counter` in their name) with the specific trial in the experiment. To do that, we make a note of `recording_counter` in our trial data, and also mark this trial as a picture description trial, then save that data.
+ We also want to save the data from this trial, which we do using `save_confederate_priming_data`. But when we do that, we want to keep a note of `recording_counter` (which is our internal counter of recording numbers), so that when it comes time to listen to the recordings we can link the audio recording files (which include `recording_counter` in their name) with the specific trial in the experiment. To do that, we make a note of `recording_counter` in our trial data, and also mark this trial as a picture description trial, then save that data.
 
  ```js
  on_finish: function(data) {
@@ -305,7 +307,7 @@ on_finish: function(data) {
  save_confederate_priming_data(data)}
  ```
 
-Finally, we add the waiting message with random duration, in exactly the same way as for picture selection trials, and then build and return a trial with a nested timeline featuring our three trials (white mic, orange mic, waiting message):
+Finally, we add the third sub-trial, the waiting message with random duration, and then build and return a trial with a nested timeline featuring our three trials (white mic, orange mic, waiting message):
 
 ```js
 var waiting_for_partner = {type:'html-keyboard-response',
@@ -343,13 +345,13 @@ We then combine `interaction_trials` with some information screens (including a 
 
 ### A custom preload list
 
-As I mentioned in last week's practical, jsPsych pre-loads images and audio for certain trial types, which makes the experiment run more smoothly and ensuring e.g. that images you think participants are seeing have actually been loaded and are displaying. In particular, the image in `image-button-response` trials and the audio in `audio-button-response` trials are preloaded automatically, However, jsPsych does not automatically preload the images used as buttons in `audio-button-response` trials, which means our image buttons in picture selection trials will not be pre-loaded. Fortunately jsPsych allows you to specify an additional list of images to be preloaded, which we will take advantage of to preload these button images.
+As I mentioned in last week's practical, jsPsych pre-loads images and audio for certain trial types, which makes the experiment run more smoothly and ensures that images you think participants are seeing have actually been loaded and are displaying. In particular, the image in `image-button-response` trials and the audio in `audio-button-response` trials are preloaded automatically, However, jsPsych does not automatically preload images used as buttons in `audio-button-response` trials, which means our image buttons in picture selection trials will not be pre-loaded. Fortunately jsPsych allows you to specify an additional list of images to be preloaded, which we will use to preload these button images.
 
-While we could manually code up a preload list, the most straightforward way to do this is to work through `interaction_trials` and figure out which images are going to be used in the experiment, then add those images to a `button_images_list` which we later preload. The information we want is actually quite deeply embedded in `interaction_trials` though:
-- each item in `interaction_trials` is a trial with a nested timeline
-- of the sub-trials in those nested timelines, we only care about `audio-button-response` trials
-- for each of those trials, the information we need is in the `choices` parameter
-- but `choices` is itself a list of several images, all of which we need to preload.
+While we could manually code up a preload list, the most straightforward way to do this is to work through `interaction_trials` and figure out which images are going to be used as buttons in the experiment, then add those images to a `button_images_list` which we later preload. The information we want is actually quite deeply embedded in `interaction_trials` though:
+- Each item in `interaction_trials` is a trial with a nested timeline.
+- Of the sub-trials in those nested timelines, we only care about `audio-button-response` trials.
+- For each of those trials, the information we need is in the `choices` parameter...
+- ...but `choices` is itself a list of several images, all of which we need to preload.
 
 We can deal with this with a nested for-loop. First we work through the full trial list, looking at each trial in turn:
 ```js
@@ -409,7 +411,7 @@ for (trial of interaction_trials) {
 }
 ```
 
-And finally we add each of those choices to our building preload kist using `push`, remembering to add info on the image path and file type. The final code to build the preload list looks like this:
+And finally we add each of those choices to our building preload list using `push`, remembering to add info on the image path and file type. The final code to build the preload list therefore looks like this:
 
 ```js
 var button_images_list = []
@@ -443,13 +445,13 @@ jsPsych.init({
 
 ### Advanced: reading the trial list from a CSV file
 
-That's probably enough for one week, so if you feel you have learned enough for today you can skim this section very fast and not worry about the details, or skip it entirely and the avoid the questions at the end using the version of the code that reads from a CSV file. But if you can take a bit more, read on! You don't have to master the details of this stuff, but getting the rough idea of how you read trial data from a CSV might be useful at some point.
+That's probably enough for one week, so if you feel you have learned enough for today you can skim this section very fast and not worry about the details, or skip it entirely and the avoid the questions at the end using the version of the code that reads from a CSV file. But if you can take a bit more, read on! You don't have to master the details of this stuff, but getting the rough idea of how you read a trial list from a CSV might be useful at some point.
 
-The code above, which is in `confederate_priming.html` and `confederate_priming.js`, is perfectly adequate, and by adding more trials to `interaction_trials` you could fully replicate the Loy & Smith (2020) online experiments. However, we actually built those experiments slightly differently. You might recall from the paper that we ran 3 lab experiments, then online experiments as a follow-up, where we used the recordings of the confederate from the lab experiments as the confederate audio in the online version. That meant we couldn't generate timelines from scratch for the online experiment, because we could only have trials where we had the appropriate audio recordings available. We decided the simplest way to do this was to use our data CSV files generated in the lab experiment as the basis for the trial lists in the online experiment - we took those data files, stripped out a bunch of information, and then built new trial lists from those CSV files. This ensured that our online experiments closely matched our lab experiments in terms of images described etc, which meant that we had all the audio we needed.
+The code above, which is in `confederate_priming.html` and `confederate_priming.js`, is perfectly adequate, and by adding more trials to `interaction_trials` you could fully replicate the Loy & Smith (2020) online experiments. However, we actually built those experiments slightly differently. You might recall from the paper that we ran 3 lab experiments, then online experiments as a follow-up, where we used the recordings of the confederate from the lab experiments as the confederate audio in the online version. That meant we couldn't generate timelines from scratch for the online experiment, because we could only have trials where we had the appropriate audio recordings available. We decided the simplest way to do this was to use our data CSV files generated in the lab experiment as the basis for the trial lists in the online experiment - we took those data files and used them to build new trial lists. This ensured that our online experiments closely matched our lab experiments in terms of images described etc, which meant that we had all the audio we needed.
 
-If you look in the `trial_lists` folder you downloaded as part of the zip file for this week, you'll see a couple of CSV files containing trial lists - one for an alternating confederate, and one for a confederate who only produces DO descriptions. We have many such files, but to keep it simple I'll only show you two! Each line of those CSV files describes a pair of trials: the name of the file where we saved the audio of a confederate description (in the "confederateSentence" column), the 4 images the participant chose between (in the "matcherArray" columns), then the image the participant was instructed to describe (in the "participantImage" columns) and the verb they were to use (in the "participantVerb" column), plus a bunch of other information that we saved. We can therefore read in these CSV files and use them to build a jsPsych trial list which closely matches the experience of our lab participants and uses the confederate audio recordings we have available.
+If you look in the `trial_lists` folder you downloaded as part of the zip file for this week, you'll see a couple of CSV files containing trial lists - one for an alternating confederate, and one for a confederate who only produces DO descriptions. We have many such files, but to keep it simple I'll only show you two! Each line of those CSV files describes a pair of trials: the name of the file where we saved the audio of a confederate description (in the "confederateSentence" column), the 4 images the participant chose between after hearing that description (in the "matcherArray" columns), then the image the participant was instructed to describe (in the "participantImage" columns) and the verb they were to use (in the "participantVerb" column). There's also a bunch of other information that we saved which is less relevant here.
 
-That's what `confederate_priming_readfromcsv.html` and `confederate_priming_readfromcsv.js` do. Most of the code is the same as the basic `confederate_priming.js` code, but at the end you'll see some extra code for reading a CSV file into javascript and then converting it to a jsPsych trial list. The main function is `read_trials_and_prepare_timeline` - we specify  the file name for a trial list and it reads it, creates a timeline and then runs it. Then we can start the experiment by running something like:
+We can therefore read in these CSV files and use them to build a jsPsych trial list which closely matches the experience of our lab participants and uses the confederate audio recordings we have available. That's what `confederate_priming_readfromcsv.html` and `confederate_priming_readfromcsv.js` do. Most of the code is the same as the basic `confederate_priming.js` code, but at the end you'll see some extra code for reading a CSV file into javascript and then converting it to a jsPsych trial list. The main function is `read_trials_and_prepare_timeline` - we specify  the file name for a trial list and it reads it, creates a timeline and then runs it. Then we can start the experiment by running something like:
 
 ```js
 read_trials_and_prepare_timeline("trial_lists/alternating_ns_confederate.csv")
@@ -457,24 +459,24 @@ read_trials_and_prepare_timeline("trial_lists/alternating_ns_confederate.csv")
 
 E.g. in this case, loading the alternating confederate trial list. But how does this code work?
 
-Reading a trial list from a CSV file in this way is slightly complicated, for two reasons. One reason is that we have to convert the text in the CSV file into something we can work with in javascript, which takes some time (the code contains two functions which do this, `process_data` and `build_timeline`). But the other reason is that javascript behaves quite differently to other programming languages you may have used, in that it tries to run the code `synchronously` where it can - in other words, it doesn't necessarily wait for one function to finish before it starts the next function running. This isn't really noticeable unless you try running one function that is quite slow to execute *and* you need to use the output from that function as the input to another function, which is exactly what happens when we read a CSV file from the server. You might think we could do something like:
+Reading a trial list from a CSV file in this way is slightly complicated, for two reasons. One reason is that we have to convert the text in the CSV file into something we can work with in javascript, which takes some time (the code contains two functions which do this, `process_data` and `build_timeline`). But the other reason is that javascript behaves quite differently to other programming languages you may have used, in that it tries to run the code *synchronously* where it can - in other words, it doesn't necessarily wait for one function to finish before it starts the next function running. This isn't really noticeable unless you try running one function that is quite slow to execute *and* you need to use the output from that function as the input to another function, which is exactly what happens when we read a CSV file from the server. You might think we could do something like:
 
 ```js
 var csv_as_text = fetch(triallist_filename)
 var trial_list = process_data(csv_as_text)
 ```
-where `fetch` gets the data from the CSV and then `process_data` turns it into a trial list that we can work with. However, this won't work - in practice, your browser doesn't wait for the `fetch` command to finish before it starts the `process_data` code running, but that means that `process_data` will fail because the `csv_as_text` object doesn't actually contain any data yet, because fetching data from a CSV file on the server takes some time (only a few hundred milliseconds, so it appears instantaneous to us, but for the computer is very slow and more than enough to move on and try to run the next part of the code).
+where `fetch` gets the data from the CSV and then `process_data` turns it into a trial list that we can work with. However, this won't work. Fetching data from a CSV file on the server takes some time - only a fraction of a second, so it appears instantaneous to us, but for the computer this is very slow. Rather than wait for the `fetch` command to finish before it starts the `process_data` code running, the web browser will therefore press on and try to run `process_data`, but that will fail because the `csv_as_text` object which `process_data` needs as input doesn't actually contain any data yet, because `fetch` hasn't finished!
 
-How can we get around this problem? There are various solutions, but I think the simplest one is to use the `async` and `await` functions in newer versions of javascript. This allows us to declare some functions as `async` (i.e. asynchronous), and then use `await` to tell the browser to *await* a certain function to complete before moving on. This means we can wait until the CSV file has been successfully read before we try to process the resulting data.  
+How can we get around this problem? There are various solutions, but I think the simplest one is to use the `async` and `await` functions in newer versions of javascript. This allows us to declare some functions as `async` (i.e. asynchronous), and then use `await` to tell the browser to wait for a certain operation to complete before moving on. This means we can wait until the CSV file has been successfully read before we try to process the resulting data.  
 
-That's how the `read_trials_and_prepare_timeline` function does - the full code is below, but this consists of the following steps:
-- fetch data from the CSV file - we will `await` this result because we can't proceed without it.
-- retrieve the text part of that response (which is the actual CSV contents) - again, we need to `await` this outcome.
-- convert the resulting CSV text into a javascript object we can work with using the `process_data` function.
-- use that to build the interaction trials using the `build_timeline` function, which basically reads the relevant columns from the CSV and uses the `make_picture_selection_trial` and `make_picture_description_trial` functions we created earlier to make jsPsych trials.
-- build our image button preload list, which is just the same process as before but wrapped up in a function called `build_button_image_preload_list`.
-- stick that interaction timeline together with the instruction trials to produce our full timeline.
-- and then run it, preloading images in the same way as before.
+That's how the `read_trials_and_prepare_timeline` function works - the full code is below, but this consists of the following steps:
+- Fetch data from the CSV file - we will `await` this result because we can't proceed without it.
+- Retrieve the text part of that response (which is the actual CSV contents) - again, we need to `await` this outcome.
+- Convert the resulting CSV text into a javascript object we can work with using the `process_data` function.
+- Use that to build the interaction trials using the `build_timeline` function, which basically reads the relevant columns from the CSV and uses the `make_picture_selection_trial` and `make_picture_description_trial` functions we created earlier to make jsPsych trials.
+- Build our image button preload list, which is just the same process as before but wrapped up in a function called `build_button_image_preload_list`.
+- Stick that interaction timeline together with the instruction trials to produce our full timeline.
+- And then run the full timeline, preloading images in the same way as before.
 
 In code, these steps look like this:
 
@@ -501,17 +503,17 @@ async function read_trials_and_prepare_timeline(triallist_filename) {
 }
 ```
 
-This involves some slightly more complicated javascript than we have seen before, in particular the `await` stuff, but being able to specify your trial list ahead of time and save it as a CSV file is quite useful in general and something we will specifically need in the last practical of the course.
+Being able to specify your trial list ahead of time and save it as a CSV file can be useful and is something we will need again in the last practical of the course.
 
 ## Exercises with the confederate priming experiment code
 
 Attempt these problems.
 - Run the basic `conferedate_priming.html` experiment and look at the CSV and audio data files it creates. Check you can access the audio, and that you can see how the audio and the trial list link up.
-- Run it again and see what happens to the data from the second run - you may need to refresh your cyberduck window with the refresh button.
+- Run it again and see where the data from the second run is stored - you may need to refresh your cyberduck window with the refresh button.
 - The short trial list I built in `conferedate_priming.js` is for a confederate who uses both PO and DO descriptions. How would you change that trial list to model a DO-only confederate?
-- Now try running the `conferedate_priming_readfromcsv.html` experiment and run through some more trials (you don't have to do the whole experiment!). Again, check you can see your data on the server.
+- Now try running the `conferedate_priming_readfromcsv.html` experiment - you don't have to work through the whole experiment, just a few trials! Again, check you can see your data on the server.
 - For this version of the experiment, how do you switch from an alternating to DO-only confederate? (Hint: this involves changing the name of the file used by the `read_trials_and_prepare_timeline` function in the very last line of the code).
-- Building on the previous question: how would you randomly allocate a participant to one of these two conditions? (Hint: you could look at the `random_image_flip` function for inspiration).
+- Building on the previous question: how would you randomly allocate a participant to one of these two conditions, alternating vs DO confederate? (Hint: you could look at the `random_image_flip` function for inspiration).
 - For either of these experiments, figure out how to disable image preloading for the button images and re-run the experiment. Can you see the difference? If it works smoothly, try running the experiment in Chrome in Incognito mode, which prevents your browser saving images etc for you. Can you see the difference now?
 - [Harder, optional] Can you change the `random_wait` function so it generates longer waits early in the experiment and shorter waits later on?
 
