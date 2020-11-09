@@ -219,8 +219,8 @@ function make_picture_description_trial(target_image,verb) {
                                  on_start: function(trial) {
                                    start_recording(participant_id)},
                                  on_finish: function(data) {
-                                   stop_recording()
                                    data.recording_counter = recording_counter
+                                   stop_recording()
                                    data.trial_type = 'picture_description'
                                    save_confederate_priming_data(data)}
                                  }
@@ -267,8 +267,8 @@ var picture_plus_orange_mic = {type:'image-button-response',
                                on_start: function(trial) {
                                  start_recording(participant_id)},
                                on_finish: function(data) {
-                                 stop_recording()
                                  data.recording_counter = recording_counter
+                                 stop_recording()
                                  data.trial_type = 'picture_description'
                                  save_confederate_priming_data(data)}
                                }
@@ -293,16 +293,17 @@ Finally, when the participant is done talking they click the mic button again to
 
 ```js
 on_finish: function(data) {
+  ...
   stop_recording()
   ...
 }
 ```
- We also want to save the data from this trial, which we do using `save_confederate_priming_data`. But when we do that, we want to keep a note of `recording_counter` (which is our internal counter of recording numbers), so that when it comes time to listen to the recordings we can link the audio recording files (which include `recording_counter` in their name) with the specific trial in the experiment. To do that, we make a note of `recording_counter` in our trial data, and also mark this trial as a picture description trial, then save that data.
+ We also want to save the data from this trial, which we do using `save_confederate_priming_data`. But when we do that, we want to keep a note of `recording_counter` (which is our internal counter of recording numbers), so that when it comes time to listen to the recordings we can link the audio recording files (which include `recording_counter` in their name) with the specific trial in the experiment. To do that, we make a note of `recording_counter` in our trial data (note that we do that *before* we stop the recording, because `stop_recording` increments `recording_counter` in preparation for the next recording), and also mark this trial as a picture description trial, then save that data. 
 
  ```js
  on_finish: function(data) {
-   ...
  data.recording_counter = recording_counter
+ ...
  data.trial_type = 'picture_description'
  save_confederate_priming_data(data)}
  ```
