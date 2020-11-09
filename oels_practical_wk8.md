@@ -5,7 +5,7 @@ description: Audio recording, more randomisation stuff, custom preload lists, re
 
 ## The plan for week 8 practical
 
-This week we are going to look at code for a confederate priming experiment based on the experiment described in Loy & Smith (2020) (and in fact using some of our stimuli). There's no new material to look at in the Online Experiments with jsPsych tutorial. As in the perceptual learning experiment we use the `audio-button-response` plugin to play audio and get button-click responses from a participant when they are listening to the confederate. We need some new background infrastructure to get the participant to record their own spoken descriptions: we use `image-button-response` trials to have the participant look at an image, click a mic button to start recording audio, and then we call some behind-the-scenes functions that will record audio and save it to the server - you don't actually need to know how the audio recording code works, although it's all commented up. We are also going to add a few more bits and pieces involving randomisation (random participant IDs, random wait durations to simulate a human partner, random flipping of some image orientations), we'll build a custom preload list to make sure our button images are preloaded before the experiment starts, and finally I'll show how to load a trial list from a CSV file (handy if you don't want to have to specify how to build the trial list inside the jsPych code).
+This week we are going to look at code for a confederate priming experiment based on the experiment described in Loy & Smith (2020) (and in fact using some of our stimuli). There's no new material to look at in the Online Experiments with jsPsych tutorial. As in the perceptual learning experiment we use the `audio-button-response` plugin to play audio and get button-click responses from a participant when they are listening to the confederate. We use `image-button-response` trials to have the participant look at an image, click a mic button to start recording audio, and then we call some behind-the-scenes functions that will record audio and save it to the server - you don't actually need to know how the audio recording code works, although the code is all commented up if you want to take a look. We are also going to add a few more bits and pieces involving randomisation (random participant IDs, random wait durations to simulate a human partner, random flipping of some image orientations), we'll build a custom preload list to make sure our button images are preloaded before the experiment starts, and finally I'll show how to load a trial list from a CSV file (handy if you want to use a pre-built trial list).
 
 Remember, as usual the idea is that you do as much of this as you can on your own (might be none of it, might be all of it) and then come to the practical drop-in sessions or use the chat on Teams to get help with stuff you need help with.
 
@@ -26,10 +26,10 @@ You need a bunch of files for this experiment - as per last week, an html file, 
 
 Again, the code makes some assumptions about the directory structure it's going to live in - you need to extract these files to a folder called something like `confederate_priming`, alongside your `grammaticality_judgments`, `self_paced_reading`, `word_learning`, `perceptual_learning` and `jspsych-6.1.0` folders.
 
-Like last week, this code will *not* run on your local computer - you need to upload the whole `confederate_priming` folder to your public_html folder on the jspsychlearning server and play with it there. Furthermore, there are a couple of things to tweak before you can run the code:
+Like last week, this code will *not* run on your local computer - you need to upload the whole `confederate_priming` folder to your `public_html` folder on the jspsychlearning server and play with it there. Furthermore, there are a couple of things to tweak before you can run the code:
 - You need to edit `save_data.php` and `save_audio.php` so that they point to *your* `server_data` folder rather than mine. Open those files in an editor and change the path `/home/ksmith7/server_data/` to `/home/UUN/server_data/` where UUN is your UUN.
 - The code will save audio files to a subfolder of `server_data` called `audio` - so you need to create such a subfolder. You can create new folders in cyberduck quite easily.
-- You will need to use Chrome for the audio to work reliably. Furthermore, you will have to change your Chrome settings to allow it to access the microphone. Quite sensibly, modern browsers have protections that prevent random websites accessing your microphone or camera in unsafe ways; the user always has to give permission, but also those resources are only available when the origin of the code (i.e. our server where the code lives) is secure, i.e. can be trusted to be who it says it is. Our `jspsychlearning` server is not set up like that at the moment, it lacks the necessary certificates, so we have to tell Chrome to trust it for audio recording purposes - obviously you wouldn't ask real participants to do this step, you'd have to set up a secure server for your code, but in our case it's only us trying out the code and we know it's nothing dodgy, so we can use this work-around. The way to do this is as follow the following 4 steps (which I got from [here](https://medium.com/@Carmichaelize/enabling-the-microphone-camera-in-chrome-for-local-unsecure-origins-9c90c3149339)).
+- You will need to use Chrome for the audio to work reliably. You will also have to change your Chrome settings to allow it to access the microphone. Quite sensibly, modern browsers have protections that prevent random websites accessing your microphone or camera in unsafe ways; the user always has to give permission, but also those resources are only available when the origin of the code (i.e. our server where the code lives) is secure, and can be trusted to be who it says it is. Our `jspsychlearning` server is not set up like that at the moment, it lacks the necessary certificates, so we have to tell Chrome to trust it for audio recording purposes - obviously you wouldn't ask real participants to do this step, you'd have to set up a secure server for your code, but in our case it's only us trying out the code and we know it's nothing dodgy, so we can use this work-around. The way to do this is as follow the following 4 steps (which I got from [here](https://medium.com/@Carmichaelize/enabling-the-microphone-camera-in-chrome-for-local-unsecure-origins-9c90c3149339)).
   - In chrome, copy this address into the navigation bar: chrome://flags/#unsafely-treat-insecure-origin-as-secure and go there.
   - Find and enable the `Insecure origins treated as secure` section.
   - Add http://jspsychlearning.ppls.ed.ac.uk to the text box of origins you want to treat as secure.
@@ -39,7 +39,7 @@ Once you have done those various steps you are ready to try out the experiment. 
 - A short version with a small number of trials. The code for this is in `confederate_priming.html` and `confederate_priming.js`, and the URL will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/confederate_priming/confederate_priming.html if your directory structure is as suggested. This is the code I will start with in the explanation below.
 - A full-length version with a large number of trials (100+). The code for this is in `confederate_priming_readfromcsv.html` and `confederate_priming_readfromcsv.js`, and the URL should be http://jspsychlearning.ppls.ed.ac.uk/~UUN/confederate_priming/confederate_priming_readfromcsv.html. If you want a longer demo you can run this, but the main purpose of including the second version is to show you how a long trial list can be read in from a CSV file.
 
-First, get the code and run through it so you can see what it does. If you have problems with getting the audio to record to the server, get in touch with me! Then take a look at the HTML and js files in your code editor (e.g. Atom), and read on.
+First, get the code and run through it so you can see what it does. If you have problems with getting the audio to record to the server, get in touch with me! Then take a look at the HTML and js files in your code editor (starting with the simpler `confederate_priming.html` and `confederate_priming.js` version), and read on.
 
 ### Structure of the experiment
 
@@ -50,19 +50,15 @@ The experiment consists of two trial types, which alternate:
 We are interested in whether, on critical trials featuring a ditransitive event,
 the construction used in the description on the picture selection trial (PO or DO) influences the description the participant produces on the immediately following picture description trial.
 
-Picture selection trials work in essentially the same was as picture selection trials in the perceptual learning experiment, using the `audio-button-response` plugin. Picture description trials are a series of `image-button-response` trials (with the participant clicking on a mic button to start and stop recording), with some additional infrastructure to handle recording audio. We also simulate the confederate preparing to speak and making a selection based on the participant's productions by inserting variable "waiting for partner" screens. The code therefore uses plugins you are already familiar with - the main new addition to the code is some functions which record audio, but you don't actually need to know how this works (although the code is there for you to look if you are interested).
+Picture selection trials work in essentially the same was as picture selection trials in the perceptual learning experiment, using the `audio-button-response` plugin. Picture description trials are a series of `image-button-response` trials (with the participant clicking on a mic button to start and stop recording), with some additional infrastructure to handle recording audio. We also simulate the confederate preparing to speak and making a selection based on the participant's productions by inserting variable-duration "waiting for partner" screens.
+
+The code therefore uses plugins you are already familiar with - the main new addition to the code is some functions which record audio, but you don't actually need to know how this works (although the code is there for you to look if you are interested).
 
 ### Loading the code for recording audio
 
 Rather than putting all the audio recording code plus all the other experiment code in one long js file, I have split it - the audio recording code is in `confederate_priming_utilities.js`, which we load in our `confederate_priming.html` file at the same time as specifying the plugins etc we need and loading the `confederate_priming.js` file.
 
 ```html
-<script src="../jspsych-6.1.0/jspsych.js"></script>
-<script src="../jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
-<script src="../jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
-<script src="../jspsych-6.1.0/plugins/jspsych-image-button-response.js"></script>
-<script src="../jspsych-6.1.0/plugins/jspsych-audio-button-response.js"></script>
-<link href="../jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
 <script src="confederate_priming_utilities.js"></script>
 <script src="confederate_priming.js"></script>
 ```
@@ -71,18 +67,18 @@ The browser doesn't actually care if code is split over more than one file - it 
 
 For our purposes all you have to know is that `confederate_priming_utilities.js` creates some variables and functions that we can use in our main experiment code. These are:
 
-`recording_counter`  is just a counter where we keep track of how many audio recordings we have made - the first recording is 0, the second 1 etc. We use these in the filenames of recordings and also in the CSV data saved on the server so that we can link particular recordings to particular experiment trials.
+`recording_counter`, which is just a counter where we keep track of how many audio recordings we have made - the first recording is 0, the second 1 etc. We use these in the filenames of recordings and also in the CSV data saved on the server so that we can link particular recordings to particular experiment trials.
 
-`request_mic_access()` is a function which creates the various media and recorder objects we need to record audio, and will prompt the participant for mic access via a pop-up.
+`request_mic_access()`, which is a function which creates the various media and recorder objects we need to record audio, and will prompt the participant for mic access via a pop-up.
 
-`start_recording(filename_prefix)` is a function starts audio recording from the participants' mic. When the audio recording stops, the audio will be saved
-to a file on the server (in `server_data/audio`) called filename_prefix_recording_counter.webm - e.g. if you pass in filename prefix "kennyaudio" the first recording will be saved as kennyaudio_0.
+`start_recording(filename_prefix)`, which is a function that starts audio recording from the participants' mic. When the audio recording stops, the audio will be saved
+to a file on the server (in `server_data/audio`) called filename_prefix_recording_counter.webm - e.g. if you pass in filename prefix "kennyaudio" the first recording will be saved as kennyaudio_0.webm.
 
-`stop_recording()` is a function which stops the current audio recording, triggering saving of the audio file, and also increments the `recording_counter` so that the next recording has a different counter value and different file name.
+`stop_recording()` is a function which stops the current audio recording, triggering saving of the audio file, and also increments the `recording_counter` so that the next recording has a different counter value and therefore a different file name.
 
 ### Random elements of the experiment
 
-The first part of `confederate_priming.js` is comments on the audio recording code (for human reading, the code ignores these) and then some code for saving our data trial by trial - the function `save_confederate_priming_data(data)` saves trial data in the same way as the `save_perceptual_learning_data` function from last week, and you'll see it used in the functions below. Since you have seen similar functions before, I'll skip to the new code, which starts with several functions for handling random elements of the experiment.
+The first part of `confederate_priming.js` is comments on the audio recording code (for human reading, the code ignores these) and then some code for saving our data trial by trial - the function `save_confederate_priming_data` saves trial data in the same way as the `save_perceptual_learning_data` function from last week, and you'll see it used in the functions below. Since you have seen similar functions before, I'll skip these and jump to the new code, which starts with several functions for handling random elements of the experiment.
 
 First, we are going to assign each participant a random participant ID - this means we can save one CSV file and one set of audio recordings per participant, rather than cramming everything into a single file as we have been doing so far. We create these random IDs using a jsPsych built-in function:
 
@@ -90,9 +86,11 @@ First, we are going to assign each participant a random participant ID - this me
 var participant_id = jsPsych.randomization.randomID(10);
 ```
 
-This creates a variable, `participant_id`, which we can use later. The participant IDs are a list of 10 randomly-generated letters and numbers - since there are many many possible combinations of length 10 (36 to the power 10, which is more than 3,600,000,000,000,000) in practice this should mean that no two participants are assigned the same ID, and therefore each participant has a unique ID.
+This creates a variable, `participant_id`, which we can use later. The participant IDs are a string of randomly-generated letters and numbers, in this case set to length qo (e.g. "asqids6sn1") - since there are many many possible combinations of length 10 (36 to the power 10, which is more than 3,600,000,000,000,000) in practice this should mean that no two participants are assigned the same ID, and therefore each participant has a unique ID.
 
-At various points in the experiment we also want to create a random wait, to simulate another participant composing their description or selecting an image based on the genuine participant's description. In the Loy & Smith (2020) paper we had a fairly intricate system for generating these random delays, making them quite long initially (to simulate a partner who was not yet used to the task) and then reducing over time (to simulate increasing familiarity, but also not too needlessly waste our real participants' time). My impression is that this was reasonably successful - not too many participants guessed they were interacting with a simulated partner - and also worth the effort, in that most of the people who *did* guess that they were not interacting with a real person were cued by their partner's response delays (in particular, noting that they were quite short and quite reliable). Here for simplicity's sake we just create a function which returns a random delay between 1000ms and 3000ms, using some built-in javascript code for random number generation:
+At various points in the experiment we also want to create a random wait, to simulate another participant composing their description or selecting an image based on the genuine participant's description. In the Loy & Smith (2020) paper we had a fairly intricate system for generating these random delays, making them quite long initially (to simulate a partner who was not yet used to the task) and then reducing over time (to simulate increasing familiarity, but also not to needlessly waste our real participants' time). My impression is that this was reasonably successful - not too many participants guessed they were interacting with a simulated partner - and also worth the effort, in that most of the people who *did* guess that they were not interacting with a real person were cued by their partner's response delays, in particular, noting that they were quite short and quite consistent.
+
+In the demo experiment, for simplicity's sake we just create a function which returns a random delay between 1000ms and 3000ms, using some built-in javascript code for random number generation:
 
 ```js
 function random_wait() {
@@ -100,12 +98,14 @@ function random_wait() {
 }
 ```
 
-`Math.random()` generates a random number between 0 and 1 (e.g 0.127521, 0.965341, etc). We then multiply that by 2000 and use `Math.floor` to round down to a whole number (e.g. our random numbers will become 255, 1930 respectively), then add 1000ms to produce random waits in our desired range (e.g. 1255ms, 2930ms).
+`Math.random()` generates a random number between 0 and 1 (e.g 0.127521, 0.965341). We then multiply that by 2000 and use `Math.floor` to round down to a whole number (e.g. our random numbers will become 255, 1930 respectively), then add 1000ms to produce random waits in our desired range (e.g. 1255ms, 2930ms).
 
-Finally, we need some code to randomly decide whether to include images in their default or reversed orientation. Participants will be describing events involving characters and objects, and we have good reasons to expect that the order in which characters appear in those scenes might influence the word order participants use (e.g. if people tend to process images left to right, and the recipient of a giving action is always in the left, maybe people will be likely to mention that recipient earlier in their description, introducing a bias for DO order). We therefore want to eliminate those kinds of systematic biases by presenting images in both possible orientations (e.g. recipient on the left or the right). The `images` folder contains two versions of each image - the orientation that Jia drew them in, and then a reversed image where the image is flipped/mirrored on its horizontal axis. The two images have the same name except that the reversed image has "_r" added at the end - so for example, the two images below are `artist_brushes_book.jpg` and `artist_brushes_book_r.jpg`.
+Finally, we need some code to randomly decide whether to include images in their default or reversed orientation. Participants will be describing events involving characters and objects, and we have good reasons to expect that the order in which characters appear in those scenes might influence the word order participants use (e.g. if people tend to process images left to right, and the recipient of a giving action is always in the left, maybe people will be likely to mention that recipient earlier in their description, introducing a bias for DO order). We therefore want to eliminate those kinds of systematic biases by presenting images in both possible orientations (e.g. recipient on the left or the right).
 
-![artist_brushes_book](images/artist_brushes_book.jpg)
-![artist_brushes_book_r](images/artist_brushes_book_r.jpg)
+The `images` folder contains two versions of each image - the orientation that Jia drew them in, and then a reversed image where the image is flipped/mirrored on its horizontal axis. The two images have the same name except that the reversed image has "_r" added at the end - so for example, the two images below are `artist_gives_chef_hat.jpg` and `artist_gives_chef_hat_r.jpg`.
+
+![artist_gives_chef_hat](images/artist_gives_chef_hat.jpg)
+![artist_gives_chef_hat_r](images/artist_gives_chef_hat_r.jpg)
 
 Our `random_image_flip` function will handle this for us - every time we want to include an image, we use `random_image_flip(image_name)`, which takes an image name and either returns that image name or the reversed version, by adding "" (i.e. nothing) or "_r" to the end of the image name. The random element is achieved by picking either "" or "_r" at random using `jsPsych.randomization.shuffle`.
 
@@ -511,6 +511,7 @@ Attempt these problems.
 - The short trial list I built in `conferedate_priming.js` is for a confederate who uses both PO and DO descriptions. How would you change that trial list to model a DO-only confederate?
 - Now try running the `conferedate_priming_readfromcsv.html` experiment and run through some more trials (you don't have to do the whole experiment!). Again, check you can see your data on the server.
 - For this version of the experiment, how do you switch from an alternating to DO-only confederate? (Hint: this involves changing the name of the file used by the `read_trials_and_prepare_timeline` function in the very last line of the code).
+- Building on the previous question: how would you randomly allocate a participant to one of these two conditions? (Hint: you could look at the `random_image_flip` function for inspiration).
 - For either of these experiments, figure out how to disable image preloading for the button images and re-run the experiment. Can you see the difference? If it works smoothly, try running the experiment in Chrome in Incognito mode, which prevents your browser saving images etc for you. Can you see the difference now?
 - [Harder, optional] Can you change the `random_wait` function so it generates longer waits early in the experiment and shorter waits later on?
 
