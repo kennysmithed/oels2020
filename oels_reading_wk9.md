@@ -1,11 +1,13 @@
 ---
 title: Week 9 reading
-description: Participant-to-participant interaction
+description: Least effort and Zipf's Law of Abbreviation
 ---
 
 ## The plan for week 9
 
-This page is under development and for now just includes the paper we will be reading.
+This week we are looking at Kanwal et al. (2017), which reports a single 4-condition experiment testing whether the Law of Abbreviation (frequent words have short labels, infrequent words have long labels) arises from a trade-off between accuracy and effort, i.e. because people want to be understood but still minimise their effort while communicating. Participants from MTurk were trained on a simple lexicon where two objects each had two possible labels (this should remind you of Ferdinand et al., 2018 from week 4); each object had a long label (*zopekil* for one object, *zopudon* for the other) and a short label (*zop* for both); the short label was therefore ambiguous. One of the objects was also seen more frequently in training, e.g. the *zopekil/zop* was three times as frequent as the *zopudon/zop*. After training participants then played either a solitary labelling game (in the *Time* and *Neither* conditions) or a dyadic game where they played a simple communication game with another participant (in the *Combined* and *Accuracy* conditions). This difference between solitary labelling and dyadic communication allowed us to manipulate whether participants cared about being ambiguous or not. We also manipulated production effort: in the Combined and Time conditions producing the longer labels was particularly effortful, whereas in the Accuracy and Neither conditions there was no difference in production effort for long and short labels. We found, as hypothesised by Zipf, that Law of Abbreviation-like arrangements (use the short label was used for the frequent object and the long label for the infrequent object) only developed in the Combined condition, where people had to trade off the ambiguity of the short label against the production effort of the long label; in the other conditions, participants tended either to use the short label for both objects (in the Time condition - if you're not communicating and it's easier to produce the short label, why ever use the long one?) or the long label for both objects (in the other conditions - in the Accuracy condition it's no more effort to produce the unambiguous long label so you might as well, so that result makes sense to me, to be honest I find this result in the Neither condition slightly surprising!).
+
+As usual, in this week's practical you'll get a chance to look at a similar experiment in jsPsych, which will involve code from our week 4 word learning experiment again but also the infrastructure to run dyadic interaction experiments between web browsers.
 
 
 ## Reading tasks for this week
@@ -13,6 +15,7 @@ This page is under development and for now just includes the paper we will be re
 Read:
 - [Kanwal, J., Smith, K., Culbertson, J., & Kirby, S. (2017). Zipf's Law of Abbreviation and the Principle of Least Effort: Language users optimise a miniature lexicon for efficient communication. *Cognition, 165*, 45-52.](https://doi.org/10.1016/j.cognition.2017.05.001)
 
+NB. This paper is behind the Elsevier paywall so you will have to be on the University network or the VPN to access it.
 
 ## Re-use
 
