@@ -98,8 +98,7 @@ You could use the opportunity for catchup or lookahead reading.
 
 - *Scientific content:* probably none!
 - *Technical content:* How to launch and pay HITs, manage qualifications, etc
-- No reading this week
-- Programming task
+- The only thing to read this week is some notes for how to get your experiments online
 
 ## Re-use
 
