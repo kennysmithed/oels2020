@@ -82,8 +82,6 @@ You could use the opportunity for catchup or lookahead reading.
 
 ### Week 9 (16th November): Participant-to-participant interaction
 
-*NB Assessment 1 due this week*
-
 - *Scientific content:* least effort and Zipf's Law of Abbreviation
 - *Technical content:* web sockets, python servers
 - [Reading](oels_reading_wk9.md)
