@@ -87,7 +87,7 @@ You could use the opportunity for catchup or lookahead reading.
 - *Scientific content:* least effort and Zipf's Law of Abbreviation
 - *Technical content:* web sockets, python servers
 - [Reading](oels_reading_wk9.md)
-- Programming task
+- [Programming task](oels_practical_wk9.md)
 
 ### Week 10 (23rd November): Iterated Learning
 
