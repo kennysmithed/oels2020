@@ -101,7 +101,9 @@ which sends a message back to the python server to let it know that this partici
 
 ### Building the timeline dynamically
 
-OK, so what happens when the server sends over a message like `"{command_type:WaitingRoom}"` and the `interaction_loop` function processes it and calls the function `waiting_room()` - how does this make stuff happen on the participant's screen? Here's the `waiting_room()` function, which is defined in the `dyadic_interaction.ps` code.
+OK, so what happens when the server sends over a message like `"{command_type:WaitingRoom}"`, prompting the `interaction_loop` function processes to run the function `waiting_room()` - how does this make stuff happen on the participant's screen?
+
+Here's the `waiting_room()` function, which is defined in the `dyadic_interaction.ps` code.
 
 ```js
 function waiting_room() {
@@ -112,6 +114,16 @@ function waiting_room() {
   jsPsych.addNodeToEndOfTimeline(waiting_room_trial,jsPsych.resumeExperiment)
 }
 ```
+
+As you can see the guts of this is just a fairly boring `html-keyboard-response` trial, putting some text on-screen telling participants they are in a waiting room (in the real experiment we had some cat videos they could watch while they wait, but I am giving you the spartan version). But there are a couple of noteworthy things, which I'll explain in a second once I have covered a preliminary topic.
+
+You should already be familiar with the idea that jsPsych experiments run through a timeline of trials - as each trial is completed you move to the next in the timeline, until you hit the end of the timeline then the experiment stops. In all the experiments we have seen so far, we define the timeline up-front, then the participant just runs through it. That poses a challenge for our experiment, because we can't define the timeline in advance - as soon as people start interacting, we need the python server to tell us what trials to run in what order.
+
+The solution to this is to build the timeline as we go - every time the python server tells us what kind of trial to run we need to add that trial to the timeline and run it. Fortunately jsPsych provides a function for this kind of thing, called `jsPsych.addNodeToEndOfTimeline(trial,continuation)` - this will add `trial` to the very end of the timeline, then it will call `continuation` (which has to be a function, more on that in a minute). So we can use `jsPsych.addNodeToEndOfTimeline` to add new trials on the end of the timeline as they come in from the python server.
+
+The second tricky thing is that jsPsych is always moving forward - as soon as a trial is completed it will move to the next trial, and if there are no trials left in the experiment it will exit the experiment - and once it's exited, it' won't re-start if you add stuff into the timeline, when it's done it's done. This is a problem when we are adding trials one at a time to the end of the timeline - we have to avoid running out of trials/track.
+
+![Avoiding running out of trials](https://tenor.com/p4X9.gif)
 
 
 
