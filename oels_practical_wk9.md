@@ -123,7 +123,7 @@ The solution to this is to build the timeline as we go - every time the python s
 
 The second tricky thing is that jsPsych is always moving forward - as soon as a trial is completed it will move to the next trial, and if there are no trials left in the experiment it will exit the experiment - and once it's exited, it' won't re-start if you add stuff into the timeline, when it's done it's done. This is a problem when we are adding trials one at a time to the end of the timeline - we have to avoid running out of trials/track.
 
-![Avoiding running out of trials](https://tenor.com/p4X9.gif)
+![Avoiding running out of trials](https://media.giphy.com/media/3oz8xtBx06mcZWoNJm/giphy.gif)
 
 
 
