@@ -32,9 +32,88 @@ Once you have done that you can open `dyadic_interaction.html` in your web brows
 
 First, get the code and run through it so you can see what it does. Then read on. For this week I am going to focus on the conceptual level of how the dyadic interaction happens, and avoid stepping through the javascript in too much detail - like I said, most of it is re-used from earlier experiments anyway.
 
+
 ### Clients and servers for dyadic interaction
 
+You are already with the notion of a server that hands communicates with some clients, because that's how code you have put on the jspsychlearning server works - a client (your web browser) contacts the server and says, e.g., "hey, give me what you have at ~ksmith7/public_html/word_learning/word_learning.html" and the server sends says "sure, here's the contents of that file" and sends back the html file; the client then says "hmm, looks like a need some javascript files too please" and the server sends those over too, then based on what's in the html and javascript files your browser shows stuff on the screen, collects button clicks etc. All the mechanics of how this works is hidden from us, but the basic infrastructure is information flowing between your browser and the server - they send messages back and forth, and act on the messages they receive.
+
+We can use exactly the same sort of information flow to build a dyadic interaction experiment: we'll have some code sitting on a machine somewhere that receives requests from clients and sends information back to them; the clients then process that information and sends further messages to the server. The code on the server handles the logic of how the dyadic communication game works - it keeps track of which clients (participants' web browsers) are connected, pairs them up into dyads, tells them who should be director and who should be matcher, and so on. Then the code running on the clients handles the participant side of things - what the participants see, what options they have to click on - and sends their responses back to the server.
+
+Our clients are written in javascript and jsPsych - they show stimuli, present buttons etc, just like in all the experiments we have looked at so far, the only difference being that the server tells them what kind of trial to run, and when they complete certain trials they send info back to the server telling them e.g. what label the participant selected.  
+
+Our server for this experiment happens to be written in python, another programming language - I could have written it in javascript, but to be honest I am more confident in python and that was easier! The server code receives and sends simple messages to the clients, keeps track of who is connected, and controls the progress of all the dyads that are currently running the experiment, sending them the right messages at the right time. It's this relaying of messages back and forth via the server that allows two participants in different locations to feel as if they are playing a communication game with each other - they are both connected to the server, and the server hands out commands to one participant in a dyad based on what the other participant is doing; for instance, when one participant selects a label, they send it back to the server and then the server sends it on to the other participant in that dyad.
+
+That's the basic idea. The flow of information between the clients and the server is a little bit intricate, because each trial in the experiment has several phases that the server needs to handle. In the diagram below I have tried to sketch out the kinds of information that pass back and forth between the server and two clients when you run the code - you read this from the top down, messages in blue are ones going from a client to the server, messages in orange are going from the server to the clients, white text boxes are actions that the clients or servers take based on the messages they receive. This diagram covers the initial connection by 2 clients, formation of a pair, the pre-interaction instructions, and then a single communication trial with a director trial by participant ad30074fhd, a matcher trial by their partner 6apogh342, feedback to both, and then the start of the next trial where the roles flip.
+
 ![flow of information between server and clients](images/dyadic_interaction_flow.png)
+
+### Practicalities
+
+How do we actually do this stuff in practice? The inner workings of the python server will have to remain a black box - the code is part of the zip file for this week, if you know python you can have a look if you want (it's all commented up), but you don't have to. But I do want to give you a flavour of how some of the jsPsych side of things works. In particular:
+- How the code is organised.
+- How we run the non-interactive observation phase.
+- How we send and receive messages to/from the python server.
+- How we build a timeline dynamically, based on messages from the python server.
+
+### Organisation of the code
+
+Following the model of last week, I have bundled up some of the technical stuff for the client-server communication in a separate file, `dyadic_interaction_utilities.js`, and then all the jsPsych stuff is in `dyadic_interaction.js`. For this experiment we also have an extra plugin that I created, called `jspsych-image-repeatbutton-response.js`, which sits alongside the other js files for the experiment - this is a minor modification to the standard `jspsych-image-button-response.js` plugin, I just copied that code and edited it a little bit to set up a trial type where the participant has to spam the button to complete the trial. JsPych doesn't care who wrote the plugins, as long as they have the correct format it will use them no problem, so creating new plugins is pretty easy, particularly when they are based on existing ones.
+
+### The observation phase
+
+When someone enters the experiment, the first thing they do is go through the observation phase. This is a solitary activity, so we handle it just like a normal jspsych experiment - we build some trials (`image-keyboard-response` trials) to show objects and labels, build a timeline of those trials, and then run through that timeline as normal. So far, so standard.
+
+### Sending and receiving messages from the server
+
+The final two trials of the "normal" part of the experiment, after the observation phase, are called `instruction_screen_enter_waiting_room` and `start_interaction_loop` and look like this:
+
+```js
+var instruction_screen_enter_waiting_room = {
+  type: 'html-keyboard-response',
+  stimulus: "<h3>Instructions before entering the waiting room</h3>\
+  <p style='text-align:left'>Once the participant clicks through here they will connect to the server \
+  and the code will try to pair them with another participant.</p>\
+  <p>Press any key to begin</p>"
+}
+
+var start_interaction_loop = {type:'call-function',
+                              func: interaction_loop}
+```
+
+`instruction_screen_enter_waiting_room` is a very boring 'html-keyboard-response' trial, showing some dummy instructions. `start_interaction_loop` is another jsPsych trial, of a type we have not used before: `call-function`. All `call-function` does is run a javascript function, specified in the `func` parameter - in this case, we are asking it to run the function `interaction_loop`, which is going to do some important work for us. Unlike all the other plugins we have used so far, the `call-function` plugin is completely invisible for participants - it starts some code running, but nothing appears on the screen, no images are shown, no responses are collected.
+
+So what does the `interaction_loop` function do? It appears with comments in the `dyadic_interaction_utilities.js` file, but basically it does two main things:
+- It creates a connection between the client browser and the python server, using a communication protocol called [WebSockets](https://en.wikipedia.org/wiki/WebSocket), which allow 2-way communication between the browser and the python server. This channel will stay open for the duration of the experiment, and allows the client and the server to communicate seamlessly by sending and receiving messages over the socket. The code for creating the socket is actually very simple, one line of code:
+
+```js
+ws = new WebSocket("ws://jspsychlearning.ppls.ed.ac.uk:" + my_port_number)
+```
+where `my_port_number` is just an integer that is defined in the `dyadic_interaction.js` code, and is normally set to 9001 (although see below on changing this to run your own private server). Computers have many many ports they can connect to other computers over, port 9001 is simply one of the free ones.
+- Once the connection is created, `interaction_loop` then listens on that socket for messages from the server. Then whenever a message comes in, it does some basic parsing of the message and figures out what the client needs to do. For instance, if the server sends a message that looks like `"{command_type:WaitingRoom}"`, this triggers the client to run a function called `waiting_room()`, which we'll see in a moment, that creates a trial and adds it to the trial timeline - so the message from the python server triggers a response in the `interaction_loop` code that causes something to happen on the participant's screen, i.e. a jsPsych trial is run. That's how the whole experiment works - messages from the server trigger stuff in `interaction_loop` that cause trials to be created and added to the trial timeline. When I wrote the python server code I worked out what the minimal set of commands was that needed to come from the python server to the client to make this experiment work, then I wrote bits of code inside `interaction_loop` to process those commands.
+
+The only other thing in `dyadic_interaction_utilities.js` is a function called `send_to_server(message)` - we call this function with a particular message we want to send back to the server, and it sends it over the socket. For instance, when the participant finishes reading some instructions that the server sent over, we call:
+
+```js
+send_to_server({response_type:"INTERACTION_INSTRUCTIONS_COMPLETE"})
+```
+
+which sends a message back to the python server to let it know that this participant has now finished reading the instructions; receiving this message triggers a response in the python server which allows the experiment to progress.
+
+### Building the timeline dynamically
+
+OK, so what happens when the server sends over a message like `"{command_type:WaitingRoom}"` and the `interaction_loop` function processes it and calls the function `waiting_room()` - how does this make stuff happen on the participant's screen? Here's the `waiting_room()` function, which is defined in the `dyadic_interaction.ps` code.
+
+```js
+function waiting_room() {
+  var waiting_room_trial = {type:'html-keyboard-response',
+                            stimulus:"You are in the waiting room",
+                            choices:[],
+                            on_finish:function() {jsPsych.pauseExperiment()}}
+  jsPsych.addNodeToEndOfTimeline(waiting_room_trial,jsPsych.resumeExperiment)
+}
+```
+
+
 
 ## Exercises with the dyadic interaction experiment code
 
