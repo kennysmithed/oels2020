@@ -34,7 +34,7 @@ First, get the code and run through it so you can see what it does. Then read on
 
 ### Clients and servers for dyadic interaction
 
-In prep
+![flow of information between server and clients](images/dyadic_interaction_flow.png)
 
 ## Exercises with the dyadic interaction experiment code
 
