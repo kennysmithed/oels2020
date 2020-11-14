@@ -8,7 +8,7 @@ description: web sockets, python servers
 This week we are going to look at code for a dyadic interaction task based on the Combined condition of the experiment described in Kanwal et al. (2017). There's no new material to look at in the Online Experiments with jsPsych tutorial.
 
 In terms of the trial types we need to present to participants, this experiment is actually very simple, and uses elements of the code we developed in the practicals on word learning and perceptual learning.
-- Participants go through an initial observation phase where they are exposed to two objects paired with short and long labels. This is basically identical to the observation phase of the word learning experiment in word_learning.js.
+- Participants go through an initial observation phase where they are exposed to two objects paired with short and long labels. This is basically identical to the observation phase of the word learning experiment in `word_learning.js`.
 - When communicating with their partner, participants sometimes act as what I'll call the *director* - they are presented with an object and asked to select one of two labels to send to their partner. This is very similar to the production trial phase in the word learning experiment. The only difference is that we need to add a manipulation of production effort, making the longer labels more onerous to send. I explain how we do that below.
 - When communicating with their partner, participants sometimes act as the *matcher* - they are presented with a label and asked to select one of two objects which they think their partner is labelling. This is very similar to the picture selection trials in the perceptual learning experiment, except that we are just using a text label rather than an audio file.
 
@@ -121,10 +121,41 @@ You should already be familiar with the idea that jsPsych experiments run throug
 
 The solution to this is to build the timeline as we go - every time the python server tells us what kind of trial to run we need to add that trial to the timeline and run it. Fortunately jsPsych provides a function for this kind of thing, called `jsPsych.addNodeToEndOfTimeline(trial,continuation)` - this will add `trial` to the very end of the timeline, then it will call `continuation` (which has to be a function, more on that in a minute). So we can use `jsPsych.addNodeToEndOfTimeline` to add new trials on the end of the timeline as they come in from the python server.
 
-The second tricky thing is that jsPsych is always moving forward - as soon as a trial is completed it will move to the next trial, and if there are no trials left in the experiment it will exit the experiment - and once it's exited, it' won't re-start if you add stuff into the timeline, when it's done it's done. This is a problem when we are adding trials one at a time to the end of the timeline - we have to avoid running out of trials/track.
+The second issue we have to deal with is that jsPsych is always moving forward - as soon as a trial is completed it will move to the next trial, and if there are no trials left in the experiment it will exit the experiment - and once it's exited, it' won't re-start if you add stuff into the timeline, when it's done it's done. This is a problem when we are adding trials one at a time to the end of the timeline - we have to avoid running out of trials/track.
 
 ![Avoiding running out of trials](https://media.giphy.com/media/3oz8xtBx06mcZWoNJm/giphy.gif)
 
+Fortunately, jsPsych provides functions to pause and resume the timeline - `jsPsych.pauseExperiment()` and `jsPsych.resumeExperiment()` - which we can make sure we never run out of trials: we pause the experiment when we are waiting for instructions from the python server (one of the first things `interaction_loop` does is pause the timeline), then resume it when we have a trial to run, run the trial, and then pause it again as soon as that trial has finished, while we await further instructions from the server.
+
+Now you are in a position to figure out what the `waiting_room()` function does. You'll see in the `on_finish` parameter of the trial, we pause the timeline - that's us pausing the timeline once to trial completes, to await further instructions from the server. And the final line of the function, after the waiting room trial has been created, is
+```js
+jsPsych.addNodeToEndOfTimeline(waiting_room_trial,jsPsych.resumeExperiment)
+```
+That is us adding the trial to the timeline, then once it's been added telling the timeline to resume. All the functions that are called when the python server sends over a command have this structure - add the trial, resume the timeline, pause the timeline when the timeline completes. The code includes a bunch of functions with this same basic structure, that add trials to the timeline based on prompts from the python server - they are called `waiting_room()`, `waiting_for_partner()`, `show_interaction_instructions()`, `partner_dropout()` (informs the participant that something has gone wrong with the experiment, which is usually the other player dropping out!), `director_trial(target_object,partner_id)` (adds a director trial to the timeline), `matcher_trial(label,partner_id)` (adds a matcher trial to the timeline), `display_feedback(score)` (tells the participant whether the last round of communication was a success or not), and `end_experiment()`. These are all commented up in `dyadic_interaction.js` if you want to take a look.
+
+One other thing to note about the `waiting_room_trial` created by the `waiting_room()` function: it lasts forever! It's an `html-keyboard-response` trial, and it doesn't have a set `trial_duration`, so it needs keyboard input to end. But its `choices` are set to `[]`, so it doesn;t accept any keyboard input. That's a slightly weird trial type to create, but very handy when you want to give a participant a wait-message of uncertain duration. But at some point we will need to kick the timeline out of this trial, i.e. when another command comes in from the python server. We do that using the `jsPsych.finishTrial()`, which simply causes the current trial to end - so several of our functions that create new trials include a check to see if we are currently in one of these infinite-wait trials, and if so end that trial using `jsPsych.finishTrial()`.
+
+### A half-hearted effort at manipulating production effort
+
+Kanwal et al. (2017) use a click-and-hold method for increasing production effort: participants have to hold the mouse click for longer to send the longer label to their partner. I went for something slightly simpler to implement, a multiple-click trial type where you click multiple times to submit, and more times for longer labels. This is wrapped up in the `jspsych-image-repeatbutton-response.js` plugin I wrote, which I mentioned above - this is a minor modification to the standard `jspsych-image-button-response.js` plugin. I think it actually should be possible to achieve the same effect with a normal  `jspsych-image-button-response.js` trial which loops (jsPsych provides some built-in infrastructure to create looping trials), but I was having a hard time figuring it out so eventually I gave up and just made my own plugin! Next time I run this course I'll have to replace this with a click-and-hold plugin to more closely match the Kanwal et al. method, I had a half-working version of that but again ran out of time to make it work more neatly, sorry.
+
+### Running your own private python server
+
+The code defaults to connecting to the python server on port 9001 on the jspsychlearning server, which is a python server I have set running. That means that everyone who connects is going into the same waiting room and will be paired with the first available other player - so if you are testing the code at the same time as another student on the course, you might end up playing with them rather than yourself! That might be fun but it also might be irritating, so if you want you can set up your own private server to connect to, so you are guaranteed to have the server to yourself.
+
+To do this you need to change two things in the code:
+- You need to change `my_port_number` in the `dyadic_interaction.js` code - it is a variable which is created around line 160, I will give you your own port number you can use.
+- You will also have to change the port number in the python code so that it matches the port number in `my_port_number`. Open `dyadic_interaction_server.py` (in the `server` folder) and scroll right to the bottom, somewhere around line 420 you will see some python code which says
+```python
+PORT=9001
+```
+Change that to your private port number that I give you, so that `my_port_number` and `PORT` are set to the same value.
+
+Once you have fixed that in the code, you have to start your own private python server running. You can do this from cyberduck. In the Go menu on cyberduck there is an option "Open in Terminal". Select the `server` folder in your `dyadic_interaction` folder in cyberduck then select this "Open in Terminal" option. This should pop up a terminal window, a drab looking thing where you can enter text commands at a prompt. At the prompt type
+```
+python dyadic_interaction.py
+```
+and hit return, you should see a little message saying something like "starting server", and then when clients connect you'll get a stream of messages printed out reporting the progress of the experiment and the events that are happening from the python server's perspective. If you would like to try this provate server stuff out and can't get it to work, get in touch, I'll be happy to help you set it up.
 
 
 ## Exercises with the dyadic interaction experiment code
