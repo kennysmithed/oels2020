@@ -160,7 +160,16 @@ and hit return, you should see a little message saying something like "starting 
 
 ## Exercises with the dyadic interaction experiment code
 
-In prep
+- Run the experiment and look at the CSV data files it creates. Check that the contents of the data files make sense and how they relate to what you see as a participant.
+- How would you increase the number of training trials in the observation phase of the experiment?
+- It's also possible to change the number of interaction trials, but this will involve editing the python server code and running your own private python server with your edited version. The relevant line is line 61 of `dyadic_interaction_server.py`, which looks like this:
+```python
+target_list = ['object4','object4','object4','object5']*2
+```
+This creates a variable, `target_list`, which consists of 6 occurrences of `object4` and 2 of `object5`. Even if you have never seen python before, hopefully you can guess how to edit this list to change the relative proportions of the two objects or the total number of trials.
+- In the Accuracy condition of Kanwal et al., participants interacted in dyads but there was no additional production effort associated with producing longer labels. How would you edit this code to replicate the Accuracy condition? [Hint: you need to be looking at the `director_trial` function in `dyadic_interaction.js`, which creates the three sub-trials that make up a director trial].
+- How could you manipulate production effort in the other direction, making long labels even more effortful to produce?
+- [Harder, optional] Can you create a version of the experiment where participants deal with more than 2 objects, e.g. 4 objects, organised in two pairs with a short ambiguous label shared across the two objects in each pair? This will involve changing the trial lists in the observation and interaction phases, but also some parts of the client code that make assumptions about which objects and labels participants will encounter during interaction.
 
 
 ## References
