@@ -1,6 +1,6 @@
 ---
 title: Week 9 practical
-description: web sockets, python servers
+description: web sockets, python servers, incrementally building a timeline
 ---
 
 ## The plan for week 9 practical

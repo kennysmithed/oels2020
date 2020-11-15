@@ -83,7 +83,7 @@ You could use the opportunity for catchup or lookahead reading.
 ### Week 9 (16th November): Participant-to-participant interaction
 
 - *Scientific content:* least effort and Zipf's Law of Abbreviation
-- *Technical content:* web sockets, python servers
+- *Technical content:* web sockets, python servers, incrementally building a timeline
 - [Reading](oels_reading_wk9.md)
 - [Programming task](oels_practical_wk9.md)
 
