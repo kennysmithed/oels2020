@@ -26,6 +26,9 @@ Again, the code makes some assumptions about the directory structure it's going 
 
 For the first time, this code will *not* run on your local computer - you need to upload the whole `perceptual_learning` folder to your public_html folder on the jspsychlearning server and play with it there (if your directory structure is as suggested the url for your experiment will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/perceptual_learning/perceptual_learning.html where UUN is your UUN). This is a recurring problem to do with the way jsPsych handles audio, it's actually a bit mysterious to me (other stuff I do with audio works OK locally), but it restricts us to running this code on the server. As per last week, the code for saving data to the server only works on the server anyway.
 
+Finally, there is one tweak you need to make before your data will save:
+- You need to edit `save_data.php` so that it points to *your* `server_data` folder rather than mine. Open that file in an editor and change the path `/home/ksmith7/server_data/` to `/home/UUN/server_data/` where UUN is your UUN. Remember if you edit your local copy you need to upload the edited `save_data.php` file to the server using cyberduck, or you can edit that file on the server directly by using the edit function in cyberduck.
+
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTML and js files in your code editor (e.g. Atom), and read on.
 
 ### Structure of the experiment

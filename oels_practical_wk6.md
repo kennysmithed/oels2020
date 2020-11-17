@@ -30,6 +30,9 @@ Again, the code makes some assumptions about the directory structure it's going 
 
 Assuming you have the directory structure all right, this code should run on your local computer (just open the `word_learning.html` file in your browser) or you can upload the whole `word_learning` folder to the public_html folder on the jspsychlearning server and play with it there (if your directory structure is as suggested the url for your experiment will be http://jspsychlearning.ppls.ed.ac.uk/~UUN/word_learning/word_learning.html where UUN is your UUN). Note that the code that saves the data to the server will only work if your code is actually running on the jspsychlearning server - if you are running it on your own computer the data will not save anywhere, although it will still be shown on-screen. This is because your personal computer isn't running anything that can handle POST commands and processing them with PHP, which is what is involved in saving data - those things are all set up on the jspsychlearning server for you.
 
+Finally, there is one tweak you need to make before your data will save:
+- You need to edit `save_data.php` so that it points to *your* `server_data` folder rather than mine. Open that file in an editor and change the path `/home/ksmith7/server_data/` to `/home/UUN/server_data/` where UUN is your UUN. Remember if you edit your local copy you need to upload the edited `save_data.php` file to the server using cyberduck, or you can edit that file on the server directly by using the edit function in cyberduck.
+
 First, get the code and run through it so you can check it runs, and you can see what it does. Then take a look at the HTML and js files in your code editor (e.g. Atom).
 
 ### Nested timelines again
