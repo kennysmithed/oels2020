@@ -21,7 +21,7 @@ Remember, as usual the idea is that you do as much of this as you can on your ow
 ### Getting started
 
 You need a bunch of files for this experiment - an html file, a few js files, some images, and then a folder containing some python code (this is where most of the magic happens). Download the following zip file and then uncompress it into your usual jspsych folder:
-- <a href="code/dyadic_interactionzip" download> Download dyadic_interactionzip.zip</a>
+- <a href="code/dyadic_interactionzip" download> Download dyadic_interaction.zip</a>
 
 You need to extract these files to a folder called `dyadic_interaction`, alongside your various other experiment folders and your `jspsych-6.1.0` folder.
 
