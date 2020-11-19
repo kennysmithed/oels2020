@@ -100,6 +100,10 @@ You could use the opportunity for catchup or lookahead reading.
 - *Technical content:* How to launch and pay HITs, manage qualifications, etc
 - The only thing to read this week is some notes for how to get your experiments online
 
+### Planned changes
+
+I am maintaining [this list of planned changes](https://docs.google.com/document/d/1Hv_oNtwNdd5SLHMhBF3-lKAEwee2xI0p4Mm2LR2GRFw/edit?usp=sharing) for next year, if you have suggestions I am all ears, just email me.
+
 ## Re-use
 
 All aspects of this work are licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
