@@ -90,7 +90,7 @@ You could use the opportunity for catchup or lookahead reading.
 ### Week 10 (23rd November): Iterated Learning
 
 - *Scientific content:* cultural evolution and language structure
-- *Technical content:* PHP scripts for iteration
+- *Technical content:* reading trial lists from CSVs again, PHP scripts for iteration
 - [Reading](oels_reading_wk10.md)
 - Programming task
 
