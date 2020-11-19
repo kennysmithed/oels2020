@@ -159,9 +159,9 @@ and the python says
 PORT=9002
 ```
 
-Once you have fixed that in the code, you have to start up your own private python server. You can do this from cyberduck. In the "Go" menu on cyberduck there is an option "Open in Terminal". Select the `server` folder in your `dyadic_interaction` folder in cyberduck then select this "Open in Terminal" option. This should pop up a terminal window, a drab looking thing where you can enter text commands at a prompt. At the prompt type
+Once you have fixed that in the code, you have to start up your own private python server. You can do this from cyberduck. In the "Go" menu on cyberduck there is an option "Open in Terminal" (this might be called "Open in Putty" if you are using Windows; you might also be asked to give permission for the terminal to run and/or asked for your password at this point, which is the password you use to log onto jspsychlearning server). Select the `server` folder in your `dyadic_interaction` folder in cyberduck then select this "Open in Terminal" option. This should pop up a terminal window, a drab looking thing where you can enter text commands at a prompt. At the prompt type
 ```
-python dyadic_interaction.py
+python dyadic_interaction_server.py
 ```
 and hit return, you should see a little message saying something like "starting server", and then when clients connect you'll get a stream of messages printed out reporting the progress of the experiment and the events that are happening from the python server's perspective. If you can't get this to work, get in touch, I'll be happy to help you set it up - I suspect the process might differ a little bit across different versions of cyberduck.
 
