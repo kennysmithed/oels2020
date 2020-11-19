@@ -92,7 +92,7 @@ You could use the opportunity for catchup or lookahead reading.
 - *Scientific content:* cultural evolution and language structure
 - *Technical content:* reading trial lists from CSVs again, PHP scripts for iteration
 - [Reading](oels_reading_wk10.md)
-- Programming task
+- [Programming task](oels_practical_wk10.md)
 
 ### Week 11 (30th November): Interacting with MTurk
 
