@@ -21,6 +21,10 @@ But here we are going to go for a low-tech approach, using CSV files on the serv
 
 Remember, as usual the idea is that you do as much of this as you can on your own (might be none of it, might be all of it) and then come to the practical drop-in sessions or use the chat on Teams to get help with stuff you need help with.
 
+## Acknowledgments
+
+The object stimuli for this week's experiment were provided by my colleague in Edinburgh Dr Jennifer Culbertson, who uses slightly different variants of these images in several of her excellent papers on order biases in noun phrase learning (e.g. [this paper in Cognition](https://doi.org/10.1016/j.cognition.2011.10.017)).
+
 ## An iterated learning experiment
 
 ### Getting started
@@ -61,7 +65,32 @@ Finally, we need to make some initial (generation 0) languages available. If you
 
 ### Managing an iterated learning experiment via PHP scripts
 
-In prep!
+In an iterated learning experiment, one participant's output becomes in the input for another participant. Participants are organised in chains, and you'll typically have several chains open at once (i.e. you need to add more participants to those chains to get them to the desired number of generations). There are three main kinds of events you have to handle:
+1. When a new participant starts the experiment, you have to allocate them to an open chain (or deal with them some other way if there are no chains open), and avoid allocating any other new participants to the same chain until they are finished (i.e. there's no point in having two participants both competing to be generation 3 of chain 2 or whatever).
+2. When a participant completes the experiment, you need to make their output language available as the input language for the next participant in their chain.
+3. If a participant drops out (which happens *a lot* online) you need to recycle the chain that was allocated to them, making it available to another participant.
+
+As I mentioned above, there are a bunch of ways you could do this, but here I've gone for a relatively simple solution. We will store input languages as CSV files on the jspsychlearning server - the files contain a list of object-label pairs which we can easily read in to create training for a participant, or write out based on what a participant does during production testing. The file name will give the chain number and generation number - so for instance, the file `chain1_g0.csv` is the language of generation 0 (i.e. the initial language) for chain 1, and the top of that file looks like this:
+```
+object,label
+images/o1_cB_n1.png,visivu
+images/o1_cB_n2.png,kotisu
+images/o1_cB_n3.png,vovaso
+images/o2_cB_n1.png,kukati
+```
+You can see that the object column is just the name of one of our stimulus images and the label column is a label for that object. Note that the image files have structured names too - the code doesn't care about that, but each image file specifies an object shape (o1, o2 or o3), a colour (cB, cG or c for blue, green and orange respectively), and a number (n1, n2 or n3, for 1, 2 or 3 objects in the image).
+
+Reading from and writing to these CSV files provides a simple way to pass a language from participant to participant - we read in the language from a CSV file to create training data, then when the participant completes the production phase we can write a new language file capturing their language, which can be read in by the next participant in the chain. You should already be familiar with the idea that we can write to CSV files using PHP - that's what we have been doing every time we save a participant's trial data - and yu have also seen one example of reading in a CSV and creating a trial list (in the confederate priming practical).
+
+We also need a way to keep track of which chains are open, which are in progress etc. We'll do this by moving files among the various directories you created in `server_data/il`.
+
+Any files in the `ready_to_iterate` folder indicate chains that are ready to iterate - these can be used for a new participant who turns up looking to participate. Once we allocate a given generation of a given chain to a new participant (event 1 of the 3 events above), we move the input language CSV file to the `undergoing_iteration` folder - that stops it being allocated to anyone else while our participant is working on it.
+
+If the participant completes the experiment (event 2 above) then we take their production output and write it as a new CSV file in `ready_to_iterate`, making it available for the next participant in the chain (and updating the generation number - e.g. if we train someone on the language in `chain1_g0.csv`, we write the language they produce to `chain1_g1.csv`). We also move their input language file out of `undergoing_iteration` and into `completed_iteration`. That's mainly to keep it nice and clear which generations of which chains are currently being worked on and which are complete - you can look at the various folders on `server_data/il/` and immediately see which chains are running, which are waiting for new participants, and which are done.
+
+Finally, if our participant drops out (event 3 above), we just move the input language file they were working on back from `undergoing_iteration` to the `ready_to_iterate` folder - that makes it available again, and prevents drop-out participants clogging up our chains. Conveniently jsPsych provides a way of handling participant dropouts, allowing you to run a function to do stuff when the participant closes their browser window before completing the experiment.
+
+All of these various actions are carried out by PHP scripts, which we can call from our jsPsych experiment. `list_input_languages.php` returns a list of files in the `ready_to_iterate` folder back to the jsPsych experiment, which we can use to figure out which chains are open and then pick a random chain for our new participant. `load_input_language.php` reads in a specific language file and sends it back to jsPsych in a usable format (note that this is slightly different from how we were reading in CSV files in the confederate priming code; now we are doing the reading in PHP, in the confederate priming code I was doing it in the javascript). We can use `save_data.php` to write participant's output languages (as well as saving participants' trial-by-trial data to the `participant_data` folder). And `move_input_language.php` handles the process of shuffling CSV files back and forth between our various directories.
 
 ## Exercises with the iterated learning experiment code
 
