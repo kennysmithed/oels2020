@@ -99,16 +99,9 @@ Now you (hopefully) get the general idea, we can have a look at some more detail
 The solution is to make the `save_data.php` and `save_data` javascript functions a bit more general - we pass in information about which user's server directory to use (ksmith7 for me, s... for you), and also which directory to save the data in (which avoids us having to create different PHP scripts for saving in slightly different directories). The new more general code looks like this:
 
 ```js
-/*
-Change this to match *your* UUN so that data is saved in your server_data folder
-rather than mine.
-*/
+
 var myUUN = 'ksmith7'
 
-/*
-This is a modified version of our usual save_data function - it appends data to
-filename in directory on /home/myUUN/server_data/il/
-*/
 function save_data(directory,filename,data){
   var url = 'save_data.php';
   var data_to_send = {user: myUUN, directory: directory, filename: filename, filedata: data};
