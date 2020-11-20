@@ -117,7 +117,80 @@ function save_data(directory,filename,data){
 
 In particular, we now have to specify `myUUN` (to point the PHP script to the correct user's `server_data` directory) and pass more complex information over tot he PHP script (in `data_to_send`) - not just the filename and data, but also the user info and the directory to save in. The other stuff (the fetch command, the JSON stuff, etc) is the same as the old version and lower-level implementation stuff you don't have to worry about for now.
 
-Our `save_iterated_learning_data` function (which is the next bit in the code) then uses this new `save_data` function to save participant trial-by-trial data to the `participant_data` folder, but we'll also use the same function to write out final output languages later on too.
+Our `save_iterated_learning_data` function (which is the next bit in the code) then uses this new `save_data` function to save participant trial-by-trial data to the `participant_data` folder. But we'll also use the same function to write final output languages to the `ready_for_iteration` folder too.
+
+### Calling PHP scripts to do various things with input language files
+
+The next chunk of code is 4 functions which do all our manipulation of language CSV files for us. The first two, `list_input_languages` and `read_input_language`, have the same structure - they use `fetch` to run a PHP script on the server, and then receive back a response from the PHP script, which they do a little formatting on (to turn the data into something we can work with). Because these functions interact with a PHP script which is reading data files on the server, we have to set them up as `async` (asynchronous) functions, and tell them to `await` the response from the PHP server before doing anything. I mentioned this async/await stuff briefly at the end of the confederate priming practical, but to recap: fetching data from the server via PHP takes some time - only a fraction of a second, so it appears instantaneous to us, but for the computer this is very slow. Rather than wait for the `fetch` command to finish before it starts the code running, your browser will therefore press on and try to run the rest of the code - if you are used to 'normal' programming languages like python, that run things one step at a time, this is a very weird behaviour that takes some time to get used to. But in this particular case, trying to carry on while the `fetch` function goes off and does its job is a bad idea, since we actually need to get the response back from the PHP script before we can continue - that will cause our code to break, because until the `fetch` command returns its data we can't actually process it!
+
+There are various solutions to this problem, but I think the simplest one is to use the `async` and `await` functions (which are part of newer versions of javascript). This allows us to declare some functions as `async` (i.e. asynchronous, in other words there are some steps that involve waiting for one function to complete before proceeding), and then use `await` to tell the browser to wait for a certain operation to complete before moving on. This means we can wait until the `fetch` command has done its job and got the data we need.
+
+Here are the two functions that have this `await fetch` structure:  
+
+```js
+async function list_input_languages(){
+  var data_to_send = {user: myUUN}; //we need to send over myUUN so the PHP looks in the correct user directory
+  var response = await fetch('list_input_languages.php', {
+      method: 'POST',
+      body: JSON.stringify(data_to_send),
+      headers: new Headers({
+              'Content-Type': 'application/json'})});
+  // various steps to convert the string returned by the PHP script into
+  // something we can work with
+  var text_response = await response.text()
+  var object_response = JSON.parse(text_response)
+  var language_file_list = Object.values(object_response)
+  return language_file_list
+}
+
+
+async function read_input_language(input_language_filename){
+  var data_to_send = {user:myUUN,filename: input_language_filename}; //we need to send myUUN and input_language_filename to the PHP script
+  var response = await fetch('load_input_language.php', {
+      method: 'POST',
+      body: JSON.stringify(data_to_send),
+      headers: new Headers({
+              'Content-Type': 'application/json'})});
+  var input_language_as_text = await response.text()
+  var input_language = JSON.parse(input_language_as_text)
+  return input_language
+}
+```
+
+You can see that in both cases we put together the data we need to give the PHP script (in the `data_to_send` variable) - this is the username and maybe the language filename, then we call the relevant PHP script via `fetch` and `await` the result. When the PHP script returns some data (which we store in `response`) we then do some additional processing, which involves digging out the bit of the response we need (we can access it in `response.text()`) and then doing some additional formatting stuff until we can eventually return the information we were after. In the case of `list_input_languages` what eventually gets returns is a list of the CSV files in the `server_data/il/ready_to_iterate` folder; in the case of `read_input_language`, we tell it specifically which CSV file to read from the `ready_to_iterate` folder and it eventually gives us back a nice javascript representation of the contents of the file, in the form of a list of javascript objects - so the first few rows of `chain1_g0.csv` I showed you above would be read in as:
+```js
+[{object:'images/o1_cB_n1.png',label:'visivu'},
+{object:'images/o1_cB_n2.png',label:'kotisu'},
+{object:'images/o1_cB_n3.png',label:'vovaso'},
+{object:'images/o2_cB_n1.png',label:'kukati'}]
+```
+We can then use this to list of object-label pairs to build a training and testing timeline.
+
+The third function in this section, `move_input_language`, basically follows the same idea - we bundle up some info and ask a PHP script to do a job for us - but in this case we don't need to wait for any information back from the PHP script (we just assume it moved the file from `from_folder` to `to_folder` for us) so we can immediately move on, without any need for the `async` and `await` stuff. Here's the function:
+```js
+function move_input_language(input_language_filename,from_folder,to_folder){
+  var data_to_send = {user:myUUN,filename: input_language_filename, source:from_folder,destination:to_folder};
+  fetch('move_input_language.php', {
+      method: 'POST',
+      body: JSON.stringify(data_to_send),
+      headers: new Headers({
+              'Content-Type': 'application/json'})});
+}
+```
+
+Finally, `save_output_language` ...
+```js
+function save_output_language(object_label_list) {
+  var output_string = "object,label\n" //column headers plus a new line
+  for (object_label_pair of object_label_list) {//for each object_label_pair
+    //append object,label\n to the end of output_string
+    output_string = output_string + object_label_pair.object + "," + object_label_pair.label + "\n"
+  }
+  //work put the filename using global variables chain and generation
+  var output_file_name = 'chain' + chain + '_g' + generation + '.csv'
+  save_data('ready_to_iterate',output_file_name, output_string)
+}
+```
 
 ## Exercises with the iterated learning experiment code
 
