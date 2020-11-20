@@ -117,6 +117,8 @@ function save_data(directory,filename,data){
 
 In particular, we now have to specify `myUUN` (to point the PHP script to the correct user's `server_data` directory) and pass more complex information over tot he PHP script (in `data_to_send`) - not just the filename and data, but also the user info and the directory to save in. The other stuff (the fetch command, the JSON stuff, etc) is the same as the old version and lower-level implementation stuff you don't have to worry about for now.
 
+Our `save_iterated_learning_data` function (which is the next bit in the code) then uses this new `save_data` function to save participant trial-by-trial data to the `participant_data` folder, but we'll also use the same function to write out final output languages later on too.
+
 ## Exercises with the iterated learning experiment code
 
 In prep!
