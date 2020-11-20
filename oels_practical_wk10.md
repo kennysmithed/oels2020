@@ -92,6 +92,38 @@ Finally, if our participant drops out (event 3 above), we just move the input la
 
 All of these various actions are carried out by PHP scripts, which we can call from our jsPsych experiment. `list_input_languages.php` returns a list of files in the `ready_to_iterate` folder back to the jsPsych experiment, which we can use to figure out which chains are open and then pick a random chain for our new participant. `load_input_language.php` reads in a specific language file and sends it back to jsPsych in a usable format (note that this is slightly different from how we were reading in CSV files in the confederate priming code; now we are doing the reading in PHP, in the confederate priming code I was doing it in the javascript). We can use `save_data.php` to write participant's output languages (as well as saving participants' trial-by-trial data to the `participant_data` folder). And `move_input_language.php` handles the process of shuffling CSV files back and forth between our various directories.
 
+### Digging in to the code: updating our save_data function
+
+Now you (hopefully) get the general idea, we can have a look at some more detailed aspects of the code. The first thing to flag up is that I have changed the `save_data.php` script a bit, and also changed the `save_data` function in the javascript code, to make it a bit more general. In the old version of our `save_data.php` it was hard-wired to write to a specific sub-folder in *my* `server_data` folder, which was bad for two reasons: one, if you forgot to edit the PHP script to point to your `server_data` folder, all your data, weird voice recordings etc appear in my `server_data` folder and frighten/confuse me; two, for the new experiment we want to save stuff to two different sub-folders of `server-data/il` (saving participant data to `server-data/il/participant_data` and output languages to `server-data/il/ready_to_iterate`), and we really don't want to have to write two different PHP scripts which are trivially different from each other just to handle that.
+
+The solution is to make the `save_data.php` and `save_data` javascript functions a bit more general - we pass in information about which user's server directory to use (ksmith7 for me, s... for you), and also which directory to save the data in (which avoids us having to create different PHP scripts for saving in slightly different directories). The new more general code looks like this:
+
+```js
+/*
+Change this to match *your* UUN so that data is saved in your server_data folder
+rather than mine.
+*/
+var myUUN = 'ksmith7'
+
+/*
+This is a modified version of our usual save_data function - it appends data to
+filename in directory on /home/myUUN/server_data/il/
+*/
+function save_data(directory,filename,data){
+  var url = 'save_data.php';
+  var data_to_send = {user: myUUN, directory: directory, filename: filename, filedata: data};
+  fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data_to_send),
+      headers: new Headers({
+              'Content-Type': 'application/json'
+      })
+  });
+}
+```
+
+In particular, we now have to specify `myUUN` (to point the PHP script to the correct user's `server_data` directory) and pass more complex information over tot he PHP script (in `data_to_send`) - not just the filename and data, but also the user info and the directory to save in. The other stuff (the fetch command, the JSON stuff, etc) is the same as the old version and lower-level implementation stuff you don't have to worry about for now.
+
 ## Exercises with the iterated learning experiment code
 
 In prep!
