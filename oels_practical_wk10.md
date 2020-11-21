@@ -127,7 +127,7 @@ The next chunk of code sets out 4 functions which do all our manipulation of lan
 
 There are various solutions to this problem, but I think the simplest one is to use the `async` and `await` functions (which are part of newer versions of javascript). This allows us to declare some functions as `async` (i.e. asynchronous, in other words there are some steps that involve waiting for one function to complete before proceeding, rather than running everything synchronously/simultaneously), and then use `await` to tell the browser to wait for a certain operation to complete before moving on. This means we can wait until the `fetch` command has done its job and got the data we need.
 
-Here are the two functions that have this `await fetch` structure:  
+Here are the two functions that have this `await fetch` structure (with some irrelevant details given as ... to save your eyes):  
 
 ```js
 async function list_input_languages(){
@@ -153,24 +153,23 @@ async function read_input_language(input_language_filename){
 }
 ```
 
-You can see that in both cases we put together the data we need to give the PHP script (in the `data_to_send` variable) - this is the username and maybe the language filename, then we call the relevant PHP script via `fetch` and `await` the result. When the PHP script returns some data (which we store in `response`) we then do some additional processing, which involves digging out the bit of the response we need (we can access it in `response.text()`) and then doing some additional formatting stuff until we can eventually return the information we were after. In the case of `list_input_languages` what eventually gets returns is a list of the CSV files in the `server_data/il/ready_to_iterate` folder; in the case of `read_input_language`, we tell it specifically which CSV file to read from the `ready_to_iterate` folder and it eventually gives us back a nice javascript representation of the contents of the file, in the form of a list of javascript objects - so the first few rows of `chain1_g0.csv` I showed you above would be read in as:
+You can see that in both cases we put together the data we need to give the PHP script (in the `data_to_send` variable) - this is the username and maybe the language filename. Then we call the relevant PHP script via `fetch`, and `await` the result. When the PHP script returns some data (which we store in `response`) we then do some additional processing, which involves digging out the bit of the response we need (we can access it in `response.text()`) and then doing some additional formatting stuff until we can eventually return the information we were after. In the case of `list_input_languages` what eventually gets returned is a list of the CSV files in the `server_data/il/ready_to_iterate` folder; in the case of `read_input_language`, we tell it specifically which CSV file to read from the `ready_to_iterate` folder and it eventually gives us back a nice javascript representation of the contents of the file, in the form of a list of javascript objects - so the first few rows of `chain1_g0.csv` I showed you above would be read in as:
 ```js
-[{object:'images/o1_cB_n1.png',label:'visivu'},
+[
+  {object:'images/o1_cB_n1.png',label:'visivu'},
 {object:'images/o1_cB_n2.png',label:'kotisu'},
 {object:'images/o1_cB_n3.png',label:'vovaso'},
-{object:'images/o2_cB_n1.png',label:'kukati'}]
+{object:'images/o2_cB_n1.png',label:'kukati'}
+]
 ```
-We can then use this to list of object-label pairs to build a training and testing timeline.
+We can then use this list of object-label pairs to build training and testing timelines.
 
 The third function in this section, `move_input_language`, basically follows the same idea - we bundle up some info and ask a PHP script to do a job for us - but in this case we don't need to wait for any information back from the PHP script (we just assume it moved the file from `from_folder` to `to_folder` for us) so we can immediately move on, without any need for the `async` and `await` stuff. Here's the function:
 ```js
 function move_input_language(input_language_filename,from_folder,to_folder){
   var data_to_send = {user:myUUN,filename: input_language_filename, source:from_folder,destination:to_folder};
   fetch('move_input_language.php', {
-      method: 'POST',
-      body: JSON.stringify(data_to_send),
-      headers: new Headers({
-              'Content-Type': 'application/json'})});
+      ...});
 }
 ```
 
@@ -179,10 +178,8 @@ Finally, `save_output_language` is called when a participant completes the produ
 function save_output_language(object_label_list) {
   var output_string = "object,label\n" //column headers plus a new line
   for (object_label_pair of object_label_list) {//for each object_label_pair
-    //append object,label\n to the end of output_string
     output_string = output_string + object_label_pair.object + "," + object_label_pair.label + "\n"
   }
-  //work put the filename using global variables chain and generation
   var output_file_name = 'chain' + chain + '_g' + generation + '.csv'
   save_data('ready_to_iterate',output_file_name, output_string)
 }
@@ -191,10 +188,12 @@ function save_output_language(object_label_list) {
 `object_label_list` is in the same format we end up with when we read in a language from an input language file, i.e. something like this:
 
 ```js
-[{object:'images/o1_cB_n1.png',label:'visivu'},
+[
+{object:'images/o1_cB_n1.png',label:'visivu'},
 {object:'images/o1_cB_n2.png',label:'kotisu'},
 {object:'images/o1_cB_n3.png',label:'vovaso'},
-{object:'images/o2_cB_n1.png',label:'kukati'}]
+{object:'images/o2_cB_n1.png',label:'kukati'}
+]
 ```
 
 We simply work through that list, building a CSV-formatted string (commas between object and label, newline `"\n"` after each label), and then write it to a file using `save_data`. The output file name follows our usual format, i.e. `chainX_gY.csv`, where this participant's chain and generation number are stored in variables `chain` and `generation` that we create below.
