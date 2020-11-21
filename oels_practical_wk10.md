@@ -38,7 +38,7 @@ This code won't work on your local computer, it needs to be on the jspsychlearni
 
 ![my public_html folder](images/il_directory_structure.png)
 
-You also need to tweak the `iterated_learning.js` code so it saves data to *your* `server_data` folder rather than mine. I have tried to make this more straightforward this week, so rather than messing with any of the PHP files, you can edit this in one place and it will work nicely everywhere. Open `iterated_learning.js` in an editor and find theline that says
+You also need to tweak the `iterated_learning.js` code so it saves data to *your* `server_data` folder rather than mine. I have tried to make this more straightforward this week, so rather than messing with any of the PHP files, you can edit this in one place and it will work nicely everywhere. Open `iterated_learning.js` in an editor and find the line that says
 ```js
 var myUUN = 'ksmith7'
 ```
@@ -47,30 +47,32 @@ In the version of the code I am looking at, that's around line 50. Then just swa
 var myUUN = 's1234567'
 ```
 
-Finally, we need to set up some stuff in your `server_data` folder. Managing this iterated learning experiment means we need to keep track of several things. First, we want to record participant data trial-by-trial as it comes in, just like we also do. But we also need to keep track of which chains are available to iterate, which chains are currently being worked on by a participant, and which generations of which chains are completed and don't need to be messed with any more. We are going to manage that stuff by moving filers from folder to folder in `server_data`, so we need to set up those directories, and also drop in some starting languages to initialise our chains.
+Finally, we need to set up some stuff in your `server_data` folder. Managing this iterated learning experiment means we need to keep track of several things. First, we want to record participant data trial-by-trial as it comes in, just like we always do. But we also need to keep track of which chains are available to iterate, which chains are currently being worked on by a participant, and which generations of which chains are completed and don't need to be messed with any more. We are going to manage that stuff by moving files from folder to folder in `server_data`, so we need to set up those directories, and also drop in some starting languages to initialise our chains.
 
-To do that, navigate into your `server_data` folder on cyberduck - you need to make sure that the folders you are creating inherit their access permissions etc from the main `server_data` folder, which you do by getting right into that folder on cyberduck before creating any new folders. So double-click the `server_data` folder so your navigation bar in cyberduck looks something like like this (but with your UUN rather than mine obviously)
+To do that, navigate into your `server_data` folder on cyberduck. You need to make sure that the folders you are creating inherit their access permissions etc from the main `server_data` folder, which you do by getting right into that folder on cyberduck before creating any new folders. Double-click the `server_data` folder so your navigation bar in cyberduck looks something like this (but with your UUN rather than mine obviously)
 ![cyberduck in server_data](images/create_audio_folder.png)
 
-Once you are there, create a new folder (Action ... New folder in cyberduck) and call that folder `il`. Then double-click to enter the `il` folder, and create *four* new folders in there, called `ready_to_iterate`, `undergoing_iteration`, `completed_iteration` and `participant_data`. Here's what my server_data folder looks like after that step - you can see the `il` directory with the 4 sub-directories. Note that you have to get the folder names exactly right, otherwise the code won't be able to find the stuff it needs.
+Once you are there, create a new folder (Action ... New folder in cyberduck) and call that folder `il` (short for iterated learning). Then double-click to enter the `il` folder, and create *four* new folders in there, called `ready_to_iterate`, `undergoing_iteration`, `completed_iteration` and `participant_data`. Here's what my server_data folder looks like after that step - you can see the `il` directory with the 4 sub-directories. Note that you have to get the folder names exactly right, otherwise the code won't be able to find the stuff it needs.
 
 ![il directory structure](images/il_detailed_directory_structure.png)
 
-We are going to use `participant_data` to save our trial-by-trial data like we usually do; the other 3 folders will be used to keep track of the state of each iterated learning chain.
+We are going to use `participant_data` folder to save our trial-by-trial data like we usually do; the other 3 folders will be used to keep track of the state of each iterated learning chain.
 
-Finally, we need to make some initial (generation 0) languages available. If you look in the `iterated_learning` directory you got from the zip file above, there's a sub-folder called `initial_languages_for_server_data`, containing two CSV files called `chain1_g0.csv` and `chain2_g0.csv`. Grab those and put them in the `ready_to_iterate` folder you just created in `server_data` - these are random languages that can server as the starting point for two iterated learning chains. Once you've done that, your `server_data` folder looks like this, and you are ready to go!
+Finally, we need to make some initial (generation 0) languages available. If you look in the `iterated_learning` directory you got from the zip you downloaded, there's a sub-folder called `initial_languages_for_server_data`, containing two CSV files called `chain1_g0.csv` and `chain2_g0.csv`. Grab those and put them in the `ready_to_iterate` folder you just created in `server_data/il` - these are random languages that will serve as the starting point for two iterated learning chains.
+
+Once you've done that, your `server_data` folder looks like this, and you are ready to go!
 
 ![il directory structure with initial languages](images/il_detailed_directory_structure_plus_g0.png)
 
 
 ### Managing an iterated learning experiment via PHP scripts
 
-In an iterated learning experiment, one participant's output becomes in the input for another participant. Participants are organised in chains, and you'll typically have several chains open at once (i.e. you need to add more participants to those chains to get them to the desired number of generations). There are three main kinds of events you have to handle:
+In an iterated learning experiment, one participant's output becomes the input for another participant. Participants are organised in chains, and you'll typically have several chains open at once ("open" means that you need to add more participants to those chains to get them to the desired number of generations). There are three main kinds of events you have to handle:
 1. When a new participant starts the experiment, you have to allocate them to an open chain (or deal with them some other way if there are no chains open), and avoid allocating any other new participants to the same chain until they are finished (i.e. there's no point in having two participants both competing to be generation 3 of chain 2 or whatever).
 2. When a participant completes the experiment, you need to make their output language available as the input language for the next participant in their chain.
 3. If a participant drops out (which happens *a lot* online) you need to recycle the chain that was allocated to them, making it available to another participant.
 
-As I mentioned above, there are a bunch of ways you could do this, but here I've gone for a relatively simple solution. We will store input languages as CSV files on the jspsychlearning server - the files contain a list of object-label pairs which we can easily read in to create training for a participant, or write out based on what a participant does during production testing. The file name will give the chain number and generation number - so for instance, the file `chain1_g0.csv` is the language of generation 0 (i.e. the initial language) for chain 1, and the top of that file looks like this:
+As I mentioned above, there are a bunch of ways you could do this, but here I've gone for a relatively simple solution. We will store input languages as CSV files on the jspsychlearning server. Those oinput language files will contain a list of object-label pairs which we can easily read in to create training for a participant, or write out based on what a participant does during production testing. The file name will give the chain number and generation number - so for instance, the file `chain1_g0.csv` is the language of generation 0 (i.e. the initial language) for chain 1, and the top of that file looks like this:
 ```
 object,label
 images/o1_cB_n1.png,visivu
@@ -78,13 +80,13 @@ images/o1_cB_n2.png,kotisu
 images/o1_cB_n3.png,vovaso
 images/o2_cB_n1.png,kukati
 ```
-You can see that the object column is just the name of one of our stimulus images and the label column is a label for that object. Note that the image files have structured names too - the code doesn't care about that, but each image file specifies an object shape (o1, o2 or o3), a colour (cB, cG or c for blue, green and orange respectively), and a number (n1, n2 or n3, for 1, 2 or 3 objects in the image).
+You can see that this is a CSV (comma-separated) file with two columns; the object column is just the name of one of our stimulus images and the label column is a label for that object. Note that the image files have structured names too - the code doesn't care about that, but each image file specifies an object shape (o1, o2 or o3), a colour (cB, cG or cO for blue, green and orange respectively), and a number (n1, n2 or n3, for 1, 2 or 3 objects in the image).
 
-Reading from and writing to these CSV files provides a simple way to pass a language from participant to participant - we read in the language from a CSV file to create training data, then when the participant completes the production phase we can write a new language file capturing their language, which can be read in by the next participant in the chain. You should already be familiar with the idea that we can write to CSV files using PHP - that's what we have been doing every time we save a participant's trial data - and yu have also seen one example of reading in a CSV and creating a trial list (in the confederate priming practical).
+Reading from and writing to these CSV files provides a simple way to pass a language from participant to participant - we read in the language from a CSV file to create training data, then when the participant completes the production phase we can write a new language file capturing their language, which can be read in by the next participant in the chain. You should already be familiar with the idea that we can write to CSV files using PHP - that's what we have been doing every time we save a participant's trial data. You have also seen one example of reading in a CSV and creating a trial list, in the confederate priming practical.
 
 We also need a way to keep track of which chains are open, which are in progress etc. We'll do this by moving files among the various directories you created in `server_data/il`.
 
-Any files in the `ready_to_iterate` folder indicate chains that are ready to iterate - these can be used for a new participant who turns up looking to participate. Once we allocate a given generation of a given chain to a new participant (event 1 of the 3 events above), we move the input language CSV file to the `undergoing_iteration` folder - that stops it being allocated to anyone else while our participant is working on it.
+Any files in the `ready_to_iterate` folder indicate chains that are ready to iterate - these are available to be allocated to a new participant who loads the experiment. Once we allocate a given generation of a given chain to a new participant (event 1 of the 3 events above), we move the input language CSV file to the `undergoing_iteration` folder - that stops it being allocated to anyone else while our participant is working on it.
 
 If the participant completes the experiment (event 2 above) then we take their production output and write it as a new CSV file in `ready_to_iterate`, making it available for the next participant in the chain (and updating the generation number - e.g. if we train someone on the language in `chain1_g0.csv`, we write the language they produce to `chain1_g1.csv`). We also move their input language file out of `undergoing_iteration` and into `completed_iteration`. That's mainly to keep it nice and clear which generations of which chains are currently being worked on and which are complete - you can look at the various folders on `server_data/il/` and immediately see which chains are running, which are waiting for new participants, and which are done.
 
@@ -96,7 +98,7 @@ All of these various actions are carried out by PHP scripts, which we can call f
 
 Now you (hopefully) get the general idea, we can have a look at some more detailed aspects of the code. The first thing to flag up is that I have changed the `save_data.php` script a bit, and also changed the `save_data` function in the javascript code, to make it a bit more general. In the old version of our `save_data.php` it was hard-wired to write to a specific sub-folder in *my* `server_data` folder, which was bad for two reasons: one, if you forgot to edit the PHP script to point to your `server_data` folder, all your data, weird voice recordings etc appear in my `server_data` folder and frighten/confuse me; two, for the new experiment we want to save stuff to two different sub-folders of `server-data/il` (saving participant data to `server-data/il/participant_data` and output languages to `server-data/il/ready_to_iterate`), and we really don't want to have to write two different PHP scripts which are trivially different from each other just to handle that.
 
-The solution is to make the `save_data.php` and `save_data` javascript functions a bit more general - we pass in information about which user's server directory to use (ksmith7 for me, s... for you), and also which directory to save the data in (which avoids us having to create different PHP scripts for saving in slightly different directories). The new more general code looks like this:
+The solution is to make the `save_data.php` and `save_data` javascript functions a bit more general - we pass in information about which user's `server_data` directory to use (ksmith7 for me, s... for you), and also which directory to save the data in (which avoids us having to create different PHP scripts for saving in slightly different directories). The new more general code looks like this:
 
 ```js
 
@@ -115,15 +117,15 @@ function save_data(directory,filename,data){
 }
 ```
 
-In particular, we now have to specify `myUUN` (to point the PHP script to the correct user's `server_data` directory) and pass more complex information over tot he PHP script (in `data_to_send`) - not just the filename and data, but also the user info and the directory to save in. The other stuff (the fetch command, the JSON stuff, etc) is the same as the old version and lower-level implementation stuff you don't have to worry about for now.
+In particular, we now have to specify `myUUN` (to point the PHP script to the correct user's `server_data` directory) and pass more complex information over to the PHP script (in `data_to_send`) - not just the filename and data, but also the user info and the directory to save in. The other stuff implementational (the fetch command, the JSON stuff, etc) is the same as the old version you don't have to worry about those details.
 
 Our `save_iterated_learning_data` function (which is the next bit in the code) then uses this new `save_data` function to save participant trial-by-trial data to the `participant_data` folder. But we'll also use the same function to write final output languages to the `ready_for_iteration` folder too.
 
 ### Calling PHP scripts to do various things with input language files
 
-The next chunk of code is 4 functions which do all our manipulation of language CSV files for us. The first two, `list_input_languages` and `read_input_language`, have the same structure - they use `fetch` to run a PHP script on the server, and then receive back a response from the PHP script, which they do a little formatting on (to turn the data into something we can work with). Because these functions interact with a PHP script which is reading data files on the server, we have to set them up as `async` (asynchronous) functions, and tell them to `await` the response from the PHP server before doing anything. I mentioned this async/await stuff briefly at the end of the confederate priming practical, but to recap: fetching data from the server via PHP takes some time - only a fraction of a second, so it appears instantaneous to us, but for the computer this is very slow. Rather than wait for the `fetch` command to finish before it starts the code running, your browser will therefore press on and try to run the rest of the code - if you are used to 'normal' programming languages like python, that run things one step at a time, this is a very weird behaviour that takes some time to get used to. But in this particular case, trying to carry on while the `fetch` function goes off and does its job is a bad idea, since we actually need to get the response back from the PHP script before we can continue - that will cause our code to break, because until the `fetch` command returns its data we can't actually process it!
+The next chunk of code sets out 4 functions which do all our manipulation of language CSV files for us. The first two functions, `list_input_languages` and `read_input_language`, have the same structure - they use `fetch` to run a PHP script on the server, and then receive back a response from the PHP script, which they do a little formatting on (to turn the data into something we can work with). Because these functions interact with a PHP script which is reading data files on the server, we have to set them up as `async` (asynchronous) functions, and tell them to `await` the response from the PHP server before doing anything. I mentioned this async/await stuff briefly at the end of the confederate priming practical, but to recap: fetching data from the server via PHP takes some time - only a fraction of a second, so it appears instantaneous to us, but for the computer this is very slow. Rather than wait for the `fetch` command to finish, your browser tries to press on and run the rest of the code - if you are used to 'normal' programming languages like python, that run things one step at a time, this is a very weird behaviour that takes some time to get used to! In this particular case, trying to carry on while the `fetch` function goes off and does its job is a bad idea, since we actually need to get the response back from the PHP script before we can continue - running off ahead before the `fetch` returns the data we need will cause our code to break, because until the `fetch` command returns its data we can't actually process it!
 
-There are various solutions to this problem, but I think the simplest one is to use the `async` and `await` functions (which are part of newer versions of javascript). This allows us to declare some functions as `async` (i.e. asynchronous, in other words there are some steps that involve waiting for one function to complete before proceeding), and then use `await` to tell the browser to wait for a certain operation to complete before moving on. This means we can wait until the `fetch` command has done its job and got the data we need.
+There are various solutions to this problem, but I think the simplest one is to use the `async` and `await` functions (which are part of newer versions of javascript). This allows us to declare some functions as `async` (i.e. asynchronous, in other words there are some steps that involve waiting for one function to complete before proceeding, rather than running everything synchronously/simultaneously), and then use `await` to tell the browser to wait for a certain operation to complete before moving on. This means we can wait until the `fetch` command has done its job and got the data we need.
 
 Here are the two functions that have this `await fetch` structure:  
 
@@ -131,10 +133,7 @@ Here are the two functions that have this `await fetch` structure:
 async function list_input_languages(){
   var data_to_send = {user: myUUN}; //we need to send over myUUN so the PHP looks in the correct user directory
   var response = await fetch('list_input_languages.php', {
-      method: 'POST',
-      body: JSON.stringify(data_to_send),
-      headers: new Headers({
-              'Content-Type': 'application/json'})});
+      ...});
   // various steps to convert the string returned by the PHP script into
   // something we can work with
   var text_response = await response.text()
@@ -147,10 +146,7 @@ async function list_input_languages(){
 async function read_input_language(input_language_filename){
   var data_to_send = {user:myUUN,filename: input_language_filename}; //we need to send myUUN and input_language_filename to the PHP script
   var response = await fetch('load_input_language.php', {
-      method: 'POST',
-      body: JSON.stringify(data_to_send),
-      headers: new Headers({
-              'Content-Type': 'application/json'})});
+      ...});
   var input_language_as_text = await response.text()
   var input_language = JSON.parse(input_language_as_text)
   return input_language
