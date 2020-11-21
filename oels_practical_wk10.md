@@ -200,9 +200,9 @@ We simply work through that list, building a CSV-formatted string (commas betwee
 
 ### Observation and production trials
 
-As per usual, we need to define a function to build observation trials (see a picture plus label) and production trials (see an image, produce a label). Observation trials are based on our usual code from the practical on word learning, so I won't go over it in detail here. We will take a look at production trials though, because there are a couple of things to note.
+As per usual, we need to define a function to build observation trials (where the participant sees a picture plus label) and production trials (the participant sees an image, produces a label). Observation trials are based on our usual code from the practical on word learning, so I won't go over it in detail here. We will take a look at production trials though, because there are a couple of things to note.
 
-First, since we are providing participants with a limited set of syllables to build labels from, we need to define that.
+First, since we are providing participants with a limited set of syllables to build labels from, we need to list the syllables they can use.
 
 ```js
 var available_syllables = jsPsych.randomization.shuffle(["ti","ta","to","tu",
@@ -211,9 +211,9 @@ var available_syllables = jsPsych.randomization.shuffle(["ti","ta","to","tu",
                                                          "vi","va","vo","vu"])
 ```
 
-Notice that I am shuffling the list of syllables once: this means the syllables will appear appear on-screen in random order, but that order will be consistent throughout the experiment. Shuffling the syllables every trial would be an option, but that makes it very hard work for the participant, who has to hunt for the syllable they want in a different place on every trial.
+Notice that I am shuffling the list of syllables once: this means that in production trials the syllables will appear appear on-screen in random order, but that order will be consistent throughout the experiment. Shuffling the syllables every trial would be an option, but that makes it very hard work for the participant, who has to hunt for the syllable they want in a different place on every trial.
 
-Second, we need to keep track of the labels the participant produces as they  works through the production phase , so that if/when they complete the production phase, we can save their final language to use as input for another participant. We will store their building list of productions to `participant_final_label_set`, which is initially just an empty list.
+Second, we need to keep track of the labels the participant produces as they  work through the production phase, so that if/when they complete the production phase, we can save their final language to use as input for another participant. We will store their building list of productions to `participant_final_label_set`, which is initially just an empty list.
 ```js
 var participant_final_label_set = []
 ```
@@ -240,10 +240,11 @@ Note that at the end of the trial (`on_finish`) we do two things:  we add a repr
 participant_final_label_set.push({object:object_filename,label:data.label})
 ```
 `data.label` is created by the `image-button-buildlabel-response` plugin and is
-the final label the participant produced (i.e. their label when they clicked DONE). We also save the trial data to the server as usual, to keep a more detailed record of the participant's response (including e.g. total time to complete the trial).
+the final label the participant produced (i.e. their label when they clicked DONE). We also save the trial data to the server as usual, using `save_iterated_learning_data`, to keep a more detailed record of the participant's response (including e.g. total time to complete the trial).
 
 We can then use this `make_production_trial` function (and the equivalent `make_observation_trial` function) to create a trial list of observation and production trials. That's what the next block of code does: `build_training_timeline` and `build_testing_timeline` both take an input language specified as a list of ``{object:object_filename,label:a_label}`` object-label pairs, and build a training or testing timeline.
 
+`build_training_timeline` takes a list of object-label pairs and builds a training timeline consisting of `n_repetitions` blocks (`n_repetitions` is set to 1 below, so only one repetition of each training item) - each block contains one observation trial for each object-label pair in `object_label_pairs`.
 ```js
 function build_training_timeline(object_label_pairs,n_repetitions) {
   var training_timeline = [] //build up our training timeline here
@@ -260,9 +261,8 @@ function build_training_timeline(object_label_pairs,n_repetitions) {
   return training_timeline
 }
 ```
-/*
-`build_training_timeline` takes a list of object_label_pairs and builds a training timeline consisting of `n_repetitions` blocks (`n_repetitions` is set to 1 below, so only one repetition of each training item)- each block contains one observation trial for each object-label pair in `object_label_pairs`.
 
+`build_testing_timeline` takes a list of object-label pairs and builds a testing timeline with one production trial for each object in `object_label_pairs`, in random order. Note that the labels are simply discarded here - to create a production trial we just need the object filename.
 ```js
 function build_testing_timeline(object_label_pairs) {
   var testing_timeline = []
@@ -275,11 +275,9 @@ function build_testing_timeline(object_label_pairs) {
 }
 ```
 
-`build_testing_timeline` takes a list of object-label pairs and builds a testing timeline with one production trial for each object in `object_label_pairs`, in random order. Note that the labels are simply discarded here - to create a production trial we just need the object filename.
-
 ### Putting it all together
 
-Finally we are in a position to put all of these functions together. The function `run_experiment()`, code below, runs through the 9-step process of looking for open chains, selecting an input filename to iterate from, building timelines and running the experiment, then saving an output language for the next generation to iterate from. The 9 steps are:
+Finally we are in a position to put all of these functions together. The function `run_experiment()`, code below, runs through a 9-step process of looking for open chains, selecting an input filename to iterate from, building timelines and running the experiment, then saving an output language for the next generation to iterate from. The 9 steps are:
 
 1. We see if there are any input languages available for iteration. If not, we
 just tell the participant to come back later. If there at least one input language available, we proceed.
@@ -287,28 +285,32 @@ just tell the participant to come back later. If there at least one input langua
 chain and generation we are running (e.g. if the filename is chain10_g7.csv we know we are running generation 7 of chain 10), so we can extract that info from the filename (extracting this info from the filename is a little bit fiddly).
 3. We read in the input language from the appropriate file.
 4. We use that input language to generate training trials for this participant. We impose a *bottleneck* on transmission by taking a subset of the language of the previous generation (here, 14 randomly-selected object-label pairs) and using that to build the training timeline (here, repeating each of those object-label pairs once).
-5. We use that input language to build a testing timeline, requiring the participant to do a production trial for each object.
-6. We build the full experiment timeline, combining the training and testing timelines with the various information screens which we defined earlier (I skipped that bit in this walkthrough, they are just the usual `html-keyboard-response` trials).
+5. We also use that input language to build a testing timeline, requiring the participant to do a production trial for all possible objects (i.e. not just the 14 we selected for training - they have to generalise).
+6. We build the full experiment timeline, combining the training and testing timelines with the various information screens which we defined earlier (I skipped the information trials in the code walkthrough, they are just the usual `html-keyboard-response` trials).
 7. We move the input language file we are using from `server_data/il/ready_to_iterate` to `server_data/il/undergoing_iteration`, so that another participant doesn't also start working on this input language.
 8. We run the timeline
 9. a. If the participant completes the experiment (i.e. gets to the end of the production phase), we save the language they produced during production as a new input language in `server_data/il/ready_to_iterate` and also move the input language they were trained on to `server_data/il/completed_iteration`, so that we know it's been done.
 9. b. If the participant abandons the experiment we need to recycle their input language - they haven't completed the experiment, so we need someone else to run this generation of this chain. We simply move the input language file they were working on back to the `server_data/il/ready_to_iterate` folder. Note that you can capture this kind of exit event in jsPsych using the `on_close` parameter of `jsPsych.init`.
 
-Here's the code with those 9 steps marked up in the comments. In various places we need to know what chain and generation we are running (e.g. for saving the participant's final language to a file with the correct name) - we store this info in two variables, `chain` and `generation`, which will create immediately and then updated once we get this information. Note that in some places we also need to `await` the response from a PHP script that's retrieving some info from the server from us.
+Here's the code with those 9 steps marked up in the comments. In various places we need to know what chain and generation we are running (e.g. for saving the participant's final language to a file with the correct name) - we store this info in two variables, `chain` and `generation`, which we update once we allocate the participant to a specific chain. Note that in some places we also need to `await` the response from a PHP script that's retrieving some info from the server from us.
 ```js
 
 var chain
 var generation
 
 async function run_experiment() {
+
   //1. We see if there are any input languages available for iteration
   var available_input_languages = await list_input_languages()
+
   //...If not, we just tell the participant to come back later (using the cannot_iterate_info html-keyboard-response trial created above)
   if (await available_input_languages.length == 0) {
     jsPsych.init({timeline: [cannot_iterate_info]})
   }
+
   //...If there is, we proceed.
   else {
+
     //2. We select a random input language to use.
     var input_language_filename = jsPsych.randomization.shuffle(available_input_languages)[0]
     //...The name of this file tells us what chain and generation we are running
@@ -341,7 +343,7 @@ async function run_experiment() {
     // phase, at this point, so it looks out of sequence! I could have done this in the
     // on_close of the last production trial, but it seemed simpler to do it as a
     // stand-alone event in the timeline, using the call-function trial type.
-    // 9. If the participant completes the experiment (i.e. gets to the end of the production
+    // 9a. If the participant completes the experiment (i.e. gets to the end of the production
     // phase), we save the language they produced during production as a new input language
     // in server_data/il/ready_to_iterate and also move the input language they were trained on to
     // server_data/il/completed_iteration, so that we know it's been done.
@@ -381,7 +383,7 @@ async function run_experiment() {
 
 ```
 
-An additional thing to note about this code: I have not implemented the deduplication filter from the Beckner et al. method here - I figured the code was complicated enough! If you want to implement this you will need two extra steps:
+An additional thing to note about this code: I have not implemented the deduplication filter - I figured the code was complicated enough! If you want to implement this (it's an optional and challenging exercise this week) you will need two extra steps:
 1. Before implementing step 9a, saving the participant's produced language to the `ready_to_iterate` folder, you need to check it is usable, i.e. contains enough distinct labels. If so, you proceed as normal; if not, you recycle their input language (in the same way as if they had abandoned) and try again.
 2. On step 4, selecting object-label pairs to use for training, you would need to select in a way that avoids duplicate labels, rather than selecting randomly.
 
@@ -392,12 +394,13 @@ The final line of the code simply runs this `run_experiment()` function, startin
 
 ## Exercises with the iterated learning experiment code
 
-- *After changing the myUUN variable and setting up the various folders in `server_data`*, run the experiment and use cyberduck to watch the CSV files appearing and moving around in `server_data/il`. Experiment with abandoning the experiment part-way through (i.e. closing the browser window) and see what happens. Look at the CSV data files that get created in various places, and check that the contents of the data files make sense and how they relate to what you see as a participant. Try to run a few generations of at least one chain and check that the iteration process works as you expect.
+- **After changing the myUUN variable and setting up the various folders in `server_data`**, run the experiment and use cyberduck to watch the CSV files appearing and moving around in `server_data/il`. Experiment with abandoning the experiment part-way through (i.e. closing the browser window) and see what happens. Look at the CSV data files that get created in various places, and check that the contents of the data files make sense and how they relate to what you see as a participant. Try to run a few generations of at least one chain and check that the iteration process works as you expect.
 - How would you increase the number of training trials in the observation phase of the experiment to provide e.g. 6 passes through the training set? How would you increase or decrease the size of the transmission bottleneck?
 - How would you randomise the order of the syllables on production trials separately for every production trial? Do you think that is better or worse? How about if you don't randomise them at all? Have a think about the possible consequences of these various randomisation choices.
 - How could you insert a small number of test trials after each block of training trials, to keep the participant paying attention?
-- [Harder, optional] Could you add a manipulation of production effort to this experiment, borrowing code from the dyadic interaction practical? There's actually already a bot of production effort involved here, in that participants have to click more times to build a longer label, but could you add an additional "click repeatedly to finish" trial to really ramp up the preference for shorter labels?
-- [Harder, optional] Can you implement a deduplication filter like that used by Beckner et al., to avoid presenting participants with ambiguous duplicate labels (where two distinct visual stims map to the same label)?
+- [Harder, optional] Can you add a maximum generation number, so no chain goes beyond e.g. 10 generations?
+- [Harder, optional] Could you add a manipulation of production effort to this experiment, borrowing code from the dyadic interaction practical? There's actually already a bit of production effort involved here, in that participants have to click more times to build a longer label, but could you add an additional "click repeatedly to finish" trial to really ramp up a preference for shorter labels? What effect do you think this would have over iteration?
+- [Very hard, very optional] Can you implement a deduplication filter like that used by Beckner et al., to avoid presenting participants with ambiguous duplicate labels (where two distinct visual stims map to the same label)?
 
 ## References
 
