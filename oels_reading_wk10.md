@@ -19,7 +19,7 @@ A couple of things to note:
 - Beckner et al. give us a bit of a hard time for our small sample size and very basic stats in the 2008 paper, but I think they are actually pretty gentle! That was the first experimental study we ran, we had pretty limited resources and didn't really know what we were doing. I was particularly relieved that the results of our Experiment 2 replicated so well.
 - Section 1.1.1 of Beckner et al. is a (much more competent) reanalysis of our 2008 data, with fancier stats to handle a non-linear increase in compositionality (i.e. it increases over generations but not at a constant rate) - don't stress if you don't fully follow the statistical method.
 - Their experimental method (with a nice hide-and-seek framing for the task, various intermediate attention checks etc) is quite a lot fancier than what we normally do, and certainly fancier than the experiment I have implemented in the practical for this week.
-- I actually edited this paper for Journal of Language Evolution, which means I solicited reviews, looked at the author response to those reviews, requested revisions and made the final decision on acceptance. 
+
 
 ## References
 
