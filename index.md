@@ -96,9 +96,9 @@ You could use the opportunity for catchup or lookahead reading.
 
 ### Week 11 (30th November): Interacting with MTurk
 
-- *Scientific content:* probably none!
-- *Technical content:* How to launch and pay HITs, manage qualifications, etc
-- The only thing to read this week is some notes for how to get your experiments online
+- *Scientific content:* None!
+- *Technical content:* How to set up a server, launch and pay participants, manage qualifications, etc
+- [Combined reading/practical: how to get your experiment online](oels_wk11.md)
 
 ### Planned changes
 
