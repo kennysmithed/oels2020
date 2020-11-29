@@ -5,9 +5,9 @@ description: How to set up a server, launch and pay participants, manage qualifi
 
 ## The plan for week 11
 
-We are basically done with the course - by this point you have read a bunch of papers using online data collection, and had the opportunity to play with jsPsych demo experiments to give you a feeling for how those experiments look under the hood (plus, hopefully, some stuff to get you started building your own experiments). But before you can actually *run* your experiment and collect data from real participants in the wild, there are a number of other steps you have to go through to make your experiment available on the open web and start collecting actual data. In this document I will talk you through those steps, and also give some advice based on my experience of running stuff online.
+We are basically done with the course - by this point you have read a bunch of papers using online data collection, and had the opportunity to play with jsPsych demo experiments to give you a feeling for how those experiments look under the hood (plus, hopefully, some code building blocks to get you started building your own experiments). But there are a number of other steps you have to go through to make your experiment available on the open web and start collecting actual data. In this document I will talk you through those steps, and also give some advice based on my experience of running stuff online.
 
-**Important note:** We are not doing actual data collection as part of this course, so you do not have to go through any of these steps for the course assessments. The closest we get is building an experiment for assignment 2, but you should **not** collect any data - we haven't gone through the School ethics process, which is an essential check that you must always complete before collecting data.
+**Important note:** We are not doing actual data collection as part of this course, so you do not have to go through any of these steps for the course assessments. The closest we get is building an experiment for assignment 2, but you should *not* collect any data - we haven't gone through the School ethics process, which is an essential check that you must always complete before collecting data.
 
 
 ## Getting your experiment online
@@ -15,7 +15,7 @@ We are basically done with the course - by this point you have read a bunch of p
 Once you have built your experiment and tested that it delivers the stims you think it does, records the responses you want, and seems reasonably robust to participants clicking in unexpected ways and mashing the keyboard, you will want to put it out into the wild and collect some real data. Before you can do that, there are a number of steps you need to go through:
 
 1. Make sure your instructions are participant-friendly.
-2. Get ethics!
+2. Get ethics approval!
 3. Get a server to host your experiment.
 4. Set up an account with a crowdsourcing site (e.g. MTurk, Prolific).
 5. Put your experiment on that site, and handle participant payment.
@@ -72,7 +72,7 @@ Regardless of which platform you choose, you will need to load some credit onto 
 
 ## 5. Launching your experiment, handling participant payment etc
 
-Once you have everything else set up, you are nearly in a position to launch your experiment and start collecting crowd-sourced data. Some of this involves deciding things like rate of pay, study title and description that participants see before they decide to participate. I'll cover these below, but the main final technical challenge involves figure out how you are going to handle participant payments - in particular, how do you know that a given participant has actually completed your experiment, so that you can pay them? 
+Once you have everything else set up, you are nearly in a position to launch your experiment and start collecting crowd-sourced data. Some of this involves deciding things like rate of pay, study title and description that participants see before they decide to participate. I'll cover these below, but the main final technical challenge involves figure out how you are going to handle participant payments - in particular, how do you know that a given participant has actually completed your experiment, so that you can pay them?
 
 ### Linking participants to their data
 
