@@ -1,9 +1,9 @@
 
 # Be aware, this is the 2020-2021 version of this course
 
-The code in this course uses jspsych 6.1.0, so you will find that the code does not function as intended with later versions of jspsych - in particular, later versions of jspsych have slightly different names for some kinds of data that plugins return (`button_pressed` has become `response`), so if you want to use this code as-is download version 6.1.0 from [the appropriate jspsych github page](https://github.com/jspsych/jsPsych/releases/tag/v6.1.0). 
+The code in this course uses jsPsych 6.1.0, so you will find that the code does not function as intended with later versions of jsPsych - in particular, later versions of jsPsych have slightly different names for some kinds of data that plugins return (`button_pressed` has become `response`), so if you want to use this code as-is download version 6.1.0 from [the jsPsych github page](https://github.com/jspsych/jsPsych/releases/tag/v6.1.0). 
 
-[The 2021-2022 version of the course](https://kennysmithed.github.io/oels2021/) is now available (in-progress as of mid-September 2021) and jspsych 6.3 compatible versions of all experiments will appear there as the course unfolds until late November 2021.
+[The 2021-2022 version of the course](https://kennysmithed.github.io/oels2021/) is now available (in-progress as of mid-September 2021) and jsPsych 6.3 compatible versions of all experiments will appear there as the course unfolds; the materials will be complete by late November 2021.
 
 
 # The original 2020-2021 pages start here
