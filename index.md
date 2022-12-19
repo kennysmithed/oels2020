@@ -1,5 +1,5 @@
 
-# Be aware, this is the 2020-2021 version of this course and is now outdated
+**Be aware, this is the 2020-2021 version of this course and is now outdated**
 
 The code in this course uses jsPsych 6.1.0, so you will find that the code does not function as intended with later versions of jsPsych - in particular, later versions of jsPsych have slightly different names for some kinds of data that plugins return (`button_pressed` has become `response`), which causes catastrophic errors in several places, so if you want to use this code as-is download version 6.1.0 from [the jsPsych github page](https://github.com/jspsych/jsPsych/releases/tag/v6.1.0). 
 
